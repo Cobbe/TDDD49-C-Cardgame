@@ -13,7 +13,9 @@ namespace ConsoleApplication2
             Logic.Player me = new Logic.Player();
             Logic.AI ai = new Logic.AI();
 
+            Form1 f = new Form1();
 
+            
         }
     }
 }

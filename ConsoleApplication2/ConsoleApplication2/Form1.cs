@@ -15,6 +15,7 @@ namespace ConsoleApplication2
         public Form1()
         {
             InitializeComponent();
+            DrawIt();
         }
 
         private void DrawIt()
@@ -24,6 +25,11 @@ namespace ConsoleApplication2
                 50, 100, 150, 150);
             graphics.DrawEllipse(System.Drawing.Pens.Black, rectangle);
             graphics.DrawRectangle(System.Drawing.Pens.Red, rectangle);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
