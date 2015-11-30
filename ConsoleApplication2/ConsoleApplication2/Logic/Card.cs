@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace Logic
 {
-    class Card
+    abstract class Card
     {
-        public String name, description;
-        public String image;
+        protected string name, description;
+        protected string image;
 
-        protected Card(String name, String description)
+        protected Card(string name, string description)
         {
             this.name = name;
             this.description = description;
@@ -22,9 +22,9 @@ namespace ConsoleApplication1
 
     class MonsterCard : Card
     {
-        int strength;
+        protected int strength;
 
-        public MonsterCard(String name, String description, int strength) : base(name, description)
+        public MonsterCard(string name, string description, int strength) : base(name, description)
         {
             this.strength = strength;
         }
@@ -33,7 +33,7 @@ namespace ConsoleApplication1
     class SpecialCard : Card
     {
         
-        public SpecialCard(String name, String description) : base(name, description)
+        public SpecialCard(string name, string description) : base(name, description)
         {
 
         }

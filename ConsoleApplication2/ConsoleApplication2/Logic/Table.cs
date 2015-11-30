@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace Logic
 {
     class Table
     {
-        Player player;
-        AI ai;
+        protected Player player;
+        protected AI ai;
 
         public Table()
         {

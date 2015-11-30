@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace Logic
 {
     class Player
     {
-        Hand hand;
-        Deck deck;
-        PlayedCards playedCards;
-        UsedCards usedCards;
+        protected Hand hand;
+        protected Deck deck;
+        protected PlayedCards playedCards;
+        protected UsedCards usedCards;
 
         public Player()
         {

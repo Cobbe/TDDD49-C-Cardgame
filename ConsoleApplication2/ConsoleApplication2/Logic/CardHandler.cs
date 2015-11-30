@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace Logic
 {
-    class CardHandler
+    abstract class CardHandler
     {
         protected List<Card> list;
 
-        public CardHandler()
+        protected CardHandler()
         {
-            this.list = new List<Card>();
+            list = new List<Card>();
         }
 
         public void addCard(Card c)
@@ -40,6 +40,8 @@ namespace ConsoleApplication1
 
     class Deck : CardHandler
     {
+        private static Random rng = new Random();
+
         public Deck() : base()
         {
 
@@ -50,9 +52,18 @@ namespace ConsoleApplication1
             return getCard(numberOFCards() - 1);
         }
 
-        public void shuffle()
+        public void shuffle(List<Card> deck)
         {
-            //dostuff (https://stackoverflow.com/questions/273313/randomize-a-listt-in-c-sharp)
+            int n = deck.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                Card value = deck[k];
+                deck[k] = deck[n];
+                deck[n] = value;
+            }
+        // https://stackoverflow.com/questions/273313/randomize-a-listt-in-c-sharp
         }
     }
 

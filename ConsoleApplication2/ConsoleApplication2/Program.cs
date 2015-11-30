@@ -10,6 +10,10 @@ namespace ConsoleApplication2
     {
         static void Main(string[] args)
         {
+            Logic.Player me = new Logic.Player();
+            Logic.AI ai = new Logic.AI();
+
+
         }
     }
 }
