@@ -21,10 +21,24 @@ namespace ConsoleApplication2
         private void DrawIt()
         {
             System.Drawing.Graphics graphics = this.CreateGraphics();
-            System.Drawing.Rectangle rectangle = new System.Drawing.Rectangle(
-                50, 100, 150, 150);
-            graphics.DrawEllipse(System.Drawing.Pens.Black, rectangle);
-            graphics.DrawRectangle(System.Drawing.Pens.Red, rectangle);
+
+            Logic.MonsterCard monster = new Logic.MonsterCard("Dragon", "spits fire", "Dragon.jpg", 5);
+
+            DrawCard(graphics, monster, 50, 50, 2);
+
+        }
+
+        private void DrawCard(System.Drawing.Graphics graphics, Logic.Card card, float x, float y, float scale)
+        {
+            Console.WriteLine(Environment.CurrentDirectory + "\\" + card.Image);
+            Image borderImage = Image.FromFile(Environment.CurrentDirectory + "\\basic_card_blood.png");
+            Image cardImage = Image.FromFile(Environment.CurrentDirectory + "\\" + card.Image);
+
+            graphics.DrawImage(borderImage, x, y, 200*scale, 320*scale);
+            graphics.DrawImage(cardImage, x+25*scale, y+25*scale, 150*scale, 170*scale);
+
+            graphics.DrawString("Name: " +card.Name, new Font(FontFamily.GenericMonospace, 12*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x+25*scale, y+220*scale);
+            graphics.DrawString("Description: " + card.Description, new Font(FontFamily.GenericMonospace, 7*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25*scale, y + 235*scale);
         }
 
         private void Form1_Load(object sender, EventArgs e)

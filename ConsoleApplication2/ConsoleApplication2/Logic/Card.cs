@@ -12,47 +12,47 @@ namespace Logic
         private string image;
         private string name;
 
-        protected Card(string name, string description)
+        protected Card(string name, string description, string image)
         {
             this.Name = name;
             this.Description = description;
-            this.Image = "";
+            this.Image = image;
         }
 
-        protected string Name
+        public string Name
         {
             get
             {
                 return name;
             }
 
-            set
+            private set
             {
                 name = value;
             }
         }
 
-        protected string Description
+        public string Description
         {
             get
             {
                 return description;
             }
 
-            set
+            private set
             {
                 description = value;
             }
         }
 
-        protected string Image
+        public string Image
         {
             get
             {
                 return image;
             }
 
-            set
+            private set
             {
                 image = value;
             }
@@ -63,7 +63,7 @@ namespace Logic
     {
         protected int strength;
 
-        public MonsterCard(string name, string description, int strength) : base(name, description)
+        public MonsterCard(string name, string description, string image, int strength) : base(name, description, image)
         {
             this.strength = strength;
         }
@@ -72,7 +72,7 @@ namespace Logic
     class SpecialCard : Card
     {
         
-        public SpecialCard(string name, string description) : base(name, description)
+        public SpecialCard(string name, string description, string image) : base(name, description, image)
         {
 
         }
