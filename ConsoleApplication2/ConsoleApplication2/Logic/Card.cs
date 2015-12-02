@@ -11,20 +11,34 @@ namespace Logic
         protected string name, description;
         protected string image;
 
-        protected Card(string name, string description)
+        protected Card(string name, string description, string image)
         {
             this.name = name;
             this.description = description;
-            this.image = "";
+            this.image = image;
         }
 
+        public String getImage()
+        {
+            return image;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public String getDescription()
+        {
+            return description;
+        }
     }
 
     class MonsterCard : Card
     {
         protected int strength;
 
-        public MonsterCard(string name, string description, int strength) : base(name, description)
+        public MonsterCard(string name, string description, string image, int strength) : base(name, description, image)
         {
             this.strength = strength;
         }
@@ -33,7 +47,7 @@ namespace Logic
     class SpecialCard : Card
     {
         
-        public SpecialCard(string name, string description) : base(name, description)
+        public SpecialCard(string name, string description, string image) : base(name, description, image)
         {
 
         }
