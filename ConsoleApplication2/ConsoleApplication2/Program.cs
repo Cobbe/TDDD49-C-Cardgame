@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace WindowsFormsApplication1
 {
@@ -15,13 +15,17 @@ namespace WindowsFormsApplication1
         [STAThread]
         static void Main()
         {
+            /* Creates the game instance and sends it to a thread before starting the graphics :) */
+            Logic.Table table = new Logic.Table();
+            Thread gameThread = new Thread(table.runGame);
+            gameThread.Start();
 
-            Logic.Player me = new Logic.Player();
-            Logic.AI ai = new Logic.AI();
-
+            /* Launches the graphics */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
+
+
         }
     }
 }

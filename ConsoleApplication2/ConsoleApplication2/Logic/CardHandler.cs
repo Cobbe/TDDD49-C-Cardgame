@@ -8,33 +8,46 @@ namespace Logic
 {
     abstract class CardHandler
     {
-        protected List<Card> list;
+        private List<Card> list;
+
+        protected List<Card> List
+        {
+            get
+            {
+                return list;
+            }
+
+            set
+            {
+                list = value;
+            }
+        }
 
         protected CardHandler()
         {
-            list = new List<Card>();
+            List = new List<Card>();
         }
 
         public void addCard(Card c)
         {
-            list.Add(c);
+            List.Add(c);
         }
 
         public Card getCard(int i)
         {
-            Card c = list[i];
-            list.RemoveAt(i);
+            Card c = List[i];
+            List.RemoveAt(i);
             return c;
         }
 
         public Card viewCard(int i)
         {
-            return list[i];
+            return List[i];
         }
 
         public int numberOFCards()
         {
-            return list.Count;
+            return List.Count;
         }
     }
 

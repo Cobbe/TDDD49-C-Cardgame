@@ -8,13 +8,49 @@ namespace Logic
 {
     class Table
     {
-        protected Player player;
-        protected AI ai;
+        private Player player;
+        private AI ai;
+
+        protected Player Player
+        {
+            get
+            {
+                return player;
+            }
+
+            set
+            {
+                player = value;
+            }
+        }
+
+        protected AI Ai
+        {
+            get
+            {
+                return ai;
+            }
+
+            set
+            {
+                ai = value;
+            }
+        }
 
         public Table()
         {
-            player = new Player();
-            ai = new AI();
+            Player = new Player();
+            Ai = new AI();
         }
+
+        public void runGame()
+        {
+            
+            while (true)
+            {
+                Console.WriteLine("Thread is running");
+            }
+        }
+
     }
 }

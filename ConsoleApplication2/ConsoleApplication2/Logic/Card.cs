@@ -8,16 +8,55 @@ namespace Logic
 {
     abstract class Card
     {
-        protected string name, description;
-        protected string image;
+        private string description;
+        private string image;
+        private string name;
 
         protected Card(string name, string description)
         {
-            this.name = name;
-            this.description = description;
-            this.image = "";
+            this.Name = name;
+            this.Description = description;
+            this.Image = "";
         }
 
+        protected string Name
+        {
+            get
+            {
+                return name;
+            }
+
+            set
+            {
+                name = value;
+            }
+        }
+
+        protected string Description
+        {
+            get
+            {
+                return description;
+            }
+
+            set
+            {
+                description = value;
+            }
+        }
+
+        protected string Image
+        {
+            get
+            {
+                return image;
+            }
+
+            set
+            {
+                image = value;
+            }
+        }
     }
 
     class MonsterCard : Card

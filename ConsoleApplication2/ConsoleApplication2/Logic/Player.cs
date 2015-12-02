@@ -8,17 +8,69 @@ namespace Logic
 {
     class Player
     {
-        protected Hand hand;
-        protected Deck deck;
-        protected PlayedCards playedCards;
-        protected UsedCards usedCards;
+        private Hand hand;
+        private Deck deck;
+        private PlayedCards playedCards;
+        private UsedCards usedCards;
+
+        protected Deck Deck
+        {
+            get
+            {
+                return deck;
+            }
+
+            set
+            {
+                deck = value;
+            }
+        }
+
+        protected Hand Hand
+        {
+            get
+            {
+                return hand;
+            }
+
+            set
+            {
+                hand = value;
+            }
+        }
+
+        protected PlayedCards PlayedCards
+        {
+            get
+            {
+                return playedCards;
+            }
+
+            set
+            {
+                playedCards = value;
+            }
+        }
+
+        protected UsedCards UsedCards
+        {
+            get
+            {
+                return usedCards;
+            }
+
+            set
+            {
+                usedCards = value;
+            }
+        }
 
         public Player()
         {
-            deck = new Deck();
-            hand = new Hand();
-            playedCards = new PlayedCards();
-            usedCards = new UsedCards();
+            Deck = new Deck();
+            Hand = new Hand();
+            PlayedCards = new PlayedCards();
+            UsedCards = new UsedCards();
             
         }
     }
