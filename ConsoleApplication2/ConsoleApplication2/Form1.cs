@@ -15,9 +15,13 @@ namespace ConsoleApplication2
         private Timer timer;
         private int x;
         private bool turn;
-        Bitmap bm = new Bitmap(1000, 1000);
-        Graphics graphics;
+        //Bitmap bm = new Bitmap(1000, 1000);
         private ImageHandler imageHandler;
+
+        // Double Buffering
+        BufferedGraphicsContext myContext;
+        BufferedGraphics myBuffer;
+
 
         public Form1()
         {
@@ -25,6 +29,10 @@ namespace ConsoleApplication2
             //this.DoubleBuffered = true;
 
             imageHandler = new ImageHandler();
+
+            // Double Buffering
+            myContext = BufferedGraphicsManager.Current;
+            myBuffer = myContext.Allocate(this.CreateGraphics(), this.DisplayRectangle);
 
             timer = new Timer(new System.ComponentModel.Container());
 
@@ -34,39 +42,31 @@ namespace ConsoleApplication2
             timer.Interval = 13;
             timer.Tick += new System.EventHandler(this.timer_tic);
 
-            DrawIt();
         }
 
         private void DrawIt()
         {
-            graphics = Graphics.FromImage(bm);
 
             Logic.MonsterCard monster = new Logic.MonsterCard("Dragon", "spits fire", "Dragon.jpg", 5);
-
-            DrawCard(graphics, monster, 0, 0, 1.4f);
-            DrawCard(graphics, monster, 300, 150, 0.4f);
+            DrawCard(monster, x, 0, 1.4f);
+            //DrawCard(monster, 300, 150, 0.4f);
 
             
         }
 
-        private void DrawCard(Graphics graphics, Logic.Card card, float x, float y, float scale)
+        private void DrawCard(Logic.Card card, float x, float y, float scale)
         {
             Image cardImage = imageHandler.getImage(card.Image);
-            graphics.DrawImage(imageHandler.getImage(ImageHandler.CARD_BORDER), x, y, 200*scale, 320*scale);
-            graphics.DrawImage(cardImage, x+25*scale, y+25*scale, 150*scale, 170*scale);
+            myBuffer.Graphics.DrawImage(imageHandler.getImage(ImageHandler.CARD_BORDER), x, y, 200*scale, 320*scale);
+            myBuffer.Graphics.DrawImage(cardImage, x+25*scale, y+25*scale, 150*scale, 170*scale);
 
-            graphics.DrawString("Name: " +card.Name, new Font(FontFamily.GenericMonospace, 12*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x+25*scale, y+220*scale);
-            graphics.DrawString("Description: " + card.Description, new Font(FontFamily.GenericMonospace, 7*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25*scale, y + 235*scale);
+            myBuffer.Graphics.DrawString("Name: " +card.Name, new Font(FontFamily.GenericMonospace, 12*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x+25*scale, y+220*scale);
+            myBuffer.Graphics.DrawString("Description: " + card.Description, new Font(FontFamily.GenericMonospace, 7*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25*scale, y + 235*scale);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            DrawIt();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            DrawIt();
+            
         }
 
         private void timer_tic(Object sender, EventArgs e)
@@ -84,13 +84,11 @@ namespace ConsoleApplication2
                     turn = true;
                 }
             }
-            
-            Logic.MonsterCard monster = new Logic.MonsterCard("Dragon", "spits fire", "Dragon.jpg", 5);
-            DrawCard(graphics, monster, x, 0, 1.4f);
-            //dosuff
-            Invalidate();
 
-            this.CreateGraphics().DrawImage(bm,0,0);
+            myBuffer.Graphics.Clear(Color.Black);
+            DrawIt();
+            myBuffer.Render();
+            myBuffer.Render(this.CreateGraphics());
         }
 
     }
