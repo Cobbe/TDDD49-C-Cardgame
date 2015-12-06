@@ -191,6 +191,9 @@ namespace Logic
 
         }
 
-        protected void
+        protected void drawCards()
+        {
+
+        }
     }
 }
