@@ -15,15 +15,16 @@ namespace ConsoleApplication2
         private Timer timer;
         private int x;
         private bool turn;
-        private Image borderImage, cardImage;
-
+        Bitmap bm = new Bitmap(1000, 1000);
+        Graphics graphics;
+        private ImageHandler imageHandler;
 
         public Form1()
         {
             InitializeComponent();
+            //this.DoubleBuffered = true;
 
-            borderImage = Image.FromFile(Environment.CurrentDirectory + "\\basic_card_blood.png");
-            
+            imageHandler = new ImageHandler();
 
             timer = new Timer(new System.ComponentModel.Container());
 
@@ -38,21 +39,22 @@ namespace ConsoleApplication2
 
         private void DrawIt()
         {
-            System.Drawing.Graphics graphics = this.CreateGraphics();
+            graphics = Graphics.FromImage(bm);
 
             Logic.MonsterCard monster = new Logic.MonsterCard("Dragon", "spits fire", "Dragon.jpg", 5);
 
             DrawCard(graphics, monster, 0, 0, 1.4f);
             DrawCard(graphics, monster, 300, 150, 0.4f);
 
+            
         }
 
-        private void DrawCard(System.Drawing.Graphics graphics, Logic.Card card, float x, float y, float scale)
+        private void DrawCard(Graphics graphics, Logic.Card card, float x, float y, float scale)
         {
             Console.WriteLine(Environment.CurrentDirectory + "\\" + card.Image);
-            cardImage = Image.FromFile(Environment.CurrentDirectory + "\\" + card.Image);
+            Image cardImage = imageHandler.getImage(card.Image);
 
-            graphics.DrawImage(borderImage, x, y, 200*scale, 320*scale);
+            graphics.DrawImage(imageHandler.getImage(ImageHandler.CARD_BORDER), x, y, 200*scale, 320*scale);
             graphics.DrawImage(cardImage, x+25*scale, y+25*scale, 150*scale, 170*scale);
 
             graphics.DrawString("Name: " +card.Name, new Font(FontFamily.GenericMonospace, 12*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x+25*scale, y+220*scale);
@@ -84,12 +86,14 @@ namespace ConsoleApplication2
                     turn = true;
                 }
             }
-
-
-            System.Drawing.Graphics graphics = this.CreateGraphics();
+            
             Logic.MonsterCard monster = new Logic.MonsterCard("Dragon", "spits fire", "Dragon.jpg", 5);
             DrawCard(graphics, monster, x, 0, 1.4f);
             //dosuff
+            Invalidate();
+
+            this.CreateGraphics().DrawImage(bm,0,0);
         }
+
     }
 }
