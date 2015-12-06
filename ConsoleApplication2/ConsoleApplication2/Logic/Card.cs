@@ -61,11 +61,24 @@ namespace Logic
 
     class MonsterCard : Card
     {
-        protected int strength;
+        private int strength;
 
         public MonsterCard(string name, string description, string image, int strength) : base(name, description, image)
         {
-            this.strength = strength;
+            this.Strength = strength;
+        }
+
+        public int Strength
+        {
+            get
+            {
+                return strength;
+            }
+
+            set
+            {
+                strength = value;
+            }
         }
     }
 

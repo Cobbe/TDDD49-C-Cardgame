@@ -49,7 +49,6 @@ namespace ConsoleApplication2
 
         private void DrawCard(System.Drawing.Graphics graphics, Logic.Card card, float x, float y, float scale)
         {
-            Console.WriteLine(Environment.CurrentDirectory + "\\" + card.Image);
             cardImage = Image.FromFile(Environment.CurrentDirectory + "\\" + card.Image);
 
             graphics.DrawImage(borderImage, x, y, 200*scale, 320*scale);

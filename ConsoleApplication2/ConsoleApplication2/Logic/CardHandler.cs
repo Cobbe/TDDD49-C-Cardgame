@@ -10,7 +10,7 @@ namespace Logic
     {
         private List<Card> list;
 
-        protected List<Card> List
+        public List<Card> List
         {
             get
             {
@@ -49,6 +49,11 @@ namespace Logic
         {
             return List.Count;
         }
+
+        public void clear()
+        {
+            List.RemoveRange(0, numberOFCards());
+        }
     }
 
     class Deck : CardHandler
@@ -65,16 +70,16 @@ namespace Logic
             return getCard(numberOFCards() - 1);
         }
 
-        public void shuffle(List<Card> deck)
+        public void shuffle()
         {
-            int n = deck.Count;
+            int n = List.Count;
             while (n > 1)
             {
                 n--;
                 int k = rng.Next(n + 1);
-                Card value = deck[k];
-                deck[k] = deck[n];
-                deck[n] = value;
+                Card value = List[k];
+                List[k] = List[n];
+                List[n] = value;
             }
         // https://stackoverflow.com/questions/273313/randomize-a-listt-in-c-sharp
         }

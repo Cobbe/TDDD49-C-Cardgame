@@ -12,8 +12,9 @@ namespace Logic
         private Deck deck;
         private PlayedCards playedCards;
         private UsedCards usedCards;
+        private int strength;
 
-        protected Deck Deck
+        public Deck Deck
         {
             get
             {
@@ -26,7 +27,7 @@ namespace Logic
             }
         }
 
-        protected Hand Hand
+        public Hand Hand
         {
             get
             {
@@ -39,7 +40,7 @@ namespace Logic
             }
         }
 
-        protected PlayedCards PlayedCards
+        public PlayedCards PlayedCards
         {
             get
             {
@@ -52,7 +53,7 @@ namespace Logic
             }
         }
 
-        protected UsedCards UsedCards
+        public UsedCards UsedCards
         {
             get
             {
@@ -62,6 +63,19 @@ namespace Logic
             set
             {
                 usedCards = value;
+            }
+        }
+
+        public int Strength
+        {
+            get
+            {
+                return strength;
+            }
+
+            set
+            {
+                strength = value;
             }
         }
 
