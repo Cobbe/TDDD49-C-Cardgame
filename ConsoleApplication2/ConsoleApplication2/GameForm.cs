@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace ConsoleApplication2
 {
-    public partial class Form1 : Form
+    public partial class GameForm : Form
     {
         private Timer timer;
         private int x;
@@ -23,7 +23,7 @@ namespace ConsoleApplication2
         BufferedGraphics myBuffer;
 
 
-        public Form1()
+        public GameForm()
         {
             InitializeComponent();
             //this.DoubleBuffered = true;
@@ -41,16 +41,12 @@ namespace ConsoleApplication2
             timer.Enabled = true;
             timer.Interval = 13;
             timer.Tick += new System.EventHandler(this.timer_tic);
-
         }
 
         private void DrawIt()
         {
-
-            Logic.MonsterCard monster = new Logic.MonsterCard("Dragon", "spits fire", "Dragon.jpg", 5);
+            Logic.MonsterCard monster = new Logic.MonsterCard("Dragon", "spits fire", "dragon.png", 5);
             DrawCard(monster, x, 0, 1.4f);
-            //DrawCard(monster, 300, 150, 0.4f);
-
             
         }
 

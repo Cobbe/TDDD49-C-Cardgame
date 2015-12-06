@@ -23,7 +23,7 @@ namespace WindowsFormsApplication1
             /* Launches the graphics */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new GameForm());
 
 
         }

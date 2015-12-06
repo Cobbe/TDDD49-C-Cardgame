@@ -116,16 +116,13 @@ namespace Logic
                 {
                     Console.WriteLine("Card #"+(i+1)+" : "+player.Hand.viewCard(i).Name);
                 }
-                Console.WriteLine("Enter the number of the card you wish to play, from left to right, starting at 1: ");
-                cardToPlay = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("");
-                while(cardToPlay <= 0 && cardToPlay > player.Hand.numberOFCards())
+
+                do
                 {
-                    Console.WriteLine("Bad input");
                     Console.WriteLine("Enter the number of the card you wish to play, from left to right, starting at 1: ");
                     cardToPlay = Convert.ToInt32(Console.ReadLine());
                     Console.WriteLine("");
-                }
+                } while (cardToPlay <= 0 && cardToPlay > player.Hand.numberOFCards());
 
                 playCard(player, player.Hand.getCard(cardToPlay-1));
 
@@ -161,18 +158,18 @@ namespace Logic
         {
             // For player
             player.Deck.clear();
-            player.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "Dragon.jpg", 10));
-            player.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "Dragon.jpg", 8));
-            player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "Dragon.jpg", 12));
-            player.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "Dragon.jpg", 6));
+            player.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
+            player.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "dragon.png", 8));
+            player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
+            player.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "dragon.png", 6));
             player.Deck.shuffle();
 
             // For AI
             ai.Deck.clear();
-            ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "Dragon.jpg", 10));
-            ai.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "Dragon.jpg", 8));
-            ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "Dragon.jpg", 12));
-            ai.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "Dragon.jpg", 6));
+            ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
+            ai.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "dragon.png", 8));
+            ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
+            ai.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "dragon.png", 6));
             ai.Deck.shuffle();
         }
 
