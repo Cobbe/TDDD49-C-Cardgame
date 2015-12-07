@@ -54,14 +54,18 @@ namespace ConsoleApplication2
             }
         }
 
-        private void DrawCard(Logic.Card card, float x, float y, float scale)
+        private GUI.CardClickbox DrawCard(Logic.Card card, float x, float y, float scale)
         {
             Image cardImage = imageHandler.getImage(card.Image);
             myBuffer.Graphics.DrawImage(imageHandler.getImage(ImageHandler.CARD_BORDER), x, y, 200*scale, 320*scale);
             myBuffer.Graphics.DrawImage(cardImage, x+25*scale, y+25*scale, 150*scale, 170*scale);
 
+            GUI.CardClickbox clickBox = new GUI.CardClickbox(x + 25 * scale, y + 25 * scale, 150 * scale, 170 * scale, card);
+
             myBuffer.Graphics.DrawString("Name: " +card.Name, new Font(FontFamily.GenericMonospace, 12*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x+25*scale, y+220*scale);
             myBuffer.Graphics.DrawString("Description: " + card.Description, new Font(FontFamily.GenericMonospace, 7*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25*scale, y + 235*scale);
+
+            return clickBox;
         }
 
         private void Form1_Load(object sender, EventArgs e)

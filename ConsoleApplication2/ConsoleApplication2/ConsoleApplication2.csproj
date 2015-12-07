@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GUI\CardClickbox.cs" />
     <Compile Include="GUI\GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
