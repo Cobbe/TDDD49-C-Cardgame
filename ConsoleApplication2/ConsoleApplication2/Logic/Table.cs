@@ -3,21 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Logic
 {
     class Table
     {
-        private Player player;
-        private AI ai;
+        private static Table table;
+        private static Player player;
+        private static AI ai;
+        
         private int turn;
         private int cardToPlay;
         private MonsterCard playMonster;
         private SpecialCard playSpecial;
+        private Timer timer;
 
         private static Random tableRng = new Random();
 
-        protected Player Player
+        protected static Player Player
         {
             get
             {
@@ -30,7 +34,7 @@ namespace Logic
             }
         }
 
-        protected AI Ai
+        protected static AI Ai
         {
             get
             {
@@ -95,16 +99,33 @@ namespace Logic
             }
         }
 
-        public Table()
+        public static Table createTableInstance()
         {
-            Player = new Player();
-            Ai = new AI();
+            if(table != null)
+            {
+                return table;
+            } else
+            {
+                return table = new Table();
+            }
+        }
+
+        private Table()
+        {
+            initializeGame();
+
+            /*
+            timer = new System.Timers.Timer(13);
+            timer.Elapsed += runGame;
+            timer.AutoReset = true;
+            timer.Enabled = true;
+            timer.Start();
+            */
         }
 
         public void runGame()
         {
-            initializeGame();
-            while (true)
+            if (turn < 5)
             {
                 // Turn-based
                 Console.WriteLine("Turn: " + turn);
@@ -112,19 +133,19 @@ namespace Logic
                 // Player Turn
                 player.Hand.addCard(player.Deck.drawCard());
                 player.Hand.addCard(player.Deck.drawCard());
-                for (int i = 0; i<player.Hand.numberOFCards(); i++)
+                for (int i = 0; i < player.Hand.numberOFCards(); i++)
                 {
-                    Console.WriteLine("Card #"+(i+1)+" : "+player.Hand.viewCard(i).Name);
+                    Console.WriteLine("Card #" + (i + 1) + " : " + player.Hand.viewCard(i).Name);
                 }
 
-                do
-                {
-                    Console.WriteLine("Enter the number of the card you wish to play, from left to right, starting at 1: ");
-                    cardToPlay = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("");
-                } while (cardToPlay <= 0 && cardToPlay > player.Hand.numberOFCards());
+                //do
+                //{
+                //    Console.WriteLine("Enter the number of the card you wish to play, from left to right, starting at 1: ");
+                //    cardToPlay = Convert.ToInt32(Console.ReadLine());
+                //    Console.WriteLine("");
+                //} while (cardToPlay <= 0 && cardToPlay > player.Hand.numberOFCards());
 
-                playCard(player, player.Hand.getCard(cardToPlay-1));
+                playCard(player, player.Hand.getCard(tableRng.Next() % player.Hand.numberOFCards()));
 
                 // AI Turn
                 ai.Hand.addCard(ai.Deck.drawCard());
@@ -134,21 +155,24 @@ namespace Logic
 
                 Console.WriteLine("Player has " + player.Strength + " Strength : AI has " + ai.Strength + " Strength");
                 turn++;
-                if(turn == 3)
-                {
-                    break;
-                }
             }
-            if(player.Strength > ai.Strength)
+
+            if (turn == 5)
             {
-                Console.WriteLine("Victory!");
-            } else
-            {
-                Console.WriteLine("Defeat!");
+                if (player.Strength > ai.Strength)
+                {
+                    Console.WriteLine("Victory!");
+                }
+                else
+                {
+                    Console.WriteLine("Defeat!");
+                }
             }
         }
         protected void initializeGame()
         {
+            Player = new Player();
+            Ai = new AI();
             turn = 1;
             initialDecks();
             
@@ -162,10 +186,18 @@ namespace Logic
             player.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "dragon.png", 8));
             player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
             player.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "dragon.png", 6));
+            player.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
+            player.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "dragon.png", 8));
+            player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
+            player.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "dragon.png", 6));
             player.Deck.shuffle();
 
             // For AI
             ai.Deck.clear();
+            ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
+            ai.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "dragon.png", 8));
+            ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
+            ai.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "dragon.png", 6));
             ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
             ai.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "dragon.png", 8));
             ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
@@ -191,6 +223,16 @@ namespace Logic
         protected void drawCards()
         {
 
+        }
+
+        public static void getDrawResources(out Player playerOUT, out AI aiOUT)
+        {
+            playerOUT = player;
+            aiOUT = ai;
+        }
+        public static void tick()
+        {
+            table.runGame();
         }
     }
 }

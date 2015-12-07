@@ -6,15 +6,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace ConsoleApplication2
 {
     public partial class GameForm : Form
     {
-        private Timer timer;
-        private int x;
-        private bool turn;
+        System.Timers.Timer timer;
         //Bitmap bm = new Bitmap(1000, 1000);
         private ImageHandler imageHandler;
 
@@ -22,32 +21,45 @@ namespace ConsoleApplication2
         BufferedGraphicsContext myContext;
         BufferedGraphics myBuffer;
 
+        // Stuff to draw
+        Logic.Player player;
+        Logic.AI ai;
+        private int numberOfCards; 
+        //private int index;
 
         public GameForm()
         {
             InitializeComponent();
             //this.DoubleBuffered = true;
 
+            timer = new System.Timers.Timer(20);
+            timer.Elapsed += tick;
+            timer.AutoReset = true;
+            timer.Enabled = true;
+            timer.Start();
+
             imageHandler = new ImageHandler();
 
             // Double Buffering
             myContext = BufferedGraphicsManager.Current;
             myBuffer = myContext.Allocate(this.CreateGraphics(), this.DisplayRectangle);
-
-            timer = new Timer(new System.ComponentModel.Container());
-
-            x = 0;
-            turn = false;
-            timer.Enabled = true;
-            timer.Interval = 13;
-            timer.Tick += new System.EventHandler(this.timer_tic);
         }
 
         private void DrawIt()
         {
-            Logic.MonsterCard monster = new Logic.MonsterCard("Dragon", "spits fire", "dragon.png", 5);
-            DrawCard(monster, x, 0, 1.4f);
-            
+            Logic.Table.getDrawResources(out player, out ai);
+
+            numberOfCards = player.Hand.numberOFCards();
+            if(numberOfCards > 0)
+            {
+                for (int i = 0; i < numberOfCards; i++)
+                {
+                    //DrawCard(card, 0 + ((80 / (numberOfCards / 2)) * index), 0, 0.4f);
+                    DrawCard(player.Hand.viewCard(i), 0 +(80 / (numberOfCards / 2) * i), 0, 0.4f);
+                    //DrawCard(player.Hand.viewCard(i), 0 + (80 * i), 0, 0.4f);
+                    //index++;
+                }
+            }
         }
 
         private void DrawCard(Logic.Card card, float x, float y, float scale)
@@ -65,26 +77,18 @@ namespace ConsoleApplication2
             
         }
 
-        private void timer_tic(Object sender, EventArgs e)
+        private void updateGraphics()
         {
-            if(turn)
-            {
-                x--;
-                if (x == 0)
-                    turn = false;
-            } else
-            {
-                x++;
-                if (x == 50)
-                {
-                    turn = true;
-                }
-            }
-
             myBuffer.Graphics.Clear(Color.Black);
             DrawIt();
             myBuffer.Render();
             myBuffer.Render(this.CreateGraphics());
+        }
+
+        private void tick(object Object, ElapsedEventArgs e)
+        {
+            Logic.Table.tick();
+            updateGraphics();
         }
 
     }
