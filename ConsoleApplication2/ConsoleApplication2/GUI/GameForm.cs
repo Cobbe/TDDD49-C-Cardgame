@@ -25,7 +25,6 @@ namespace ConsoleApplication2
         Logic.Player player;
         Logic.AI ai;
         private int numberOfCards; 
-        //private int index;
 
         public GameForm()
         {
@@ -50,16 +49,10 @@ namespace ConsoleApplication2
             Logic.Table.getDrawResources(out player, out ai);
 
             numberOfCards = player.Hand.numberOFCards();
-            if(numberOfCards > 0)
-            {
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    //DrawCard(card, 0 + ((80 / (numberOfCards / 2)) * index), 0, 0.4f);
-                    DrawCard(player.Hand.viewCard(i), 0 +(80 / (numberOfCards / 2) * i), 0, 0.4f);
-                    //DrawCard(player.Hand.viewCard(i), 0 + (80 * i), 0, 0.4f);
-                    //index++;
+                    DrawCard(player.Hand.viewCard(i), 0 +(80 * i), 0, 0.4f);
                 }
-            }
         }
 
         private void DrawCard(Logic.Card card, float x, float y, float scale)
