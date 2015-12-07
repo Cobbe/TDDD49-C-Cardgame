@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 
@@ -24,14 +18,19 @@ namespace ConsoleApplication2
         // Stuff to draw
         Logic.Player player;
         Logic.AI ai;
-        private int numberOfCards; 
+        private int numberOfCards;
+
+        private int lastClickX = 0, lastClickY = 0;
 
         public GameForm()
         {
             InitializeComponent();
-            //this.DoubleBuffered = true;
 
-            timer = new System.Timers.Timer(20);
+            //Mouse
+            this.MouseClick += mouseClick;
+
+            //Timer
+            timer = new System.Timers.Timer(4000);
             timer.Elapsed += tick;
             timer.AutoReset = true;
             timer.Enabled = true;
@@ -49,10 +48,10 @@ namespace ConsoleApplication2
             Logic.Table.getDrawResources(out player, out ai);
 
             numberOfCards = player.Hand.numberOFCards();
-                for (int i = 0; i < numberOfCards; i++)
-                {
-                    DrawCard(player.Hand.viewCard(i), 0 +(80 * i), 0, 0.4f);
-                }
+            for (int i = 0; i < numberOfCards; i++)
+            {
+                DrawCard(player.Hand.viewCard(i), lastClickX +(80 * i), lastClickY, 0.4f);
+            }
         }
 
         private void DrawCard(Logic.Card card, float x, float y, float scale)
@@ -82,6 +81,16 @@ namespace ConsoleApplication2
         {
             Logic.Table.tick();
             updateGraphics();
+        }
+
+        private void mouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                Console.WriteLine("Mouse clicked x:" +e.X +" y: " +e.Y);
+                lastClickX = e.X;
+                lastClickY = e.Y;
+            }
         }
 
     }
