@@ -11,6 +11,7 @@ namespace ConsoleApplication2
     class ImageHandler
     {
         public static String CARD_BORDER = "basic_card_blood.png";
+        public static String CARDBACK = "cardback.png";
 
         private Dictionary<string, System.Drawing.Image> images;
 
@@ -23,7 +24,7 @@ namespace ConsoleApplication2
         {
             if (!images.ContainsKey(imageName))
             {
-                images[imageName] = System.Drawing.Image.FromFile(Environment.CurrentDirectory + "\\" + imageName);
+                images[imageName] = System.Drawing.Image.FromFile(Environment.CurrentDirectory + "\\GFX\\" + imageName);
             }
             
             return images[imageName];

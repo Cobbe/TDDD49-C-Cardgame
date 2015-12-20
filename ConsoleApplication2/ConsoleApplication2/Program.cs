@@ -23,7 +23,9 @@ namespace WindowsFormsApplication1
             /* Launches the graphics */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new GameForm());
+            GameForm gameForm = new GameForm();
+            gameForm.Location = new System.Drawing.Point(50, 50);
+            Application.Run(gameForm);
 
         }
 

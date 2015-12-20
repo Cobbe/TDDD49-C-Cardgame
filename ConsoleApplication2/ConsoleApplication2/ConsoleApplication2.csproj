@@ -69,19 +69,25 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="basic_card.png">
+    <Content Include="GFX\basic_card.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="basic_card_blood.png">
+    <Content Include="GFX\basic_card_blood.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="dragon.png">
+    <Content Include="GFX\cardback.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Warrior_orc.png">
+    <Content Include="GFX\dragon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="witch.png">
+    <Content Include="GFX\table.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="GFX\warrior_orc.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="GFX\witch.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

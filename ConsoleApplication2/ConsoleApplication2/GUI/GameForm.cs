@@ -18,7 +18,8 @@ namespace ConsoleApplication2
         // Stuff to draw
         Logic.Player player;
         Logic.AI ai;
-        private int numberOfCards;
+        private int numberOfCards, turn;
+        private bool win;
 
         private int lastClickX = 0, lastClickY = 0;
 
@@ -31,7 +32,7 @@ namespace ConsoleApplication2
             this.MouseClick += mouseClick;
 
             //Timer
-            timer = new System.Timers.Timer(4000);
+            timer = new System.Timers.Timer(1000);
             timer.Elapsed += tick;
             timer.AutoReset = true;
             timer.Enabled = true;
@@ -46,12 +47,53 @@ namespace ConsoleApplication2
 
         private void DrawIt()
         {
-            Logic.Table.getDrawResources(out player, out ai);
+            Logic.Table.getDrawResources(out player, out ai, out turn, out win);
+            int scale = 2;
 
-            numberOfCards = player.Hand.numberOFCards();
-            for (int i = 0; i < numberOfCards; i++)
+            if (turn > 6)
             {
-                DrawCard(player.Hand.viewCard(i), lastClickX +(80 * i), lastClickY, 0.4f);
+                if (win)
+                {
+                    scale = 3;
+                    myBuffer.Graphics.DrawString("Victory!", new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
+                } else
+                {
+                    myBuffer.Graphics.DrawString("Defeat!", new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
+                }
+            }
+            else
+            {
+                myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
+
+                myBuffer.Graphics.DrawString("Player - Strength: " + player.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 300, 250);
+                myBuffer.Graphics.DrawString("AI - Strength: " + ai.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 300, 50);
+
+                // Draw the player's hand
+                numberOfCards = player.Hand.numberOFCards();
+                for (int i = 0; i < numberOfCards; i++)
+                {
+                    DrawCard(player.Hand.viewCard(i), 20 + (115 * i), 450, 0.5f);
+                }
+
+                // Draw the battlefield
+                numberOfCards = player.PlayedCards.numberOFCards();
+                for (int i = 0; i < numberOfCards; i++)
+                {
+                    DrawCard(player.PlayedCards.viewCard(i), 20 + (90 * i), 100, 0.4f);
+                }
+
+                numberOfCards = ai.PlayedCards.numberOFCards();
+                for (int i = 0; i < numberOfCards; i++)
+                {
+                    DrawCard(ai.PlayedCards.viewCard(i), 20 + (90 * i), 300, 0.4f);
+                }
+
+                // Draw the AI's hand (not visible)
+                numberOfCards = ai.Hand.numberOFCards();
+                for (int i = 0; i < numberOfCards; i++)
+                {
+                    DrawCard(20 + (45 * i), 20, 0.2f);
+                }
             }
         }
 
@@ -65,8 +107,19 @@ namespace ConsoleApplication2
 
             myBuffer.Graphics.DrawString("Name: " +card.Name, new Font(FontFamily.GenericMonospace, 12*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x+25*scale, y+220*scale);
             myBuffer.Graphics.DrawString("Description: " + card.Description, new Font(FontFamily.GenericMonospace, 7*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25*scale, y + 235*scale);
+            if(card is Logic.MonsterCard)
+            {
+                Logic.MonsterCard temp = (Logic.MonsterCard)card;
+                myBuffer.Graphics.DrawString("Strength: " + temp.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25 * scale, y + 250 * scale);
+            }
 
             return clickBox;
+        }
+
+        private void DrawCard(float x, float y, float scale)
+        {
+            myBuffer.Graphics.DrawImage(imageHandler.getImage(ImageHandler.CARDBACK), x, y, 200 * scale, 320 * scale);
+           
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -76,7 +129,6 @@ namespace ConsoleApplication2
 
         private void updateGraphics()
         {
-            myBuffer.Graphics.Clear(Color.Black);
             DrawIt();
             myBuffer.Render();
             myBuffer.Render(this.CreateGraphics());

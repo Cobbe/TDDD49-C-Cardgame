@@ -10,18 +10,19 @@ namespace Logic
     class Table
     {
         private static Table table;
-        private static Player player;
-        private static AI ai;
+        private Player player;
+        private AI ai;
         
         private int turn;
         private int cardToPlay;
         private MonsterCard playMonster;
         private SpecialCard playSpecial;
-        private Timer timer;
+        private bool win = false;
+        //private Timer timer;
 
         private static Random tableRng = new Random();
 
-        protected static Player Player
+        protected Player Player
         {
             get
             {
@@ -34,7 +35,7 @@ namespace Logic
             }
         }
 
-        protected static AI Ai
+        protected AI Ai
         {
             get
             {
@@ -99,6 +100,19 @@ namespace Logic
             }
         }
 
+        protected bool Win
+        {
+            get
+            {
+                return win;
+            }
+
+            set
+            {
+                win = value;
+            }
+        }
+
         public static Table createTableInstance()
         {
             if(table != null)
@@ -125,14 +139,16 @@ namespace Logic
 
         public void runGame()
         {
-            if (turn < 5)
+            if (turn < 6)
             {
                 // Turn-based
                 Console.WriteLine("Turn: " + turn);
 
                 // Player Turn
-                player.Hand.addCard(player.Deck.drawCard());
-                player.Hand.addCard(player.Deck.drawCard());
+
+                // Start by drawing cards
+                drawCards(Player, 2);
+                
                 for (int i = 0; i < player.Hand.numberOFCards(); i++)
                 {
                     Console.WriteLine("Card #" + (i + 1) + " : " + player.Hand.viewCard(i).Name);
@@ -145,29 +161,30 @@ namespace Logic
                 //    Console.WriteLine("");
                 //} while (cardToPlay <= 0 && cardToPlay > player.Hand.numberOFCards());
 
-                playCard(player, player.Hand.getCard(tableRng.Next() % player.Hand.numberOFCards()));
+                playCard(player, player.Hand.getCard(playStrongestCard(player)));
 
                 // AI Turn
-                ai.Hand.addCard(ai.Deck.drawCard());
-                ai.Hand.addCard(ai.Deck.drawCard());
+                // Start by drawing cards
+                drawCards(Ai, 2);
+                
                 cardToPlay = tableRng.Next() % ai.Hand.numberOFCards();
                 playCard(ai, ai.Hand.getCard(cardToPlay));
 
                 Console.WriteLine("Player has " + player.Strength + " Strength : AI has " + ai.Strength + " Strength");
                 turn++;
-            }
-
-            if (turn == 5)
-            {
-                if (player.Strength > ai.Strength)
+            } else
                 {
-                    Console.WriteLine("Victory!");
+                turn++;
+                    if (player.Strength > ai.Strength)
+                    {
+                        Console.WriteLine("Victory!");
+                        win = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Defeat!");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Defeat!");
-                }
-            }
         }
         protected void initializeGame()
         {
@@ -183,25 +200,37 @@ namespace Logic
             // For player
             player.Deck.clear();
             player.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            player.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "dragon.png", 8));
+            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
             player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            player.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "dragon.png", 6));
+            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
             player.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            player.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "dragon.png", 8));
+            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
             player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            player.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "dragon.png", 6));
+            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
+            player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
+            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
+            player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
+            player.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
+            player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
+            player.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
             player.Deck.shuffle();
 
             // For AI
             ai.Deck.clear();
             ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            ai.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "dragon.png", 8));
+            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
             ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            ai.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "dragon.png", 6));
+            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
             ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            ai.Deck.addCard(new MonsterCard("Ice Dragon", "Freezes anything it bites", "dragon.png", 8));
+            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
             ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            ai.Deck.addCard(new MonsterCard("Earth Dragon", "Has very tough skin", "dragon.png", 6));
+            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
+            ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
+            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
+            ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
+            ai.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
+            ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
+            ai.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
             ai.Deck.shuffle();
         }
 
@@ -211,24 +240,52 @@ namespace Logic
             {
                 PlayMonster = (MonsterCard)card;
                 player.Strength += PlayMonster.Strength;
+                player.PlayedCards.addCard(card);
 
             }
             else
             {
                 PlaySpecial = (SpecialCard)card;
+                player.PlayedCards.addCard(card);
             }
 
         }
 
-        protected void drawCards()
+        protected void drawCards(Player player, int number)
         {
-
+            for(int i = 0; i < number; i++)
+            {
+                player.Hand.addCard(player.Deck.drawCard());
+            }
         }
 
-        public static void getDrawResources(out Player playerOUT, out AI aiOUT)
+        protected int playStrongestCard(Player player)
         {
-            playerOUT = player;
-            aiOUT = ai;
+            int indexOfHigh = 0;
+            for(int i = 1; i<player.Hand.numberOFCards(); i++)
+            {
+                if(player.Hand.viewCard(indexOfHigh) is MonsterCard)
+                {
+                    if(player.Hand.viewCard(i) is MonsterCard)
+                    {
+                        MonsterCard temp1 = (MonsterCard)player.Hand.viewCard(indexOfHigh);
+                        MonsterCard temp2 = (MonsterCard)player.Hand.viewCard(i);
+                        if(temp2.Strength > temp1.Strength)
+                        {
+                            indexOfHigh = i;
+                        }
+                    }
+                }
+            }
+            return indexOfHigh;
+        }
+
+        public static void getDrawResources(out Player playerOUT, out AI aiOUT, out int turnOUT, out bool winOUT)
+        {
+            playerOUT = table.player;
+            aiOUT = table.ai;
+            turnOUT = table.turn;
+            winOUT = table.win;
         }
 
         public static void tick()
