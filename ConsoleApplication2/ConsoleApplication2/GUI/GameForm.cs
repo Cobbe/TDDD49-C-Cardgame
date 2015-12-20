@@ -31,7 +31,7 @@ namespace ConsoleApplication2
             InitializeComponent();
             //this.DoubleBuffered = true;
 
-            timer = new System.Timers.Timer(20);
+            timer = new System.Timers.Timer(4000);
             timer.Elapsed += tick;
             timer.AutoReset = true;
             timer.Enabled = true;

@@ -230,6 +230,7 @@ namespace Logic
             playerOUT = player;
             aiOUT = ai;
         }
+
         public static void tick()
         {
             table.runGame();
