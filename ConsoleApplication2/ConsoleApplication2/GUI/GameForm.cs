@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 
@@ -24,13 +18,19 @@ namespace ConsoleApplication2
         // Stuff to draw
         Logic.Player player;
         Logic.AI ai;
-        private int numberOfCards; 
+        private int numberOfCards;
+
+        private int lastClickX = 0, lastClickY = 0;
 
         public GameForm()
         {
             InitializeComponent();
-            //this.DoubleBuffered = true;
 
+
+            //Mouse
+            this.MouseClick += mouseClick;
+
+            //Timer
             timer = new System.Timers.Timer(4000);
             timer.Elapsed += tick;
             timer.AutoReset = true;
@@ -49,20 +49,24 @@ namespace ConsoleApplication2
             Logic.Table.getDrawResources(out player, out ai);
 
             numberOfCards = player.Hand.numberOFCards();
-                for (int i = 0; i < numberOfCards; i++)
-                {
-                    DrawCard(player.Hand.viewCard(i), 0 +(80 * i), 0, 0.4f);
-                }
+            for (int i = 0; i < numberOfCards; i++)
+            {
+                DrawCard(player.Hand.viewCard(i), lastClickX +(80 * i), lastClickY, 0.4f);
+            }
         }
 
-        private void DrawCard(Logic.Card card, float x, float y, float scale)
+        private GUI.CardClickbox DrawCard(Logic.Card card, float x, float y, float scale)
         {
             Image cardImage = imageHandler.getImage(card.Image);
             myBuffer.Graphics.DrawImage(imageHandler.getImage(ImageHandler.CARD_BORDER), x, y, 200*scale, 320*scale);
             myBuffer.Graphics.DrawImage(cardImage, x+25*scale, y+25*scale, 150*scale, 170*scale);
 
+            GUI.CardClickbox clickBox = new GUI.CardClickbox(x + 25 * scale, y + 25 * scale, 150 * scale, 170 * scale, card);
+
             myBuffer.Graphics.DrawString("Name: " +card.Name, new Font(FontFamily.GenericMonospace, 12*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x+25*scale, y+220*scale);
             myBuffer.Graphics.DrawString("Description: " + card.Description, new Font(FontFamily.GenericMonospace, 7*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25*scale, y + 235*scale);
+
+            return clickBox;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -82,6 +86,16 @@ namespace ConsoleApplication2
         {
             Logic.Table.tick();
             updateGraphics();
+        }
+
+        private void mouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                Console.WriteLine("Mouse clicked x:" +e.X +" y: " +e.Y);
+                lastClickX = e.X;
+                lastClickY = e.Y;
+            }
         }
 
     }
