@@ -53,6 +53,12 @@
       <DependentUpon>GameForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\ImageHandler.cs" />
+    <Compile Include="GUI\MenuForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\MenuForm.Designer.cs">
+      <DependentUpon>MenuForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logic\Card.cs" />
     <Compile Include="Logic\CardHandler.cs" />
     <Compile Include="Logic\Player.cs" />
@@ -66,6 +72,9 @@
   <ItemGroup>
     <EmbeddedResource Include="GUI\GameForm.resx">
       <DependentUpon>GameForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\MenuForm.resx">
+      <DependentUpon>MenuForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

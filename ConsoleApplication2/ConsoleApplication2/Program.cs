@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Threading;
 using System.Timers;
+using ConsoleApplication2.GUI;
 
 namespace WindowsFormsApplication1
 {
@@ -23,9 +24,14 @@ namespace WindowsFormsApplication1
             /* Launches the graphics */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            GameForm gameForm = new GameForm();
+
+            MenuForm menuForm = MenuForm.getMenuForm();
+            menuForm.Location = new System.Drawing.Point(50, 50);
+
+            GameForm gameForm = GameForm.getGameForm();
             gameForm.Location = new System.Drawing.Point(50, 50);
-            Application.Run(gameForm);
+
+            Application.Run(menuForm);
 
         }
 

@@ -18,7 +18,7 @@ namespace Logic
         private MonsterCard playMonster;
         private SpecialCard playSpecial;
         private bool win = false;
-        //private Timer timer;
+        private Timer timer;
 
         private static Random tableRng = new Random();
 
@@ -113,6 +113,19 @@ namespace Logic
             }
         }
 
+        public Timer Timer
+        {
+            get
+            {
+                return timer;
+            }
+
+            set
+            {
+                timer = value;
+            }
+        }
+
         public static Table createTableInstance()
         {
             if(table != null)
@@ -128,31 +141,32 @@ namespace Logic
         {
             initializeGame();
 
-            /*
-            timer = new System.Timers.Timer(13);
-            timer.Elapsed += runGame;
-            timer.AutoReset = true;
-            timer.Enabled = true;
-            timer.Start();
-            */
+            
+            Timer = new Timer(2000);
+            Timer.Elapsed += runGame;
+            Timer.AutoReset = true;
+            Timer.Enabled = false;
+            
         }
 
-        public void runGame()
+        public void runGame(object Object, ElapsedEventArgs e)
         {
             if (turn < 6)
             {
                 // Turn-based
-                Console.WriteLine("Turn: " + turn);
 
                 // Player Turn
 
                 // Start by drawing cards
                 drawCards(Player, 2);
-                
+                ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+
+                /*
                 for (int i = 0; i < player.Hand.numberOFCards(); i++)
                 {
                     Console.WriteLine("Card #" + (i + 1) + " : " + player.Hand.viewCard(i).Name);
                 }
+                */
 
                 //do
                 //{
@@ -162,27 +176,29 @@ namespace Logic
                 //} while (cardToPlay <= 0 && cardToPlay > player.Hand.numberOFCards());
 
                 playCard(player, player.Hand.getCard(playStrongestCard(player)));
+                ConsoleApplication2.GameForm.getGameForm().updateGraphics();
 
                 // AI Turn
                 // Start by drawing cards
                 drawCards(Ai, 2);
-                
-                cardToPlay = tableRng.Next() % ai.Hand.numberOFCards();
-                playCard(ai, ai.Hand.getCard(cardToPlay));
+                ConsoleApplication2.GameForm.getGameForm().updateGraphics();
 
-                Console.WriteLine("Player has " + player.Strength + " Strength : AI has " + ai.Strength + " Strength");
+                playCard(ai, ai.Hand.getCard(playStrongestCard(ai)));
+                ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+
                 turn++;
             } else
                 {
                 turn++;
                     if (player.Strength > ai.Strength)
                     {
-                        Console.WriteLine("Victory!");
                         win = true;
+                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                     }
                     else
                     {
-                        Console.WriteLine("Defeat!");
+                        win = false;
+                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                     }
                 }
         }
@@ -200,37 +216,37 @@ namespace Logic
             // For player
             player.Deck.clear();
             player.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
-            player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
+            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 3));
+            player.Deck.addCard(new MonsterCard("Wind Drake", "Has sharp claws", "dragon.png", 8));
+            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 3));
             player.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
+            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 3));
+            player.Deck.addCard(new MonsterCard("Wind Drake", "Has sharp claws", "dragon.png", 8));
+            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 3));
+            player.Deck.addCard(new MonsterCard("Wind Drake", "Has sharp claws", "dragon.png", 8));
+            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 3));
+            player.Deck.addCard(new MonsterCard("Wind Drake", "Has sharp claws", "dragon.png", 8));
+            player.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
             player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
-            player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            player.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
-            player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            player.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
-            player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            player.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
+            player.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
             player.Deck.shuffle();
 
             // For AI
             ai.Deck.clear();
             ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
+            ai.Deck.addCard(new MonsterCard("Orc Commander", "Waaagh!!!", "warrior_orc.png", 5));
             ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
+            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
             ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
-            ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
-            ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 8));
-            ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            ai.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
-            ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            ai.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 9));
+            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
+            ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
+            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
+            ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
+            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
+            ai.Deck.addCard(new MonsterCard("Orc Commander", "Waaagh!!!", "warrior_orc.png", 5));
+            ai.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 3));
+            ai.Deck.addCard(new MonsterCard("Orc Commander", "Waaagh!!!", "warrior_orc.png", 5));
+            ai.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 3));
             ai.Deck.shuffle();
         }
 
@@ -288,9 +304,11 @@ namespace Logic
             winOUT = table.win;
         }
 
+        /*
         public static void tick()
         {
             table.runGame();
         }
+        */
     }
 }

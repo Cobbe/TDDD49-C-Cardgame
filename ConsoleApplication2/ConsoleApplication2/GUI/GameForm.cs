@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ConsoleApplication2.GUI;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Forms;
@@ -7,9 +9,12 @@ namespace ConsoleApplication2
 {
     public partial class GameForm : Form
     {
-        System.Timers.Timer timer;
+        private static GameForm gameForm;
+        //private System.Timers.Timer timer;
         //Bitmap bm = new Bitmap(1000, 1000);
         private ImageHandler imageHandler;
+
+        List<CardClickbox> clickBoxes = new List<CardClickbox>();
 
         // Double Buffering
         BufferedGraphicsContext myContext;
@@ -23,7 +28,33 @@ namespace ConsoleApplication2
 
         private int lastClickX = 0, lastClickY = 0;
 
-        public GameForm()
+        /*
+        public System.Timers.Timer Timer
+        {
+            get
+            {
+                return timer;
+            }
+
+            set
+            {
+                timer = value;
+            }
+        }
+        */
+
+        public static GameForm getGameForm()
+        {
+            if(gameForm == null)
+            {
+                return gameForm = new GameForm();
+            } else
+            {
+                return gameForm;
+            }
+        }
+
+        private GameForm()
         {
             InitializeComponent();
 
@@ -32,11 +63,12 @@ namespace ConsoleApplication2
             this.MouseClick += mouseClick;
 
             //Timer
-            timer = new System.Timers.Timer(1000);
-            timer.Elapsed += tick;
-            timer.AutoReset = true;
-            timer.Enabled = true;
-            timer.Start();
+            /*
+            Timer = new System.Timers.Timer(1000);
+            Timer.Elapsed += tick;
+            Timer.AutoReset = true;
+            Timer.Enabled = false;
+            */
 
             imageHandler = new ImageHandler();
 
@@ -72,23 +104,23 @@ namespace ConsoleApplication2
                 numberOfCards = player.Hand.numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(player.Hand.viewCard(i), 20 + (115 * i), 450, 0.5f);
+                    clickBoxes.Add(DrawCard(player.Hand.viewCard(i), 20 + (115 * i), 450, 0.5f));
                 }
 
                 // Draw the battlefield
                 numberOfCards = player.PlayedCards.numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(player.PlayedCards.viewCard(i), 20 + (90 * i), 100, 0.4f);
+                    DrawCard(player.PlayedCards.viewCard(i), 20 + (90 * i), 300, 0.4f);
                 }
 
                 numberOfCards = ai.PlayedCards.numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(ai.PlayedCards.viewCard(i), 20 + (90 * i), 300, 0.4f);
+                    DrawCard(ai.PlayedCards.viewCard(i), 20 + (90 * i), 100, 0.4f);
                 }
 
-                // Draw the AI's hand (not visible)
+                // Draw the AI's hand (just the cardback)
                 numberOfCards = ai.Hand.numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
@@ -127,24 +159,25 @@ namespace ConsoleApplication2
             
         }
 
-        private void updateGraphics()
+        public void updateGraphics()
         {
             DrawIt();
             myBuffer.Render();
-            myBuffer.Render(this.CreateGraphics());
+            myBuffer.Render(CreateGraphics());
         }
 
+        /*
         private void tick(object Object, ElapsedEventArgs e)
         {
             Logic.Table.tick();
             updateGraphics();
         }
+        */
 
         private void mouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                Console.WriteLine("Mouse clicked x:" +e.X +" y: " +e.Y);
                 lastClickX = e.X;
                 lastClickY = e.Y;
             }
