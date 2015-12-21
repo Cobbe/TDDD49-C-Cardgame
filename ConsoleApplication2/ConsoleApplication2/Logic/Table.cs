@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace Logic
         private SpecialCard playSpecial;
         private bool win = false;
         private Timer timer;
+        private BackgroundWorker worker;
 
         private static Random tableRng = new Random();
 
@@ -141,15 +143,24 @@ namespace Logic
         {
             initializeGame();
 
-            
-            Timer = new Timer(2000);
-            Timer.Elapsed += runGame;
+            worker = new BackgroundWorker();
+            worker.DoWork += runGame;
+            Timer = new Timer(5000);
+            Timer.Elapsed += timer_Elapsed;
             Timer.AutoReset = true;
             Timer.Enabled = false;
             
         }
 
-        public void runGame(object Object, ElapsedEventArgs e)
+        private void timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (!worker.IsBusy)
+            {
+                worker.RunWorkerAsync();
+            }
+        }
+
+        public void runGame(object Object, DoWorkEventArgs e)
         {
             if (turn < 6)
             {
@@ -160,6 +171,7 @@ namespace Logic
                 // Start by drawing cards
                 drawCards(Player, 2);
                 ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                System.Threading.Thread.Sleep(1000);
 
                 /*
                 for (int i = 0; i < player.Hand.numberOFCards(); i++)
@@ -177,14 +189,17 @@ namespace Logic
 
                 playCard(player, player.Hand.getCard(playStrongestCard(player)));
                 ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                System.Threading.Thread.Sleep(1000);
 
                 // AI Turn
                 // Start by drawing cards
                 drawCards(Ai, 2);
                 ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                System.Threading.Thread.Sleep(1000);
 
                 playCard(ai, ai.Hand.getCard(playStrongestCard(ai)));
                 ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                System.Threading.Thread.Sleep(1000);
 
                 turn++;
             } else
