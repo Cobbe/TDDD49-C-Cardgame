@@ -19,7 +19,7 @@ namespace WindowsFormsApplication1
         static void Main()
         {
             /* Creates the game instance and the game timer*/
-            Logic.Table table = Logic.Table.createTableInstance();
+            Logic.Table table = Logic.Table.getTableInstance();
 
             /* Launches the graphics */
             Application.EnableVisualStyles();

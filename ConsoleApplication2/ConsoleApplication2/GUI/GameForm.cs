@@ -23,8 +23,8 @@ namespace ConsoleApplication2
         // Stuff to draw
         Logic.Player player;
         Logic.AI ai;
-        private int numberOfCards, turn;
-        private bool win;
+        private int numberOfCards, playedBattles, lastClickedBox;
+        private bool win, activeClick;
 
         private int lastClickX = 0, lastClickY = 0;
 
@@ -79,10 +79,10 @@ namespace ConsoleApplication2
 
         private void DrawIt()
         {
-            Logic.Table.getDrawResources(out player, out ai, out turn, out win);
+            Logic.Table.getDrawResources(out player, out ai, out playedBattles, out win);
             int scale = 2;
 
-            if (turn > 6)
+            if (playedBattles > 3)
             {
                 if (win)
                 {
@@ -97,8 +97,8 @@ namespace ConsoleApplication2
             {
                 myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
 
-                myBuffer.Graphics.DrawString("Player - Strength: " + player.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 300, 250);
-                myBuffer.Graphics.DrawString("AI - Strength: " + ai.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 300, 50);
+                myBuffer.Graphics.DrawString("Player - Strength: " + player.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
+                myBuffer.Graphics.DrawString("AI - Strength: " + ai.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
 
                 // Draw the player's hand
                 numberOfCards = player.Hand.numberOFCards();
@@ -135,7 +135,7 @@ namespace ConsoleApplication2
             myBuffer.Graphics.DrawImage(imageHandler.getImage(ImageHandler.CARD_BORDER), x, y, 200*scale, 320*scale);
             myBuffer.Graphics.DrawImage(cardImage, x+25*scale, y+25*scale, 150*scale, 170*scale);
 
-            GUI.CardClickbox clickBox = new GUI.CardClickbox(x + 25 * scale, y + 25 * scale, 150 * scale, 170 * scale, card);
+            GUI.CardClickbox clickBox = new GUI.CardClickbox(x, y, 200 * scale, 320 * scale, card);
 
             myBuffer.Graphics.DrawString("Name: " +card.Name, new Font(FontFamily.GenericMonospace, 12*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x+25*scale, y+220*scale);
             myBuffer.Graphics.DrawString("Description: " + card.Description, new Font(FontFamily.GenericMonospace, 7*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25*scale, y + 235*scale);
@@ -180,6 +180,16 @@ namespace ConsoleApplication2
             {
                 lastClickX = e.X;
                 lastClickY = e.Y;
+                // Insert code which identifies which clickBox has been clicked on.
+                for(int i = 0; i<clickBoxes.Count; i++)
+                {
+                    if(clickBoxes[i].inBox(lastClickX, lastClickY))
+                    {
+                        lastClickedBox = i;
+                        activeClick = true;
+                        Console.WriteLine("Clicked box #"+i);
+                    }
+                }
             }
         }
 

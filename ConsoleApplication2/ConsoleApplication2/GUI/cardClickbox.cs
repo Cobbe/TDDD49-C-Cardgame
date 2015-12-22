@@ -33,7 +33,7 @@ namespace ConsoleApplication2.GUI
             }
         }
 
-        bool inBox(int xIn, int yIn)
+        public bool inBox(int xIn, int yIn)
         {
             return (xIn >= x & xIn <= x + width & yIn >= y & yIn <= y + height);
         }

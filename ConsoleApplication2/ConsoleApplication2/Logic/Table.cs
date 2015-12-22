@@ -14,13 +14,15 @@ namespace Logic
         private Player player;
         private AI ai;
         
-        private int turn;
         private int cardToPlay;
         private MonsterCard playMonster;
         private SpecialCard playSpecial;
         private bool win = false;
         private Timer timer;
         private BackgroundWorker worker;
+        private int waitBetweenActions = 500; // In milliseconds
+        private bool playerPass, aiPass, firstTurn;
+        private int playedBattles, wonBattles;
 
         private static Random tableRng = new Random();
 
@@ -47,19 +49,6 @@ namespace Logic
             set
             {
                 ai = value;
-            }
-        }
-
-        protected int Turn
-        {
-            get
-            {
-                return turn;
-            }
-
-            set
-            {
-                turn = value;
             }
         }
 
@@ -128,7 +117,59 @@ namespace Logic
             }
         }
 
-        public static Table createTableInstance()
+        public int PlayedBattles
+        {
+            get
+            {
+                return playedBattles;
+            }
+
+            set
+            {
+                playedBattles = value;
+            }
+        }
+
+        public int WonBattles
+        {
+            get
+            {
+                return wonBattles;
+            }
+
+            set
+            {
+                wonBattles = value;
+            }
+        }
+
+        public bool PlayerPass
+        {
+            get
+            {
+                return playerPass;
+            }
+
+            set
+            {
+                playerPass = value;
+            }
+        }
+
+        public bool AiPass
+        {
+            get
+            {
+                return aiPass;
+            }
+
+            set
+            {
+                aiPass = value;
+            }
+        }
+
+        public static Table getTableInstance()
         {
             if(table != null)
             {
@@ -145,7 +186,7 @@ namespace Logic
 
             worker = new BackgroundWorker();
             worker.DoWork += runGame;
-            Timer = new Timer(5000);
+            Timer = new Timer(waitBetweenActions);
             Timer.Elapsed += timer_Elapsed;
             Timer.AutoReset = true;
             Timer.Enabled = false;
@@ -162,68 +203,94 @@ namespace Logic
 
         public void runGame(object Object, DoWorkEventArgs e)
         {
-            if (turn < 6)
+            if (PlayedBattles < 3)
             {
-                // Turn-based
-
-                // Player Turn
-
-                // Start by drawing cards
-                drawCards(Player, 2);
-                ConsoleApplication2.GameForm.getGameForm().updateGraphics();
-                System.Threading.Thread.Sleep(1000);
-
-                /*
-                for (int i = 0; i < player.Hand.numberOFCards(); i++)
+                if (!playerPass && !aiPass)
                 {
-                    Console.WriteLine("Card #" + (i + 1) + " : " + player.Hand.viewCard(i).Name);
+                    // Turn-based
+
+                    // Player Turn
+
+                    // Start by drawing cards
+                    if (firstTurn)
+                    {
+                        drawCards(Player, 10);
+                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        System.Threading.Thread.Sleep(waitBetweenActions);
+                    }
+
+                    // Play card
+                    if(player.Hand.numberOFCards() > 0 && player.Strength<(ai.Strength+10))
+                    {
+                        playCard(player, player.Hand.getCard(playStrongestCard(player)));
+                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        System.Threading.Thread.Sleep(waitBetweenActions);
+                    } else
+                    {
+                        playerPass = true;
+                    }
+                    
+
+                    // AI Turn
+                    // Start by drawing cards
+                    if (firstTurn)
+                    {
+                        drawCards(Ai, 10);
+                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        System.Threading.Thread.Sleep(waitBetweenActions);
+                        firstTurn = false;
+                    }
+
+                    // Play card
+                    if (ai.Hand.numberOFCards() > 0 && ai.Strength<(player.Strength+10))
+                    {
+                        playCard(ai, ai.Hand.getCard(playStrongestCard(ai)));
+                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        System.Threading.Thread.Sleep(waitBetweenActions);
+                    } else
+                    {
+                        aiPass = true;
+                    }
                 }
-                */
-
-                //do
-                //{
-                //    Console.WriteLine("Enter the number of the card you wish to play, from left to right, starting at 1: ");
-                //    cardToPlay = Convert.ToInt32(Console.ReadLine());
-                //    Console.WriteLine("");
-                //} while (cardToPlay <= 0 && cardToPlay > player.Hand.numberOFCards());
-
-                playCard(player, player.Hand.getCard(playStrongestCard(player)));
-                ConsoleApplication2.GameForm.getGameForm().updateGraphics();
-                System.Threading.Thread.Sleep(1000);
-
-                // AI Turn
-                // Start by drawing cards
-                drawCards(Ai, 2);
-                ConsoleApplication2.GameForm.getGameForm().updateGraphics();
-                System.Threading.Thread.Sleep(1000);
-
-                playCard(ai, ai.Hand.getCard(playStrongestCard(ai)));
-                ConsoleApplication2.GameForm.getGameForm().updateGraphics();
-                System.Threading.Thread.Sleep(1000);
-
-                turn++;
-            } else
+                else
                 {
-                turn++;
                     if (player.Strength > ai.Strength)
                     {
-                        win = true;
-                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        wonBattles++;
                     }
-                    else
-                    {
-                        win = false;
-                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
-                    }
+                    playedBattles++;
+                    aiPass = false;
+                    playerPass = false;
+                    player.PlayedCards.clear();
+                    ai.PlayedCards.clear();
+                    player.Strength = 0;
+                    ai.Strength = 0;
+                    ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                 }
+            } else
+            {
+                if (WonBattles >=2 )
+                {
+                    win = true;
+                }
+                else
+                {
+                    win = false;
+                }
+                PlayedBattles++;
+                ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+            }
         }
         protected void initializeGame()
         {
             Player = new Player();
             Ai = new AI();
-            turn = 1;
             initialDecks();
-            
+            playedBattles = 0;
+            wonBattles = 0;
+            playerPass = false;
+            aiPass = false;
+            firstTurn = true;
         }
         
         protected void initialDecks()
@@ -243,7 +310,7 @@ namespace Logic
             player.Deck.addCard(new MonsterCard("Wind Drake", "Has sharp claws", "dragon.png", 8));
             player.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
             player.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            player.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
+            player.Deck.addCard(new MonsterCard("Orc Champion", "Waaaaagh!!!", "warrior_orc.png", 12));
             player.Deck.shuffle();
 
             // For AI
@@ -311,19 +378,12 @@ namespace Logic
             return indexOfHigh;
         }
 
-        public static void getDrawResources(out Player playerOUT, out AI aiOUT, out int turnOUT, out bool winOUT)
+        public static void getDrawResources(out Player playerOUT, out AI aiOUT, out int playedBattlesOUT, out bool winOUT)
         {
             playerOUT = table.player;
             aiOUT = table.ai;
-            turnOUT = table.turn;
+            playedBattlesOUT = table.playedBattles;
             winOUT = table.win;
         }
-
-        /*
-        public static void tick()
-        {
-            table.runGame();
-        }
-        */
     }
 }
