@@ -1,6 +1,7 @@
 ﻿using ConsoleApplication2.GUI;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Forms;
@@ -10,6 +11,7 @@ namespace ConsoleApplication2
     public partial class GameForm : Form
     {
         private static GameForm gameForm;
+        private static Boolean Lock = false;
         //private System.Timers.Timer timer;
         //Bitmap bm = new Bitmap(1000, 1000);
         private ImageHandler imageHandler;
@@ -27,6 +29,45 @@ namespace ConsoleApplication2
         private bool win, activeClick;
 
         private int lastClickX = 0, lastClickY = 0;
+
+        public bool ActiveClick
+        {
+            get
+            {
+                return activeClick;
+            }
+
+            set
+            {
+                activeClick = value;
+            }
+        }
+
+        public int LastClickedBox
+        {
+            get
+            {
+                return lastClickedBox;
+            }
+
+            set
+            {
+                lastClickedBox = value;
+            }
+        }
+
+        public static bool Lock1
+        {
+            get
+            {
+                return Lock;
+            }
+
+            set
+            {
+                Lock = value;
+            }
+        }
 
         /*
         public System.Timers.Timer Timer
@@ -95,6 +136,7 @@ namespace ConsoleApplication2
             }
             else
             {
+                clickBoxes.Clear();
                 myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
 
                 myBuffer.Graphics.DrawString("Player - Strength: " + player.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
@@ -161,9 +203,15 @@ namespace ConsoleApplication2
 
         public void updateGraphics()
         {
-            DrawIt();
-            myBuffer.Render();
-            myBuffer.Render(CreateGraphics());
+            if (!Lock)
+            {
+                Lock = true;
+                DrawIt();
+                myBuffer.Render();
+                myBuffer.Render(CreateGraphics());
+                Lock = false;
+            }
+            
         }
 
         /*
@@ -185,11 +233,15 @@ namespace ConsoleApplication2
                 {
                     if(clickBoxes[i].inBox(lastClickX, lastClickY))
                     {
-                        lastClickedBox = i;
-                        activeClick = true;
+                        LastClickedBox = i;
+                        ActiveClick = true;
                         Console.WriteLine("Clicked box #"+i);
                     }
                 }
+            }
+            else if(e.Button == MouseButtons.Right)
+            {
+                Logic.Table.getTableInstance().PlayerPass = true;
             }
         }
 

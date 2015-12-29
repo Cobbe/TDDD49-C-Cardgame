@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using ConsoleApplication2;
 
 namespace Logic
 {
@@ -186,7 +187,7 @@ namespace Logic
 
             worker = new BackgroundWorker();
             worker.DoWork += runGame;
-            Timer = new Timer(waitBetweenActions);
+            Timer = new Timer(100);
             Timer.Elapsed += timer_Elapsed;
             Timer.AutoReset = true;
             Timer.Enabled = false;
@@ -199,17 +200,16 @@ namespace Logic
             {
                 worker.RunWorkerAsync();
             }
+            //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
         }
 
         public void runGame(object Object, DoWorkEventArgs e)
         {
             if (PlayedBattles < 3)
             {
-                if (!playerPass && !aiPass)
+                if ((!PlayerPass || !aiPass) && ((player.Hand.numberOFCards() > 0 || ai.Hand.numberOFCards() > 0) || firstTurn))
                 {
                     // Turn-based
-
-                    // Player Turn
 
                     // Start by drawing cards
                     if (firstTurn)
@@ -217,24 +217,7 @@ namespace Logic
                         drawCards(Player, 10);
                         ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         System.Threading.Thread.Sleep(waitBetweenActions);
-                    }
 
-                    // Play card
-                    if(player.Hand.numberOFCards() > 0 && player.Strength<(ai.Strength+10))
-                    {
-                        playCard(player, player.Hand.getCard(playStrongestCard(player)));
-                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
-                        System.Threading.Thread.Sleep(waitBetweenActions);
-                    } else
-                    {
-                        playerPass = true;
-                    }
-                    
-
-                    // AI Turn
-                    // Start by drawing cards
-                    if (firstTurn)
-                    {
                         drawCards(Ai, 10);
                         ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         System.Threading.Thread.Sleep(waitBetweenActions);
@@ -242,7 +225,27 @@ namespace Logic
                     }
 
                     // Play card
-                    if (ai.Hand.numberOFCards() > 0 && ai.Strength<(player.Strength+10))
+                    if(player.Hand.numberOFCards() > 0 && !playerPass)
+                    {
+                        while (!GameForm.getGameForm().ActiveClick)
+                        {
+                            if (playerPass)
+                            {
+                                break;
+                            }
+                        }
+                        if (!playerPass)
+                        {
+                            playCard(player, player.Hand.getCard(GameForm.getGameForm().LastClickedBox));
+                            GameForm.getGameForm().ActiveClick = false;
+                            ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                            System.Threading.Thread.Sleep(waitBetweenActions);
+                        }
+                        
+                    }
+
+                    // Play card
+                    if (ai.Hand.numberOFCards() > 0 && ai.Strength<(player.Strength+10) && !aiPass)
                     {
                         playCard(ai, ai.Hand.getCard(playStrongestCard(ai)));
                         ConsoleApplication2.GameForm.getGameForm().updateGraphics();
@@ -260,7 +263,7 @@ namespace Logic
                     }
                     playedBattles++;
                     aiPass = false;
-                    playerPass = false;
+                    PlayerPass = false;
                     player.PlayedCards.clear();
                     ai.PlayedCards.clear();
                     player.Strength = 0;
@@ -288,7 +291,7 @@ namespace Logic
             initialDecks();
             playedBattles = 0;
             wonBattles = 0;
-            playerPass = false;
+            PlayerPass = false;
             aiPass = false;
             firstTurn = true;
         }
