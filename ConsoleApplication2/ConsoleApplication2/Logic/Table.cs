@@ -191,7 +191,6 @@ namespace Logic
             Timer.Elapsed += timer_Elapsed;
             Timer.AutoReset = true;
             Timer.Enabled = false;
-            
         }
 
         private void timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -222,8 +221,8 @@ namespace Logic
                         ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         System.Threading.Thread.Sleep(waitBetweenActions);
                         firstTurn = false;
-                    }
 
+                    }
                     // Play card
                     if(player.Hand.numberOFCards() > 0 && !playerPass)
                     {
@@ -247,7 +246,7 @@ namespace Logic
                     // Play card
                     if (ai.Hand.numberOFCards() > 0 && ai.Strength<(player.Strength+10) && !aiPass)
                     {
-                        playCard(ai, ai.Hand.getCard(playStrongestCard(ai)));
+                        playCard(ai, ai.Hand.getCard(getStrongestCard(ai)));
                         ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         System.Threading.Thread.Sleep(waitBetweenActions);
                     } else
@@ -284,6 +283,7 @@ namespace Logic
                 ConsoleApplication2.GameForm.getGameForm().updateGraphics();
             }
         }
+
         protected void initializeGame()
         {
             Player = new Player();
@@ -360,9 +360,10 @@ namespace Logic
             }
         }
 
-        protected int playStrongestCard(Player player)
+        protected int getStrongestCard(Player player)
         {
             int indexOfHigh = 0;
+            /*
             for(int i = 1; i<player.Hand.numberOFCards(); i++)
             {
                 if(player.Hand.viewCard(indexOfHigh) is MonsterCard)
@@ -377,15 +378,30 @@ namespace Logic
                         }
                     }
                 }
+            }*/
+            indexOfHigh = -1;
+            int strongest = -1;
+            for (int i = 0; i < player.Hand.numberOFCards(); i++)
+            {
+                if (player.Hand.viewCard(i) is MonsterCard)
+                {
+                    int testCardStrength = ((MonsterCard)player.Hand.viewCard(i)).Strength;
+                    if(testCardStrength > strongest)
+                    {
+                        strongest = testCardStrength;
+                        indexOfHigh = i;
+                    }
+                }
             }
             return indexOfHigh;
         }
 
-        public static void getDrawResources(out Player playerOUT, out AI aiOUT, out int playedBattlesOUT, out bool winOUT)
+        public static void getDrawResources(out Player playerOUT, out AI aiOUT, out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT)
         {
             playerOUT = table.player;
             aiOUT = table.ai;
             playedBattlesOUT = table.playedBattles;
+            wonBattlesOUT = table.wonBattles;
             winOUT = table.win;
         }
     }

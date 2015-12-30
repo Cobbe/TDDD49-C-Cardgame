@@ -1,7 +1,6 @@
 ﻿using ConsoleApplication2.GUI;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Forms;
@@ -25,7 +24,7 @@ namespace ConsoleApplication2
         // Stuff to draw
         Logic.Player player;
         Logic.AI ai;
-        private int numberOfCards, playedBattles, lastClickedBox;
+        private int numberOfCards, playedBattles, wonBattles, lastClickedBox;
         private bool win, activeClick;
 
         private int lastClickX = 0, lastClickY = 0;
@@ -120,7 +119,7 @@ namespace ConsoleApplication2
 
         private void DrawIt()
         {
-            Logic.Table.getDrawResources(out player, out ai, out playedBattles, out win);
+            Logic.Table.getDrawResources(out player, out ai, out playedBattles, out wonBattles, out win);
             int scale = 2;
 
             if (playedBattles > 3)
@@ -139,8 +138,8 @@ namespace ConsoleApplication2
                 clickBoxes.Clear();
                 myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
 
-                myBuffer.Graphics.DrawString("Player - Strength: " + player.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
-                myBuffer.Graphics.DrawString("AI - Strength: " + ai.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
+                myBuffer.Graphics.DrawString("Player(" +wonBattles +") - Strength: " + player.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
+                myBuffer.Graphics.DrawString("AI(" +(playedBattles-wonBattles) +") - Strength: " + ai.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
 
                 // Draw the player's hand
                 numberOfCards = player.Hand.numberOFCards();
