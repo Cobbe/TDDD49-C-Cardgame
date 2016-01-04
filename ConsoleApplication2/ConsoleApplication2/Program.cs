@@ -15,7 +15,7 @@ namespace WindowsFormsApplication1
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        [STAThread]
+        //[STAThread]
         static void Main()
         {
             /* Creates the game instance and the game timer*/

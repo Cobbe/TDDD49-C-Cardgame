@@ -16,8 +16,6 @@ namespace Logic
         private AI ai;
         
         private int cardToPlay;
-        private MonsterCard playMonster;
-        private SpecialCard playSpecial;
         private bool win = false;
         private Timer timer;
         private BackgroundWorker worker;
@@ -63,32 +61,6 @@ namespace Logic
             set
             {
                 cardToPlay = value;
-            }
-        }
-
-        internal SpecialCard PlaySpecial
-        {
-            get
-            {
-                return playSpecial;
-            }
-
-            set
-            {
-                playSpecial = value;
-            }
-        }
-
-        internal MonsterCard PlayMonster
-        {
-            get
-            {
-                return playMonster;
-            }
-
-            set
-            {
-                playMonster = value;
             }
         }
 
@@ -213,11 +185,11 @@ namespace Logic
                     // Start by drawing cards
                     if (firstTurn)
                     {
-                        drawCards(Player, 10);
+                        player.drawCards(10);
                         ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         System.Threading.Thread.Sleep(waitBetweenActions);
 
-                        drawCards(Ai, 10);
+                        ai.drawCards(10);
                         ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         System.Threading.Thread.Sleep(waitBetweenActions);
                         firstTurn = false;
@@ -235,7 +207,7 @@ namespace Logic
                         }
                         if (!playerPass)
                         {
-                            playCard(player, player.Hand.getCard(GameForm.getGameForm().LastClickedBox));
+                            player.playCard(player.Hand.getCard(GameForm.getGameForm().LastClickedBox));
                             GameForm.getGameForm().ActiveClick = false;
                             ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                             System.Threading.Thread.Sleep(waitBetweenActions);
@@ -246,7 +218,7 @@ namespace Logic
                     // Play card
                     if (ai.Hand.numberOFCards() > 0 && ai.Strength<(player.Strength+10) && !aiPass)
                     {
-                        playCard(ai, ai.Hand.getCard(getStrongestCard(ai)));
+                        ai.playCard(ai.Hand.getCard(ai.getStrongestCard()));
                         ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         System.Threading.Thread.Sleep(waitBetweenActions);
                     } else
@@ -333,67 +305,6 @@ namespace Logic
             ai.Deck.addCard(new MonsterCard("Orc Commander", "Waaagh!!!", "warrior_orc.png", 5));
             ai.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 3));
             ai.Deck.shuffle();
-        }
-
-        protected void playCard(Player player, Card card)
-        {
-            if (card is MonsterCard)
-            {
-                PlayMonster = (MonsterCard)card;
-                player.Strength += PlayMonster.Strength;
-                player.PlayedCards.addCard(card);
-
-            }
-            else
-            {
-                PlaySpecial = (SpecialCard)card;
-                player.PlayedCards.addCard(card);
-            }
-
-        }
-
-        protected void drawCards(Player player, int number)
-        {
-            for(int i = 0; i < number; i++)
-            {
-                player.Hand.addCard(player.Deck.drawCard());
-            }
-        }
-
-        protected int getStrongestCard(Player player)
-        {
-            int indexOfHigh = 0;
-            /*
-            for(int i = 1; i<player.Hand.numberOFCards(); i++)
-            {
-                if(player.Hand.viewCard(indexOfHigh) is MonsterCard)
-                {
-                    if(player.Hand.viewCard(i) is MonsterCard)
-                    {
-                        MonsterCard temp1 = (MonsterCard)player.Hand.viewCard(indexOfHigh);
-                        MonsterCard temp2 = (MonsterCard)player.Hand.viewCard(i);
-                        if(temp2.Strength > temp1.Strength)
-                        {
-                            indexOfHigh = i;
-                        }
-                    }
-                }
-            }*/
-            indexOfHigh = -1;
-            int strongest = -1;
-            for (int i = 0; i < player.Hand.numberOFCards(); i++)
-            {
-                if (player.Hand.viewCard(i) is MonsterCard)
-                {
-                    int testCardStrength = ((MonsterCard)player.Hand.viewCard(i)).Strength;
-                    if(testCardStrength > strongest)
-                    {
-                        strongest = testCardStrength;
-                        indexOfHigh = i;
-                    }
-                }
-            }
-            return indexOfHigh;
         }
 
         public static void getDrawResources(out Player playerOUT, out AI aiOUT, out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT)

@@ -81,7 +81,6 @@ namespace Logic
                 List[k] = List[n];
                 List[n] = value;
             }
-        // https://stackoverflow.com/questions/273313/randomize-a-listt-in-c-sharp
         }
     }
 
