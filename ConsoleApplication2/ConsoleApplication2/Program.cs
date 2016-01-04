@@ -18,12 +18,14 @@ namespace WindowsFormsApplication1
         //[STAThread]
         static void Main()
         {
-            /* Creates the game instance and the game timer*/
-            Logic.Table table = Logic.Table.getTableInstance();
+            
 
             /* Launches the graphics */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            /* Creates the game instance and the game timer*/
+            Logic.Table table = Logic.Table.getTableInstance();
 
             MenuForm menuForm = MenuForm.getMenuForm();
             menuForm.Location = new System.Drawing.Point(50, 50);

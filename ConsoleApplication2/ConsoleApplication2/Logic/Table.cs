@@ -18,7 +18,7 @@ namespace Logic
         private int cardToPlay;
         private bool win = false;
         private Timer timer;
-        private BackgroundWorker worker;
+        private BackgroundWorker gameWorker, graphicsWorker;
         private int waitBetweenActions = 500; // In milliseconds
         private bool playerPass, aiPass, firstTurn;
         private int playedBattles, wonBattles;
@@ -157,21 +157,28 @@ namespace Logic
         {
             initializeGame();
 
-            worker = new BackgroundWorker();
-            worker.DoWork += runGame;
+            gameWorker = new BackgroundWorker();
+            gameWorker.DoWork += runGame;
             Timer = new Timer(100);
             Timer.Elapsed += timer_Elapsed;
             Timer.AutoReset = true;
             Timer.Enabled = false;
+
+            graphicsWorker = new BackgroundWorker();
+            graphicsWorker.DoWork += ConsoleApplication2.GameForm.getGameForm().updateGraphics;
         }
 
         private void timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (!worker.IsBusy)
+            if (!gameWorker.IsBusy)
             {
-                worker.RunWorkerAsync();
+                if (!graphicsWorker.IsBusy)
+                {
+                    graphicsWorker.RunWorkerAsync();
+                }
+                gameWorker.RunWorkerAsync();
             }
-            //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
         }
 
         public void runGame(object Object, DoWorkEventArgs e)
@@ -186,12 +193,12 @@ namespace Logic
                     if (firstTurn)
                     {
                         player.drawCards(10);
-                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
-                        System.Threading.Thread.Sleep(waitBetweenActions);
+                        //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        //System.Threading.Thread.Sleep(waitBetweenActions);
 
                         ai.drawCards(10);
-                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
-                        System.Threading.Thread.Sleep(waitBetweenActions);
+                        //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        //System.Threading.Thread.Sleep(waitBetweenActions);
                         firstTurn = false;
 
                     }
@@ -209,8 +216,8 @@ namespace Logic
                         {
                             player.playCard(player.Hand.getCard(GameForm.getGameForm().LastClickedBox));
                             GameForm.getGameForm().ActiveClick = false;
-                            ConsoleApplication2.GameForm.getGameForm().updateGraphics();
-                            System.Threading.Thread.Sleep(waitBetweenActions);
+                            //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                            //System.Threading.Thread.Sleep(waitBetweenActions);
                         }
                         
                     }
@@ -219,8 +226,8 @@ namespace Logic
                     if (ai.Hand.numberOFCards() > 0 && ai.Strength<(player.Strength+10) && !aiPass)
                     {
                         ai.playCard(ai.Hand.getCard(ai.getStrongestCard()));
-                        ConsoleApplication2.GameForm.getGameForm().updateGraphics();
-                        System.Threading.Thread.Sleep(waitBetweenActions);
+                        //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        //System.Threading.Thread.Sleep(waitBetweenActions);
                     } else
                     {
                         aiPass = true;
@@ -239,7 +246,7 @@ namespace Logic
                     ai.PlayedCards.clear();
                     player.Strength = 0;
                     ai.Strength = 0;
-                    ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                    //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                 }
             } else
             {
@@ -252,7 +259,7 @@ namespace Logic
                     win = false;
                 }
                 PlayedBattles++;
-                ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
             }
         }
 

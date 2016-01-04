@@ -1,6 +1,7 @@
 ﻿using ConsoleApplication2.GUI;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Forms;
@@ -187,7 +188,7 @@ namespace ConsoleApplication2
             
         }
 
-        public void updateGraphics()
+        public void updateGraphics(object Object, DoWorkEventArgs e)
         {
             lock (gameFormLock)
             {
