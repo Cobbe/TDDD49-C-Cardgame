@@ -1,12 +1,11 @@
-﻿using ConsoleApplication2.GUI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Timers;
 using System.Windows.Forms;
 
-namespace ConsoleApplication2
+namespace GUI
 {
     public partial class GameForm : Form
     {
@@ -225,7 +224,7 @@ namespace ConsoleApplication2
             }
             else if(e.Button == MouseButtons.Right)
             {
-                Logic.Table.getTableInstance().PlayerPass = true;
+                Logic.Table.getTableInstance().Player.Pass = true;
             }
         }
 

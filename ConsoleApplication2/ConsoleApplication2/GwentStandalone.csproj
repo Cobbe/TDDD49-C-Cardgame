@@ -60,6 +60,7 @@
       <DependentUpon>MenuForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Logic\Card.cs" />
+    <Compile Include="Logic\CardGenerator.cs" />
     <Compile Include="Logic\CardHandler.cs" />
     <Compile Include="Logic\Player.cs" />
     <Compile Include="Program.cs" />

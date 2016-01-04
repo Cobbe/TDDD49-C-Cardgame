@@ -1,11 +1,11 @@
-﻿using System;
+﻿using GUI;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using ConsoleApplication2;
 
 namespace Logic
 {
@@ -20,12 +20,12 @@ namespace Logic
         private Timer timer;
         private BackgroundWorker gameWorker, graphicsWorker;
         private int waitBetweenActions = 500; // In milliseconds
-        private bool playerPass, aiPass, firstTurn;
+        private bool firstTurn;
         private int playedBattles, wonBattles;
 
         private static Random tableRng = new Random();
 
-        protected Player Player
+        public Player Player
         {
             get
             {
@@ -116,32 +116,6 @@ namespace Logic
             }
         }
 
-        public bool PlayerPass
-        {
-            get
-            {
-                return playerPass;
-            }
-
-            set
-            {
-                playerPass = value;
-            }
-        }
-
-        public bool AiPass
-        {
-            get
-            {
-                return aiPass;
-            }
-
-            set
-            {
-                aiPass = value;
-            }
-        }
-
         public static Table getTableInstance()
         {
             if(table != null)
@@ -165,7 +139,7 @@ namespace Logic
             Timer.Enabled = false;
 
             graphicsWorker = new BackgroundWorker();
-            graphicsWorker.DoWork += ConsoleApplication2.GameForm.getGameForm().updateGraphics;
+            graphicsWorker.DoWork += GameForm.getGameForm().updateGraphics;
         }
 
         private void timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -178,14 +152,13 @@ namespace Logic
                 }
                 gameWorker.RunWorkerAsync();
             }
-                //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
         }
 
         public void runGame(object Object, DoWorkEventArgs e)
         {
             if (PlayedBattles < 3)
             {
-                if ((!PlayerPass || !aiPass) && ((player.Hand.numberOFCards() > 0 || ai.Hand.numberOFCards() > 0) || firstTurn))
+                if ((!player.Pass || !ai.Pass) && ((player.Hand.numberOFCards() > 0 || ai.Hand.numberOFCards() > 0) || firstTurn))
                 {
                     // Turn-based
 
@@ -203,16 +176,16 @@ namespace Logic
 
                     }
                     // Play card
-                    if(player.Hand.numberOFCards() > 0 && !playerPass)
+                    if(player.Hand.numberOFCards() > 0 && !player.Pass)
                     {
                         while (!GameForm.getGameForm().ActiveClick)
                         {
-                            if (playerPass)
+                            if (player.Pass)
                             {
                                 break;
                             }
                         }
-                        if (!playerPass)
+                        if (!player.Pass)
                         {
                             player.playCard(player.Hand.getCard(GameForm.getGameForm().LastClickedBox));
                             GameForm.getGameForm().ActiveClick = false;
@@ -223,14 +196,14 @@ namespace Logic
                     }
 
                     // Play card
-                    if (ai.Hand.numberOFCards() > 0 && ai.Strength<(player.Strength+10) && !aiPass)
+                    if (ai.Hand.numberOFCards() > 0 && !ai.Pass)
                     {
-                        ai.playCard(ai.Hand.getCard(ai.getStrongestCard()));
+                        ai.determineAndPerformAction(player.Strength, PlayedBattles+1, PlayedBattles - WonBattles, player.Pass);
                         //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
                     } else
                     {
-                        aiPass = true;
+                        ai.Pass = true;
                     }
                 }
                 else
@@ -240,8 +213,8 @@ namespace Logic
                         wonBattles++;
                     }
                     playedBattles++;
-                    aiPass = false;
-                    PlayerPass = false;
+                    ai.Pass = false;
+                    player.Pass = false;
                     player.PlayedCards.clear();
                     ai.PlayedCards.clear();
                     player.Strength = 0;
@@ -270,8 +243,8 @@ namespace Logic
             initialDecks();
             playedBattles = 0;
             wonBattles = 0;
-            PlayerPass = false;
-            aiPass = false;
+            player.Pass = false;
+            ai.Pass = false;
             firstTurn = true;
         }
         

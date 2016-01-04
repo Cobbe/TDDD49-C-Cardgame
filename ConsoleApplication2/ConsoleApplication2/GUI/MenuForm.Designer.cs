@@ -1,4 +1,4 @@
-﻿namespace ConsoleApplication2.GUI
+﻿namespace GUI
 {
     partial class MenuForm
     {

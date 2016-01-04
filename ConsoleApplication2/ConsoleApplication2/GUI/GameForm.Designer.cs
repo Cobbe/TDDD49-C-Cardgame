@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace ConsoleApplication2
+namespace GUI
 {
     partial class GameForm
     {

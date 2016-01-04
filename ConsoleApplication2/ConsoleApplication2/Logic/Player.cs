@@ -13,6 +13,7 @@ namespace Logic
         private PlayedCards playedCards;
         private UsedCards usedCards;
         private int strength;
+        private bool pass = false;
 
         public Deck Deck
         {
@@ -79,6 +80,19 @@ namespace Logic
             }
         }
 
+        public bool Pass
+        {
+            get
+            {
+                return pass;
+            }
+
+            set
+            {
+                pass = value;
+            }
+        }
+
         public void drawCards(int number)
         {
             for (int i = 0; i < number; i++)
@@ -121,6 +135,59 @@ namespace Logic
 
         }
 
+        /* Method which controls the AI's actions */
+        public void determineAndPerformAction(int opponentStrength, int round, int wins, bool playerPass)
+        {
+                if(Strength > opponentStrength)
+                {
+                    if (playerPass)
+                    {
+                        // AI will pass and win
+                        Pass = true;
+                    } else
+                    {
+                        // AI should play a weak card
+                        playCard(Hand.getCard(getWeakestCard()));
+                    }
+                    
+                } else
+                {
+                    if(round == 1)
+                    {
+                        if(Strength+10 > opponentStrength)
+                        {
+                            // AI should play a card and try to go for the win
+                            playCard(Hand.getCard(getStrongestCard()));
+                        } else
+                        {
+                            Pass = true;
+                        }
+                    } else if(round == 2)
+                    {
+                        if(wins == 0)
+                        {
+                            // AI should play a card and try to go for the win
+                            playCard(Hand.getCard(getStrongestCard()));
+                        } else
+                        {
+                            if(Strength+10 > opponentStrength)
+                            {
+                                // AI should play a card and try to go for the win
+                                playCard(Hand.getCard(getStrongestCard()));
+                            } else
+                            {
+                                // AI should pass and take the loss
+                                Pass = true;
+                            }
+                        }
+                    } else
+                    {
+                        // AI should play a card and try to go for the win
+                        playCard(Hand.getCard(getStrongestCard()));
+                    }
+                }
+        }
+
         /* Retrieves the index of the monster card with the highest strength, if there are no monster cards in the deck it sends back -1 */
         public int getStrongestCard()
         {
@@ -134,6 +201,26 @@ namespace Logic
                     if (testCardStrength > strongest)
                     {
                         strongest = testCardStrength;
+                        indexOfHigh = i;
+                    }
+                }
+            }
+            return indexOfHigh;
+        }
+
+        /* Retrieves the index of the monster card with the lowest strength, if there are no monster cards in the deck it sends back -1 */
+        public int getWeakestCard()
+        {
+            int indexOfHigh = -1;
+            int weakest = 1000;
+            for (int i = 0; i < Hand.numberOFCards(); i++)
+            {
+                if (Hand.viewCard(i) is MonsterCard)
+                {
+                    int testCardStrength = ((MonsterCard)Hand.viewCard(i)).Strength;
+                    if (testCardStrength < weakest)
+                    {
+                        weakest = testCardStrength;
                         indexOfHigh = i;
                     }
                 }

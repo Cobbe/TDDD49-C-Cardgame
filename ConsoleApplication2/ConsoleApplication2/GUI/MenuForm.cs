@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ConsoleApplication2.GUI
+namespace GUI
 {
     public partial class MenuForm : Form
     {

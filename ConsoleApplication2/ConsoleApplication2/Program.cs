@@ -1,13 +1,12 @@
-﻿using ConsoleApplication2;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Threading;
 using System.Timers;
-using ConsoleApplication2.GUI;
+using GUI;
 
-namespace WindowsFormsApplication1
+namespace GwentStandAlone
 {
     static class Program
     {
