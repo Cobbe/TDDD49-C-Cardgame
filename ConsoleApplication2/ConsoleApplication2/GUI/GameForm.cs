@@ -10,7 +10,7 @@ namespace ConsoleApplication2
     public partial class GameForm : Form
     {
         private static GameForm gameForm;
-        private static Boolean Lock = false;
+        private Object gameFormLock = new Object();
         //private System.Timers.Timer timer;
         //Bitmap bm = new Bitmap(1000, 1000);
         private ImageHandler imageHandler;
@@ -52,19 +52,6 @@ namespace ConsoleApplication2
             set
             {
                 lastClickedBox = value;
-            }
-        }
-
-        public static bool Lock1
-        {
-            get
-            {
-                return Lock;
-            }
-
-            set
-            {
-                Lock = value;
             }
         }
 
@@ -202,15 +189,12 @@ namespace ConsoleApplication2
 
         public void updateGraphics()
         {
-            if (!Lock)
+            lock (gameFormLock)
             {
-                Lock = true;
                 DrawIt();
                 myBuffer.Render();
                 myBuffer.Render(CreateGraphics());
-                Lock = false;
             }
-            
         }
 
         /*
