@@ -10,13 +10,7 @@ namespace LINQ
 {
     public partial class Northwind : DataContext
     {
-        private Table<CardHandler> cardHandlers;
-        public Northwind(string connection) : base(connection) { }
-
-        //public Table<CardHandler> getCardHandlers() {
-        //    return cardHandlers;
-        //}
-
+        
         
     }
 
