@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Logic
 {
+    [Table(Name = "CardHandlers")]
     abstract class CardHandler
     {
+        [Column(IsPrimaryKey = true)]
         private List<Card> list;
 
         public List<Card> List

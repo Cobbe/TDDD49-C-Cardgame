@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Timers;
 using GUI;
+using LINQ;
 
 namespace GwentStandAlone
 {
@@ -17,6 +18,9 @@ namespace GwentStandAlone
         //[STAThread]
         static void Main()
         {
+            // Setup database
+            Northwind nw = new Northwind(@"northwind.mdf");
+
             /* Launches the graphics */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
