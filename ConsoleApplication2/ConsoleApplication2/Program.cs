@@ -17,7 +17,10 @@ namespace GwentStandAlone
         //[STAThread]
         static void Main()
         {
-            
+            // DataContext takes a connection string 
+            DataContext db = new DataContext("c:\\northwind\\northwnd.mdf");
+            // Get a typed table to run queries
+            Table<CardHandlers> cardHandlers = db.GetTable<CardHandlers>();
 
             /* Launches the graphics */
             Application.EnableVisualStyles();
