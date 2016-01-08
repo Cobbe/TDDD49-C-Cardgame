@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Xml.Linq;
 
 namespace Logic
 {
@@ -156,6 +157,36 @@ namespace Logic
 
         public void runGame(object Object, DoWorkEventArgs e)
         {
+            /*
+            XElement cards =
+               new XElement("Cards",
+                  from c in table.Player.Deck.List
+                  select new XElement("card",
+                     new XElement("name", c.Name)
+                  )
+              );
+
+            XElement cards2 =
+               new XElement("Cards",
+                  from c in table.Player.Hand.List
+                  select new XElement("card",
+                     new XElement("name", c.Name)
+                  )
+              );
+
+            XElement cards3 =
+               new XElement("Cards",
+                  from c in table.Player.PlayedCards.List
+                  select new XElement("card",
+                     new XElement("name", c.Name)
+                  )
+              );
+
+            Console.WriteLine(cards);
+            Console.WriteLine(cards2);
+            Console.WriteLine(cards3);
+            */
+
             if (PlayedBattles < 3)
             {
                 if ((!player.Pass || !ai.Pass) && ((player.Hand.numberOFCards() > 0 || ai.Hand.numberOFCards() > 0) || firstTurn))

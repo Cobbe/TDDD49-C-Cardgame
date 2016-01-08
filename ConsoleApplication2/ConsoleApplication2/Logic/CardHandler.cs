@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Logic
 {
-    //[Table(Name = "CardHandlers")]
     abstract class CardHandler
     {
-        //[Column]
         private List<Card> list;
 
         public List<Card> List
