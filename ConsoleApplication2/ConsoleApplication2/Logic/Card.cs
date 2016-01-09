@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,10 +9,16 @@ using System.Xml.Linq;
 
 namespace Logic
 {
+    [Table(Name = "Card")]
     abstract class Card
     {
+        [Column(IsPrimaryKey = true)]
+        private int id;
+        [Column]
         private string description;
+        [Column]
         private string image;
+        [Column]
         private string name;
 
         protected Card(string name, string description, string image)

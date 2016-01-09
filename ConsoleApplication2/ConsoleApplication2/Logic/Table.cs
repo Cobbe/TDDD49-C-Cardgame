@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Linq;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -304,17 +305,17 @@ namespace Logic
             ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
             ai.Deck.addCard(new MonsterCard("Orc Commander", "Waaagh!!!", "warrior_orc.png", 5));
             ai.Deck.addCard(new MonsterCard("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
+            ai.Deck.addCard(new MonsterCard("Orc Champion", "Waaaaagh!!", "warrior_orc.png", 9));
             ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
             ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
             ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
+            ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 6));
             ai.Deck.addCard(new MonsterCard("Fire Dragon", "Breathes fire", "dragon.png", 10));
             ai.Deck.addCard(new MonsterCard("Orc", "Waaagh!!", "warrior_orc.png", 2));
             ai.Deck.addCard(new MonsterCard("Orc Commander", "Waaagh!!!", "warrior_orc.png", 5));
             ai.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 3));
-            ai.Deck.addCard(new MonsterCard("Orc Commander", "Waaagh!!!", "warrior_orc.png", 5));
-            ai.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 3));
+            ai.Deck.addCard(new MonsterCard("Orc Commander", "Waaagh!!!", "warrior_orc.png", 12));
+            ai.Deck.addCard(new MonsterCard("Witch", "Dark Sorcery", "witch.png", 5));
             ai.Deck.shuffle();
         }
 
@@ -325,6 +326,13 @@ namespace Logic
             playedBattlesOUT = table.playedBattles;
             wonBattlesOUT = table.wonBattles;
             winOUT = table.win;
+        }
+
+        public void cleanDatabase(DataContext db)
+        {
+            db.ExecuteCommand("DELETE FROM Card");
+            db.ExecuteCommand("DELETE FROM CardHandler");
+            db.ExecuteCommand("DELETE FROM Player");
         }
     }
 }

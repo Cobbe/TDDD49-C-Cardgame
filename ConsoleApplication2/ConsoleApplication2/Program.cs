@@ -32,11 +32,12 @@ namespace GwentStandAlone
             // Query for customers from London
             var q =
                from c in Customers
-               where c.City == "London"
+               //where c.City == "New York"
                select c;
             foreach (var cust in q)
                 Console.WriteLine("id = {0}, City = {1}", cust.CustomerID, cust.City);
 
+            
             /* Launches the graphics */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -44,7 +45,7 @@ namespace GwentStandAlone
             /* Creates the game instance and the game timer*/
             Table table = Table.getTableInstance();
 
-            
+            table.cleanDatabase(db);
 
             MenuForm menuForm = MenuForm.getMenuForm();
             menuForm.Location = new System.Drawing.Point(50, 50);
