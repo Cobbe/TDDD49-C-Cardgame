@@ -26,17 +26,8 @@ namespace GwentStandAlone
             //DataContext db = new DataContext("D:\\Cobbe\\Git Projekt\\tddd49-csharp-projekt\\ConsoleApplication2\\ConsoleApplication2\\LINQ\\northwind.mdf");
             DataContext db = new DataContext(@"Data Source=(localdb)\mssqllocaldb;
                                    Integrated Security=true;
-                                   AttachDbFileName=D:\Cobbe\Git Projekt\tddd49-csharp-projekt\ConsoleApplication2\ConsoleApplication2\LINQ\northwind.mdf");
-            // Get a typed table to run queries
-            Table<Customer> Customers = db.GetTable<Customer>();
-            // Query for customers from London
-            var q =
-               from c in Customers
-               //where c.City == "New York"
-               select c;
-            foreach (var cust in q)
-                Console.WriteLine("id = {0}, City = {1}", cust.CustomerID, cust.City);
-
+                                   AttachDbFileName="+Environment.CurrentDirectory+"\\LINQ\\northwind.mdf");
+            
             
             /* Launches the graphics */
             Application.EnableVisualStyles();
