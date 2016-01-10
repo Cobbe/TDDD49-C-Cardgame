@@ -63,7 +63,7 @@ namespace Logic
         public void runGame(object Object, DoWorkEventArgs e)
         {
             Player player = getPlayer("player");
-            Player ai = getPlayer("player");
+            Player ai = getPlayer("ai");
 
             if (playedBattles < 3)
             {
@@ -74,11 +74,11 @@ namespace Logic
                     // Start by drawing cards
                     if (firstTurn)
                     {
-                        player.drawCards(1);
+                        player.drawCards(2);
                         GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
 
-                        ai.drawCards(10);
+                        ai.drawCards(2);
                         GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
                         firstTurn = false;
@@ -147,8 +147,8 @@ namespace Logic
         {
             playedBattles = 0;
             wonBattles = 0;
-            getPlayer("player").pass = false;
-            getPlayer("ai").pass = false;
+            //getPlayer("player").pass = false;
+            //getPlayer("ai").pass = false;
             firstTurn = true;
         }
 
@@ -195,7 +195,7 @@ namespace Logic
         
         public void generateDatabase()
         {
-            Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1})", "player", 0);
+            Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "player", 0, 0, 0);
             
             int playerId = getPlayer("player").id;
 
@@ -221,7 +221,7 @@ namespace Logic
             Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Champion", "Waaaaagh!!!", "warrior_orc.png", 12, playerDeckId);
 
             //AI stuff.....
-            Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1})", "ai", 1);
+            Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "ai", 1, 0, 0);
             
             int aiId = getPlayer("ai").id;
 

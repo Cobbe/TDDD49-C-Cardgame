@@ -15,9 +15,10 @@ namespace Logic
         public string name;
         [Column]
         private bool ai;
-        
+        [Column]
         public int strength;
-        public bool pass = false;
+        [Column]
+        public bool pass;
 
         public void drawCards(int number)
         {
