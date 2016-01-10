@@ -23,7 +23,7 @@ namespace GUI
 
         // Stuff to draw
         Logic.Player player;
-        Logic.AI ai;
+        Logic.Player ai;
         private int numberOfCards, playedBattles, wonBattles, lastClickedBox;
         private bool win, activeClick;
 
@@ -125,31 +125,31 @@ namespace GUI
                 clickBoxes.Clear();
                 myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
 
-                myBuffer.Graphics.DrawString("Player(" +wonBattles +") - Strength: " + player.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
-                myBuffer.Graphics.DrawString("AI(" +(playedBattles-wonBattles) +") - Strength: " + ai.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
+                myBuffer.Graphics.DrawString("Player(" +wonBattles +") - Strength: " + player.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
+                myBuffer.Graphics.DrawString("AI(" +(playedBattles-wonBattles) +") - Strength: " + ai.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
 
                 // Draw the player's hand
-                numberOfCards = player.Hand.numberOFCards();
+                numberOfCards = player.getHand().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    clickBoxes.Add(DrawCard(player.Hand.viewCard(i), 20 + (115 * i), 450, 0.5f));
+                    clickBoxes.Add(DrawCard(player.getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
                 }
 
                 // Draw the battlefield
-                numberOfCards = player.PlayedCards.numberOFCards();
+                numberOfCards = player.getPlayedCards().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(player.PlayedCards.viewCard(i), 20 + (90 * i), 300, 0.4f);
+                    DrawCard(player.getPlayedCards().viewCard(i), 20 + (90 * i), 300, 0.4f);
                 }
 
-                numberOfCards = ai.PlayedCards.numberOFCards();
+                numberOfCards = ai.getPlayedCards().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(ai.PlayedCards.viewCard(i), 20 + (90 * i), 100, 0.4f);
+                    DrawCard(ai.getPlayedCards().viewCard(i), 20 + (90 * i), 100, 0.4f);
                 }
 
                 // Draw the AI's hand (just the cardback)
-                numberOfCards = ai.Hand.numberOFCards();
+                numberOfCards = ai.getHand().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
                     DrawCard(20 + (45 * i), 20, 0.2f);
@@ -159,19 +159,15 @@ namespace GUI
 
         private GUI.CardClickbox DrawCard(Logic.Card card, float x, float y, float scale)
         {
-            Image cardImage = imageHandler.getImage(card.Image);
+            Image cardImage = imageHandler.getImage(card.image);
             myBuffer.Graphics.DrawImage(imageHandler.getImage(ImageHandler.CARD_BORDER), x, y, 200*scale, 320*scale);
             myBuffer.Graphics.DrawImage(cardImage, x+25*scale, y+25*scale, 150*scale, 170*scale);
 
             GUI.CardClickbox clickBox = new GUI.CardClickbox(x, y, 200 * scale, 320 * scale, card);
 
-            myBuffer.Graphics.DrawString("Name: " +card.Name, new Font(FontFamily.GenericMonospace, 12*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x+25*scale, y+220*scale);
-            myBuffer.Graphics.DrawString("Description: " + card.Description, new Font(FontFamily.GenericMonospace, 7*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25*scale, y + 235*scale);
-            if(card is Logic.MonsterCard)
-            {
-                Logic.MonsterCard temp = (Logic.MonsterCard)card;
-                myBuffer.Graphics.DrawString("Strength: " + temp.Strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25 * scale, y + 250 * scale);
-            }
+            myBuffer.Graphics.DrawString("Name: " +card.name, new Font(FontFamily.GenericMonospace, 12*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x+25*scale, y+220*scale);
+            myBuffer.Graphics.DrawString("Description: " + card.description, new Font(FontFamily.GenericMonospace, 7*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25*scale, y + 235*scale);
+            myBuffer.Graphics.DrawString("Strength: " + card.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25 * scale, y + 250 * scale);
 
             return clickBox;
         }
@@ -187,7 +183,8 @@ namespace GUI
             
         }
 
-        public void updateGraphics(object Object, DoWorkEventArgs e)
+        //public void updateGraphics(object Object, DoWorkEventArgs e)
+        public void updateGraphics()
         {
             lock (gameFormLock)
             {
@@ -224,7 +221,7 @@ namespace GUI
             }
             else if(e.Button == MouseButtons.Right)
             {
-                Logic.Table.getTableInstance().Player.Pass = true;
+                Logic.Table.getTableInstance().getPlayer("player").pass = true;
             }
         }
 

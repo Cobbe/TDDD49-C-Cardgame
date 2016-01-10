@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GwentStandAlone;
+using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
@@ -18,19 +19,19 @@ namespace Logic
         public int strength;
         public bool pass = false;
 
-        public void drawCards(int number, DataContext db)
+        public void drawCards(int number)
         {
             for (int i = 0; i < number; i++)
             {
                 //FIX THIS (randomness)
-                getHand(db).moveCardHere(getDeck(db).getCards(db)[0], db);
+                getHand().moveCardHere(getDeck().getCards().First());
             }
         }
 
-        public void playCard(Card card, DataContext db)
+        public void playCard(Card card)
         {
             strength += card.strength;
-            getPlayedCards(db).moveCardHere(card, db);
+            getPlayedCards().moveCardHere(card);
         }
 
         public Player() : base()
@@ -38,9 +39,9 @@ namespace Logic
 
         }
 
-        private CardHandler getCardHandler(DataContext db, String type)
+        private CardHandler getCardHandler(String type)
         {
-            Table<CardHandler> cardHandlers = db.GetTable<CardHandler>();
+            Table<CardHandler> cardHandlers = Program.db.GetTable<CardHandler>();
             var query = from cardHandler in cardHandlers
                         where cardHandler.type == type &&
                         cardHandler.playerId == this.id
@@ -52,97 +53,96 @@ namespace Logic
             return res;
         }
 
-        public CardHandler getDeck(DataContext db)
+        public CardHandler getDeck()
         {
-            return getCardHandler(db, "deck");
+            return getCardHandler("deck");
         }
 
-        public CardHandler getHand(DataContext db)
+        public CardHandler getHand()
         {
-            return getCardHandler(db, "hand");
+            return getCardHandler("hand");
         }
 
-        public CardHandler getPlayedCards(DataContext db)
+        public CardHandler getPlayedCards()
         {
-            return getCardHandler(db, "playedCards");
+            return getCardHandler("playedCards");
         }
 
-        public CardHandler getUsedCards(DataContext db)
+        public CardHandler getUsedCards()
         {
-            return getCardHandler(db, "usedCards");
-        }
-    }
-
-    class AI : Player
-    {
-        public AI() : base()
-        {
-
+            return getCardHandler("usedCards");
         }
 
         /* Method which controls the AI's actions */
-        public void determineAndPerformAction(int opponentStrength, int round, int wins, bool playerPass, DataContext db)
+        public void determineAndPerformAction(int opponentStrength, int round, int wins, bool playerPass)
         {
-                if(strength > opponentStrength)
+            if (strength > opponentStrength)
+            {
+                if (playerPass)
                 {
-                    if (playerPass)
-                    {
-                        // AI will pass and win
-                        pass = true;
-                    } else
-                    {
-                        // AI should play a weak card
-                        playCard(getWeakestCard(db), db);
-                    }
-                    
-                } else
+                    // AI will pass and win
+                    pass = true;
+                }
+                else
                 {
-                    if(round == 1)
+                    // AI should play a weak card
+                    playCard(getWeakestCard());
+                }
+
+            }
+            else
+            {
+                if (round == 1)
+                {
+                    if (strength + 10 > opponentStrength)
                     {
-                        if(strength+10 > opponentStrength)
-                        {
-                            // AI should play a card and try to go for the win
-                            playCard(getStrongestCard(db), db);
-                        } else
-                        {
-                            pass = true;
-                        }
-                    } else if(round == 2)
-                    {
-                        if(wins == 0)
-                        {
                         // AI should play a card and try to go for the win
-                        playCard(getStrongestCard(db), db);
-                    } else
-                        {
-                            if(strength+10 > opponentStrength)
-                            {
-                            // AI should play a card and try to go for the win
-                            playCard(getStrongestCard(db), db);
-                        } else
-                            {
-                                // AI should pass and take the loss
-                                pass = true;
-                            }
-                        }
-                    } else
+                        playCard(getStrongestCard());
+                    }
+                    else
                     {
-                    // AI should play a card and try to go for the win
-                    playCard(getStrongestCard(db), db);
+                        pass = true;
                     }
                 }
+                else if (round == 2)
+                {
+                    if (wins == 0)
+                    {
+                        // AI should play a card and try to go for the win
+                        playCard(getStrongestCard());
+                    }
+                    else
+                    {
+                        if (strength + 10 > opponentStrength)
+                        {
+                            // AI should play a card and try to go for the win
+                            playCard(getStrongestCard());
+                        }
+                        else
+                        {
+                            // AI should pass and take the loss
+                            pass = true;
+                        }
+                    }
+                }
+                else
+                {
+                    // AI should play a card and try to go for the win
+                    playCard(getStrongestCard());
+                }
+            }
         }
 
         /* Retrieves the card with the highest strength from the hand */
-        public Card getStrongestCard(DataContext db)
+        public Card getStrongestCard()
         {
-            return getHand(db).getCards(db).OrderByDescending(card => card.strength).First();
+            return getHand().getCards().OrderByDescending(card => card.strength).First();
         }
 
         /* Retrieves the card with the lowest strength from the hand */
-        public Card getWeakestCard(DataContext db)
+        public Card getWeakestCard()
         {
-            return getHand(db).getCards(db).OrderBy(card => card.strength).First();
+            return getHand().getCards().OrderBy(card => card.strength).First();
         }
     }
 }

@@ -8,11 +8,11 @@ namespace Logic
         [Column(IsPrimaryKey = true)]
         public int id;
         [Column]
-        private string description;
+        public string description;
         [Column]
-        private string image;
+        public string image;
         [Column]
-        private string name;
+        public string name;
         [Column]
         public int strength;
         [Column]

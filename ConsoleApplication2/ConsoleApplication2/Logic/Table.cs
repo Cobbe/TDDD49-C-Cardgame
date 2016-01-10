@@ -1,4 +1,5 @@
 ﻿using GUI;
+using GwentStandAlone;
 using System;
 using System.ComponentModel;
 using System.Data.Linq;
@@ -13,7 +14,7 @@ namespace Logic
         
         private int cardToPlay;
         private bool win = false;
-        private Timer timer;
+        public Timer timer;
         private BackgroundWorker gameWorker, graphicsWorker;
         private int waitBetweenActions = 500; // In milliseconds
         private bool firstTurn;
@@ -21,20 +22,20 @@ namespace Logic
 
         private static Random tableRng = new Random();
 
-        public static Table getTableInstance(DataContext db)
+        public static Table getTableInstance()
         {
             if(table != null)
             {
                 return table;
             } else
             {
-                return table = new Table(db);
+                return table = new Table();
             }
         }
 
-        private Table(DataContext db)
+        private Table()
         {
-            initializeGame(db);
+            initializeGame();
 
             gameWorker = new BackgroundWorker();
             gameWorker.DoWork += runGame;
@@ -43,48 +44,48 @@ namespace Logic
             timer.AutoReset = true;
             timer.Enabled = false;
 
-            graphicsWorker = new BackgroundWorker();
-            graphicsWorker.DoWork += GameForm.getGameForm().updateGraphics;
+            //graphicsWorker = new BackgroundWorker();
+            //graphicsWorker.DoWork += GameForm.getGameForm().updateGraphics;
         }
 
         private void timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (!gameWorker.IsBusy)
             {
-                if (!graphicsWorker.IsBusy)
+                /*if (!graphicsWorker.IsBusy)
                 {
                     graphicsWorker.RunWorkerAsync();
-                }
+                }*/
                 gameWorker.RunWorkerAsync();
             }
         }
 
-        public void runGame(object Object, DoWorkEventArgs e, DataContext db)
+        public void runGame(object Object, DoWorkEventArgs e)
         {
-            Player player = getPlayer("player", db);
-            Player ai = getPlayer("player", db);
+            Player player = getPlayer("player");
+            Player ai = getPlayer("player");
 
             if (playedBattles < 3)
             {
-                if ((!player.pass || !ai.pass) && ((player.getHand(db).numberOFCards() > 0 || ai.getHand(db).numberOFCards() > 0) || firstTurn))
+                if ((!player.pass || !ai.pass) && ((player.getHand().numberOFCards() > 0 || ai.getHand().numberOFCards() > 0) || firstTurn))
                 {
                     // Turn-based
 
                     // Start by drawing cards
                     if (firstTurn)
                     {
-                        player.drawCards(10, db);
-                        //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        player.drawCards(1);
+                        GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
 
-                        ai.drawCards(10, db);
-                        //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        ai.drawCards(10);
+                        GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
                         firstTurn = false;
 
                     }
                     // Play card
-                    if(player.getHand(db).numberOFCards() > 0 && !player.pass)
+                    if(player.getHand().numberOFCards() > 0 && !player.pass)
                     {
                         while (!GameForm.getGameForm().ActiveClick)
                         {
@@ -95,19 +96,19 @@ namespace Logic
                         }
                         if (!player.pass)
                         {
-                            player.playCard(player.getHand(db).getCard(GameForm.getGameForm().LastClickedBox));
+                            player.playCard(player.getHand().getCard(GameForm.getGameForm().LastClickedBox));
                             GameForm.getGameForm().ActiveClick = false;
-                            //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                            GameForm.getGameForm().updateGraphics();
                             //System.Threading.Thread.Sleep(waitBetweenActions);
                         }
                         
                     }
 
                     // Play card
-                    if (ai.getHand(db).numberOFCards() > 0 && !ai.pass)
+                    if (ai.getHand().numberOFCards() > 0 && !ai.pass)
                     {
-                        ai.determineAndPerformAction(player.strength, playedBattles+1, playedBattles - wonBattles, player.pass, db);
-                        //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                        ai.determineAndPerformAction(player.strength, playedBattles+1, playedBattles - wonBattles, player.pass);
+                        GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
                     } else
                     {
@@ -138,29 +139,29 @@ namespace Logic
                     win = false;
                 }
                 playedBattles++;
-                //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                GameForm.getGameForm().updateGraphics();
             }
         }
 
-        protected void initializeGame(DataContext db)
+        protected void initializeGame()
         {
             playedBattles = 0;
             wonBattles = 0;
-            getPlayer("player", db).pass = false;
-            getPlayer("ai", db).pass = false;
+            getPlayer("player").pass = false;
+            getPlayer("ai").pass = false;
             firstTurn = true;
         }
 
-        public Table<Player> getPlayers(DataContext db)
+        public Table<Player> getPlayers()
         {
-            Table<Player> players = db.GetTable<Player>();
+            Table<Player> players = Program.db.GetTable<Player>();
 
             return players;
         }
         
-        public Player getPlayer(string name, DataContext db)
+        public Player getPlayer(string name)
         {
-            var query = from player in getPlayers(db)
+            var query = from player in getPlayers()
                         where player.name == name
                         select player;
             Player res = null;
@@ -171,32 +172,32 @@ namespace Logic
             return res;
         }
         
-        public static void getDrawResources(out Player playerOUT, out Player aiOUT, out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT, DataContext db)
+        public static void getDrawResources(out Player playerOUT, out Player aiOUT, out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT)
         {
-            playerOUT = table.getPlayer("player", db);
-            aiOUT = table.getPlayer("ai", db);
+            playerOUT = table.getPlayer("player");
+            aiOUT = table.getPlayer("ai");
             playedBattlesOUT = table.playedBattles;
             wonBattlesOUT = table.wonBattles;
             winOUT = table.win;
         }
 
-        public void cleanDatabase(DataContext db)
+        public void cleanDatabase()
         {
             int i;
 
-            i = db.ExecuteCommand("DELETE FROM Card");
+            i = Program.db.ExecuteCommand("DELETE FROM Card");
             Console.WriteLine("TEST01: " + i);
-            i = db.ExecuteCommand("DELETE FROM CardHandler");
+            i = Program.db.ExecuteCommand("DELETE FROM CardHandler");
             Console.WriteLine("TEST02: " + i);
-            i = db.ExecuteCommand("DELETE FROM Player");
+            i = Program.db.ExecuteCommand("DELETE FROM Player");
             Console.WriteLine("TEST03: " + i);
         }
         
-        public void generateDatabase(DataContext db)
+        public void generateDatabase()
         {
-            db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1})", "player", 0);
+            Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1})", "player", 0);
             
-            Table<Player> players = db.GetTable<Player>();
+            Table<Player> players = Program.db.GetTable<Player>();
             var query = from player in players
                         where player.name == "player"
                         select player;
@@ -204,12 +205,12 @@ namespace Logic
             foreach (var player in query)
                 playerId = player.id;
 
-            db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "deck", playerId);
-            db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "hand", playerId);
-            db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "playedCards", playerId);
-            db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "usedCards", playerId);
+            Program.db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "deck", playerId);
+            Program.db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "hand", playerId);
+            Program.db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "playedCards", playerId);
+            Program.db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "usedCards", playerId);
 
-            Table<CardHandler> cardHandlers = db.GetTable<CardHandler>();
+            Table<CardHandler> cardHandlers = Program.db.GetTable<CardHandler>();
 
             var query2 = from cardHandler in cardHandlers
                     where cardHandler.type == "deck" && 
@@ -222,25 +223,25 @@ namespace Logic
                 playerDeckId = cardHandler.id;
             }
 
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 2, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Dragon", "Summons tornados", "dragon.png", 12, playerDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Champion", "Waaaaagh!!!", "warrior_orc.png", 12, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 2, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Dragon", "Summons tornados", "dragon.png", 12, playerDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Champion", "Waaaaagh!!!", "warrior_orc.png", 12, playerDeckId);
 
             //AI stuff.....
-            db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1})", "ai", 1);
+            Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1})", "ai", 1);
 
-            Table<Player> ais = db.GetTable<Player>();
+            Table<Player> ais = Program.db.GetTable<Player>();
             var aiquery = from player in players
                         where player.name == "ai"
                         select player;
@@ -248,12 +249,12 @@ namespace Logic
             foreach (var ai in aiquery)
                 aiId = ai.id;
 
-            db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "deck", aiId);
-            db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "hand", aiId);
-            db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "playedCards", aiId);
-            db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "usedCards", aiId);
+            Program.db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "deck", aiId);
+            Program.db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "hand", aiId);
+            Program.db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "playedCards", aiId);
+            Program.db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "usedCards", aiId);
 
-            cardHandlers = db.GetTable<CardHandler>();
+            cardHandlers = Program.db.GetTable<CardHandler>();
 
             var aiquery2 = from cardHandler in cardHandlers
                          where cardHandler.type == "deck" &&
@@ -266,23 +267,20 @@ namespace Logic
                 aiDeckId = cardHandler.id;
             }
 
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Commander", "Waaagh!!!", "warrior_orc.png", 5, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Dragon", "Summons tornados", "dragon.png", 12, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Champion", "Waaaaagh!!", "warrior_orc.png", 9, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 2, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 6, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 2, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Commander", "Waaagh!!!", "warrior_orc.png", 5, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Commander", "Waaagh!!!", "warrior_orc.png", 12, aiDeckId);
-            db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 5, aiDeckId);
-
-            db.SubmitChanges();
-            db.Refresh(RefreshMode.KeepCurrentValues);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Commander", "Waaagh!!!", "warrior_orc.png", 5, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Dragon", "Summons tornados", "dragon.png", 12, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Champion", "Waaaaagh!!", "warrior_orc.png", 9, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 2, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 6, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 2, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Commander", "Waaagh!!!", "warrior_orc.png", 5, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Commander", "Waaagh!!!", "warrior_orc.png", 12, aiDeckId);
+            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 5, aiDeckId);
             
         }
     }

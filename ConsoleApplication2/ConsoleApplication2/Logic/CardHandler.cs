@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GwentStandAlone;
+using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
@@ -52,9 +53,9 @@ namespace Logic
             list.RemoveRange(0, numberOFCards());
         }
 
-        public List<Card> getCards(DataContext db)
+        public List<Card> getCards()
         {
-            Table<Card> cards = db.GetTable<Card>();
+            Table<Card> cards = Program.db.GetTable<Card>();
 
             List<Card> filteredCards = (from card in cards
                                         where card.cardHandlerId == this.id
@@ -63,9 +64,9 @@ namespace Logic
             return filteredCards;
         }
 
-        public void moveCardHere(Card card, DataContext db)
+        public void moveCardHere(Card card)
         {
-            db.ExecuteCommand("UPDATE Card SET cardHandlerId ={0} WHERE id = {1}", this.id, card.id);
+            Program.db.ExecuteCommand("UPDATE Card SET cardHandlerId ={0} WHERE id = {1}", this.id, card.id);
         }
 
     }

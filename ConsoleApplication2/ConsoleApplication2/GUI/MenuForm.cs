@@ -33,7 +33,7 @@ namespace GUI
         private void button1_Click(object sender, EventArgs e)
         {
             GameForm.getGameForm().Show();
-            Logic.Table.getTableInstance().Timer.Start();
+            Logic.Table.getTableInstance().timer.Start();
             menuForm.Hide();
         }
 
