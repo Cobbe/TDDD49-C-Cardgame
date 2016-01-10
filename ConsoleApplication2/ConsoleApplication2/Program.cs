@@ -9,12 +9,12 @@ using System.Data.Linq;
 using Logic;
 using System.Data.Linq.Mapping;
 using System.Xml.Linq;
+using System.IO;
 
 namespace GwentStandAlone
 {
     static class Program
     {
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -23,11 +23,10 @@ namespace GwentStandAlone
         {
             // Setup LINQ
             // DataContext takes a connection string 
-            //DataContext db = new DataContext("D:\\Cobbe\\Git Projekt\\tddd49-csharp-projekt\\ConsoleApplication2\\ConsoleApplication2\\LINQ\\northwind.mdf");
             DataContext db = new DataContext(@"Data Source=(localdb)\mssqllocaldb;
                                    Integrated Security=true;
-                                   AttachDbFileName="+Environment.CurrentDirectory+"\\LINQ\\northwind.mdf");
-            
+                                   AttachDbFileName="+ Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + @"\LINQ\northwind.mdf");
+            Console.WriteLine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName);
             
             /* Launches the graphics */
             Application.EnableVisualStyles();
@@ -35,20 +34,30 @@ namespace GwentStandAlone
 
             /* Creates the game instance and the game timer*/
             Table table = Table.getTableInstance();
-            Console.WriteLine("TESTING!");
             
-            table.cleanDatabase(db);
-            table.generateDatabase(db);
-            Console.WriteLine("TEST DONE!");
-
             MenuForm menuForm = MenuForm.getMenuForm();
             menuForm.Location = new System.Drawing.Point(50, 50);
 
             GameForm gameForm = GameForm.getGameForm();
             gameForm.Location = new System.Drawing.Point(50, 50);
+            
+            //if new game
+            table.cleanDatabase(db);
+            table.generateDatabase(db);
 
+            //testprints deck
+            Table <Player> players = table.getPlayers(db);
+            foreach (Player player in players)
+            {
+                Console.WriteLine("player: " + player.name);
+                Console.WriteLine("  Deck");
+                foreach (Card card in player.getDeck(db).getCards(db))
+                {
+                    Console.WriteLine("    "+card.Name +": " +card.Description +" ("+card.Strength +")");
+                    
+                }
+            }
             Application.Run(menuForm);
-
         }
         
     }

@@ -10,7 +10,7 @@ using System.Xml.Linq;
 namespace Logic
 {
     [Table(Name = "Card")]
-    abstract class Card
+    class Card
     {
         [Column(IsPrimaryKey = true)]
         private int id;
@@ -21,8 +21,14 @@ namespace Logic
         [Column]
         private string name;
         [Column]
+        private int strength;
+        [Column]
         private int cardHandlerId;
 
+        public Card()
+        {
+
+        }
         protected Card(string name, string description, string image)
         {
             this.Name = name;
@@ -56,6 +62,19 @@ namespace Logic
             }
         }
 
+        public int Strength
+        {
+            get
+            {
+                return strength;
+            }
+
+            set
+            {
+                strength = value;
+            }
+        }
+
         public string Image
         {
             get
@@ -72,25 +91,14 @@ namespace Logic
 
     class MonsterCard : Card
     {
-        private int strength;
+        
 
         public MonsterCard(string name, string description, string image, int strength) : base(name, description, image)
         {
             this.Strength = strength;
         }
 
-        public int Strength
-        {
-            get
-            {
-                return strength;
-            }
-
-            set
-            {
-                strength = value;
-            }
-        }
+        
     }
 
     class SpecialCard : Card

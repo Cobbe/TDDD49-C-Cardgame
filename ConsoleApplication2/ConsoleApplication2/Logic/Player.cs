@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text;
@@ -32,7 +33,7 @@ namespace Logic
                 return deck;
             }
 
-            set
+            private set
             {
                 deck = value;
             }
@@ -45,7 +46,7 @@ namespace Logic
                 return hand;
             }
 
-            set
+            private set
             {
                 hand = value;
             }
@@ -58,7 +59,7 @@ namespace Logic
                 return playedCards;
             }
 
-            set
+            private set
             {
                 playedCards = value;
             }
@@ -71,7 +72,7 @@ namespace Logic
                 return usedCards;
             }
 
-            set
+            private set
             {
                 usedCards = value;
             }
@@ -134,7 +135,40 @@ namespace Logic
             Hand = new Hand();
             PlayedCards = new PlayedCards();
             UsedCards = new UsedCards();
-            
+        }
+
+        private CardHandler getCardHandler(DataContext db, String type)
+        {
+            Table<CardHandler> cardHandlers = db.GetTable<CardHandler>();
+            var query = from cardHandler in cardHandlers
+                        where cardHandler.type == type &&
+                        cardHandler.playerId == this.id
+                        select cardHandler;
+            CardHandler res = null;
+            foreach (var cardHandler in query)
+                res = cardHandler;
+
+            return res;
+        }
+
+        public CardHandler getDeck(DataContext db)
+        {
+            return getCardHandler(db, "deck");
+        }
+
+        public CardHandler getHand(DataContext db)
+        {
+            return getCardHandler(db, "hand");
+        }
+
+        public CardHandler getPlayedCards(DataContext db)
+        {
+            return getCardHandler(db, "playedCards");
+        }
+
+        public CardHandler getUsedCards(DataContext db)
+        {
+            return getCardHandler(db, "usedCards");
         }
     }
 

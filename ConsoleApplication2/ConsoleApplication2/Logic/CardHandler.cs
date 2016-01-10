@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text;
@@ -64,11 +65,18 @@ namespace Logic
         {
             List.RemoveRange(0, numberOFCards());
         }
+
+        public Table<Card> getCards(DataContext db)
+        {
+            Table<Card> cards = db.GetTable<Card>();
+
+            return cards;
+        }
     }
 
     class Deck : CardHandler
     {
-        private static Random rng = new Random();
+        //private static Random rng = new Random();
 
         public Deck() : base()
         {
@@ -86,7 +94,7 @@ namespace Logic
             while (n > 1)
             {
                 n--;
-                int k = rng.Next(n + 1);
+                int k = 0;//rng.Next(n + 1);
                 Card value = List[k];
                 List[k] = List[n];
                 List[n] = value;
