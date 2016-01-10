@@ -245,6 +245,13 @@ namespace Logic
             ai.Pass = false;
             firstTurn = true;
         }
+
+        public Table<Player> getPlayers(DataContext db)
+        {
+            Table<Player> players = db.GetTable<Player>();
+
+            return players;
+        }
         
         protected void initialDecks()
         {
@@ -304,9 +311,8 @@ namespace Logic
             Console.WriteLine("TEST02: " + i);
             i = db.ExecuteCommand("DELETE FROM Player");
             Console.WriteLine("TEST03: " + i);
-            
         }
-
+        
         public void generateDatabase(DataContext db)
         {
             db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1})", "player", 0);
@@ -395,6 +401,9 @@ namespace Logic
             db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, aiDeckId);
             db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Commander", "Waaagh!!!", "warrior_orc.png", 12, aiDeckId);
             db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 5, aiDeckId);
+
+            db.SubmitChanges();
+            db.Refresh(RefreshMode.KeepCurrentValues);
             
         }
     }
