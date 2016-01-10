@@ -16,7 +16,7 @@ namespace Logic
         [Column]
         private int strength;
         [Column]
-        private int cardHandlerId;
+        public int cardHandlerId;
 
         public Card() : base()
         {

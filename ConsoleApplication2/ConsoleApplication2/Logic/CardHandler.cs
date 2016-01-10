@@ -66,11 +66,15 @@ namespace Logic
             List.RemoveRange(0, numberOFCards());
         }
 
-        public Table<Card> getCards(DataContext db)
+        public List<Card> getCards(DataContext db)
         {
             Table<Card> cards = db.GetTable<Card>();
 
-            return cards;
+            List<Card> filteredCards = (from card in cards
+                        where card.cardHandlerId == this.id
+                        select card).ToList();
+
+            return filteredCards;
         }
     }
 
