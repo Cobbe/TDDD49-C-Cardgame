@@ -11,7 +11,7 @@ namespace Logic
     [Table(Name = "CardHandler")]
     class CardHandler
     {
-        private List<Card> list;
+        public List<Card> list;
 
         [Column(IsPrimaryKey = true)]
         public int id;
@@ -19,51 +19,37 @@ namespace Logic
         public string type;
         [Column]
         public int playerId;
-        
-
-        public List<Card> List
-        {
-            get
-            {
-                return list;
-            }
-
-            set
-            {
-                list = value;
-            }
-        }
 
         public CardHandler()
         {
-            List = new List<Card>();
+            list = new List<Card>();
         }
 
         public void addCard(Card c)
         {
-            List.Add(c);
+            list.Add(c);
         }
 
         public Card getCard(int i)
         {
-            Card c = List[i];
-            List.RemoveAt(i);
+            Card c = list[i];
+            list.RemoveAt(i);
             return c;
         }
 
         public Card viewCard(int i)
         {
-            return List[i];
+            return list[i];
         }
 
         public int numberOFCards()
         {
-            return List.Count;
+            return list.Count;
         }
 
         public void clear()
         {
-            List.RemoveRange(0, numberOFCards());
+            list.RemoveRange(0, numberOFCards());
         }
 
         public List<Card> getCards(DataContext db)
@@ -78,7 +64,7 @@ namespace Logic
         }
         public void moveCardHere(Card card, DataContext db)
         {
-            db.ExecuteCommand("UPDATE Card SET cardHandlerId ={0} WHERE id = {1}", this.id, card.Id);
+            db.ExecuteCommand("UPDATE Card SET cardHandlerId ={0} WHERE id = {1}", this.id, card.id);
         }
 
     }
@@ -99,14 +85,14 @@ namespace Logic
 
         public void shuffle()
         {
-            int n = List.Count;
+            int n = list.Count;
             while (n > 1)
             {
                 n--;
                 int k = rng.Next(n + 1);
-                Card value = List[k];
-                List[k] = List[n];
-                List[n] = value;
+                Card value = list[k];
+                list[k] = list[n];
+                list[n] = value;
             }
         }
     }

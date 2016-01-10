@@ -11,9 +11,9 @@ namespace Logic
     [Table(Name = "Player")]
     class Player
     {
-        private Hand hand;
-        private Deck deck;
-        private PlayedCards playedCards;
+        public Hand hand;
+        public Deck deck;
+        public PlayedCards playedCards;
         private UsedCards usedCards;
 
         [Column(IsPrimaryKey = true)]
@@ -23,118 +23,30 @@ namespace Logic
         [Column]
         private bool ai;
 
-        private int strength;
-        private bool pass = false;
-
-        public Deck Deck
-        {
-            get
-            {
-                return deck;
-            }
-
-            private set
-            {
-                deck = value;
-            }
-        }
-
-        public Hand Hand
-        {
-            get
-            {
-                return hand;
-            }
-
-            private set
-            {
-                hand = value;
-            }
-        }
-
-        public PlayedCards PlayedCards
-        {
-            get
-            {
-                return playedCards;
-            }
-
-            private set
-            {
-                playedCards = value;
-            }
-        }
-
-        public UsedCards UsedCards
-        {
-            get
-            {
-                return usedCards;
-            }
-
-            private set
-            {
-                usedCards = value;
-            }
-        }
-
-        public int Strength
-        {
-            get
-            {
-                return strength;
-            }
-
-            set
-            {
-                strength = value;
-            }
-        }
-
-        public bool Pass
-        {
-            get
-            {
-                return pass;
-            }
-
-            set
-            {
-                pass = value;
-            }
-        }
+        public int strength;
+        public bool pass = false;
 
         public void drawCards(int number)
         {
             for (int i = 0; i < number; i++)
             {
-                Hand.addCard(Deck.drawCard());
+                hand.addCard(deck.drawCard());
             }
         }
 
         public void playCard(Card card)
         {
-            if (card is MonsterCard)
-            {
-                MonsterCard monsterCard = (MonsterCard)card;
-                Strength += monsterCard.Strength;
-                PlayedCards.addCard(card);
-
-            }
-            else
-            {
-                SpecialCard specialCard = (SpecialCard)card;
-                PlayedCards.addCard(card);
-            }
+                strength += card.strength;
+                playedCards.addCard(card);
 
         }
 
         public Player()
         {
-            Deck = new Deck();
-            Hand = new Hand();
-            PlayedCards = new PlayedCards();
-            UsedCards = new UsedCards();
+            deck = new Deck();
+            hand = new Hand();
+            playedCards = new PlayedCards();
+            usedCards = new UsedCards();
         }
 
         private CardHandler getCardHandler(DataContext db, String type)
@@ -182,52 +94,52 @@ namespace Logic
         /* Method which controls the AI's actions */
         public void determineAndPerformAction(int opponentStrength, int round, int wins, bool playerPass)
         {
-                if(Strength > opponentStrength)
+                if(strength > opponentStrength)
                 {
                     if (playerPass)
                     {
                         // AI will pass and win
-                        Pass = true;
+                        pass = true;
                     } else
                     {
                         // AI should play a weak card
-                        playCard(Hand.getCard(getWeakestCard()));
+                        playCard(hand.getCard(getWeakestCard()));
                     }
                     
                 } else
                 {
                     if(round == 1)
                     {
-                        if(Strength+10 > opponentStrength)
+                        if(strength+10 > opponentStrength)
                         {
                             // AI should play a card and try to go for the win
-                            playCard(Hand.getCard(getStrongestCard()));
+                            playCard(hand.getCard(getStrongestCard()));
                         } else
                         {
-                            Pass = true;
+                            pass = true;
                         }
                     } else if(round == 2)
                     {
                         if(wins == 0)
                         {
                             // AI should play a card and try to go for the win
-                            playCard(Hand.getCard(getStrongestCard()));
+                            playCard(hand.getCard(getStrongestCard()));
                         } else
                         {
-                            if(Strength+10 > opponentStrength)
+                            if(strength+10 > opponentStrength)
                             {
                                 // AI should play a card and try to go for the win
-                                playCard(Hand.getCard(getStrongestCard()));
+                                playCard(hand.getCard(getStrongestCard()));
                             } else
                             {
                                 // AI should pass and take the loss
-                                Pass = true;
+                                pass = true;
                             }
                         }
                     } else
                     {
                         // AI should play a card and try to go for the win
-                        playCard(Hand.getCard(getStrongestCard()));
+                        playCard(hand.getCard(getStrongestCard()));
                     }
                 }
         }
@@ -237,17 +149,14 @@ namespace Logic
         {
             int indexOfHigh = -1;
             int strongest = -1;
-            for (int i = 0; i < Hand.numberOFCards(); i++)
+            for (int i = 0; i < hand.numberOFCards(); i++)
             {
-                if (Hand.viewCard(i) is MonsterCard)
-                {
-                    int testCardStrength = ((MonsterCard)Hand.viewCard(i)).Strength;
+                    int testCardStrength = hand.viewCard(i).strength;
                     if (testCardStrength > strongest)
                     {
                         strongest = testCardStrength;
                         indexOfHigh = i;
                     }
-                }
             }
             return indexOfHigh;
         }
@@ -257,17 +166,14 @@ namespace Logic
         {
             int indexOfHigh = -1;
             int weakest = 1000;
-            for (int i = 0; i < Hand.numberOFCards(); i++)
+            for (int i = 0; i < hand.numberOFCards(); i++)
             {
-                if (Hand.viewCard(i) is MonsterCard)
-                {
-                    int testCardStrength = ((MonsterCard)Hand.viewCard(i)).Strength;
+                    int testCardStrength = hand.viewCard(i).strength;
                     if (testCardStrength < weakest)
                     {
                         weakest = testCardStrength;
                         indexOfHigh = i;
                     }
-                }
             }
             return indexOfHigh;
         }

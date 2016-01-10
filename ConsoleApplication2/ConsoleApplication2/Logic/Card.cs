@@ -6,7 +6,7 @@ namespace Logic
     class Card
     {
         [Column(IsPrimaryKey = true)]
-        private int id;
+        public int id;
         [Column]
         private string description;
         [Column]
@@ -14,7 +14,7 @@ namespace Logic
         [Column]
         private string name;
         [Column]
-        private int strength;
+        public int strength;
         [Column]
         public int cardHandlerId;
 
@@ -23,97 +23,13 @@ namespace Logic
 
         }
 
-        protected Card(string name, string description, string image)
+        public Card(string name, string description, string image, int strength)
         {
-            this.Name = name;
-            this.Description = description;
-            this.Image = image;
+            this.name = name;
+            this.description = description;
+            this.image = image;
+            this.strength = strength;
         }
 
-        public int Id
-        {
-            get
-            {
-                return id;
-            }
-
-            private set
-            {
-                id = value;
-            }
-        }
-        
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-
-            private set
-            {
-                name = value;
-            }
-        }
-
-        public string Description
-        {
-            get
-            {
-                return description;
-            }
-
-            private set
-            {
-                description = value;
-            }
-        }
-
-        public int Strength
-        {
-            get
-            {
-                return strength;
-            }
-
-            set
-            {
-                strength = value;
-            }
-        }
-
-        public string Image
-        {
-            get
-            {
-                return image;
-            }
-
-            private set
-            {
-                image = value;
-            }
-        }
-    }
-
-    class MonsterCard : Card
-    {
-        
-
-        public MonsterCard(string name, string description, string image, int strength) : base(name, description, image)
-        {
-            this.Strength = strength;
-        }
-
-        
-    }
-
-    class SpecialCard : Card
-    {
-        
-        public SpecialCard(string name, string description, string image) : base(name, description, image)
-        {
-
-        }
     }
 }
