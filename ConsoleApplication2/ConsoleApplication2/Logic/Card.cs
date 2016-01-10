@@ -30,6 +30,19 @@ namespace Logic
             this.Image = image;
         }
 
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+
+            private set
+            {
+                id = value;
+            }
+        }
+        
         public string Name
         {
             get
