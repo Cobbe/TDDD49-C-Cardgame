@@ -63,7 +63,7 @@ namespace Logic
         public void runGame(object Object, DoWorkEventArgs e)
         {
             Player player = getPlayer("player");
-            Player ai = getPlayer("player");
+            Player ai = getPlayer("ai");
 
             if (playedBattles < 3)
             {
@@ -74,7 +74,7 @@ namespace Logic
                     // Start by drawing cards
                     if (firstTurn)
                     {
-                        player.drawCards(1);
+                        player.drawCards(10);
                         GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
 
