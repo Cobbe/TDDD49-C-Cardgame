@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[Card] (
-    [id]          INT  IDENTITY (1, 1) NOT NULL,
-    [description] TEXT NULL,
-    [name]        TEXT NOT NULL,
+    [id]          INT IDENTITY NOT NULL,
+    [description] NVARCHAR(50) NULL,
+    [name]        NVARCHAR(50) NOT NULL,
     [strength]    INT  NOT NULL,
-    [image]       TEXT NOT NULL,
+    [image]       NVARCHAR(50) NOT NULL,
     [cardHandlerId] INT NOT NULL, 
     PRIMARY KEY CLUSTERED ([id] ASC)
 );

@@ -10,7 +10,7 @@ using System.Xml.Linq;
 namespace Logic
 {
     [Table(Name = "Card")]
-    abstract class Card
+    class Card
     {
         [Column(IsPrimaryKey = true)]
         private int id;
@@ -22,6 +22,11 @@ namespace Logic
         private string name;
         [Column]
         private int cardHandlerId;
+
+        public Card() : base()
+        {
+
+        }
 
         protected Card(string name, string description, string image)
         {

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Threading;
-using System.Timers;
 using GUI;
 using System.Data.Linq;
 using Logic;
-using System.Data.Linq.Mapping;
-using System.Xml.Linq;
+using System.IO;
 
 namespace GwentStandAlone
 {
@@ -26,7 +22,7 @@ namespace GwentStandAlone
             //DataContext db = new DataContext("D:\\Cobbe\\Git Projekt\\tddd49-csharp-projekt\\ConsoleApplication2\\ConsoleApplication2\\LINQ\\northwind.mdf");
             DataContext db = new DataContext(@"Data Source=(localdb)\mssqllocaldb;
                                    Integrated Security=true;
-                                   AttachDbFileName="+Environment.CurrentDirectory+"\\LINQ\\northwind.mdf");
+                                   AttachDbFileName="+ Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\LINQ\\northwind.mdf");
             
             
             /* Launches the graphics */
@@ -39,6 +35,13 @@ namespace GwentStandAlone
             
             table.cleanDatabase(db);
             table.generateDatabase(db);
+            /*
+            var selectQuery = from c in db.GetTable<Card>() select c;
+            foreach (Card c in selectQuery)
+            {
+                Console.WriteLine(c.Name);
+            }
+            */
             Console.WriteLine("TEST DONE!");
 
             MenuForm menuForm = MenuForm.getMenuForm();
