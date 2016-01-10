@@ -71,7 +71,11 @@ namespace Logic
                     // Start by drawing cards
                     if (firstTurn)
                     {
+<<<<<<< HEAD
                         getPlayer("player").drawCards(10);
+=======
+                        player.drawCards(10);
+>>>>>>> 86330f3d3d6d4c614a0cbe2e0fc050aefafe74b7
                         GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
 
