@@ -123,7 +123,10 @@ namespace Logic
                     getPlayer("player").setPass(false);
                     getPlayer("player").setStrength(0);
                     getPlayer("ai").setStrength(0);
-                    //CLEAR CARDS
+                    foreach (Card card in getPlayer("player").getPlayedCards().getCards())
+                        getPlayer("player").getUsedCards().moveCardHere(card);
+                    foreach (Card card in getPlayer("ai").getPlayedCards().getCards())
+                        getPlayer("ai").getUsedCards().moveCardHere(card);
                 }
             } else
             {
