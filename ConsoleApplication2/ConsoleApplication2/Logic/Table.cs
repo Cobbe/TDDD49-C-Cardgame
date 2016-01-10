@@ -82,6 +82,7 @@ namespace Logic
 
                     }
                     // Play card
+                    /*
                     if(getPlayer("player").getHand().numberOFCards() > 0 && !getPlayer("player").pass)
                     {
                         while (!GameForm.getGameForm().ActiveClick)
@@ -100,13 +101,26 @@ namespace Logic
                         }
                         
                     }
+                    */
+
+                    // Play card
+                    if (getPlayer("player").getHand().numberOFCards() > 0 && !getPlayer("player").pass)
+                    {
+                        getPlayer("player").determineAndPerformAction(getPlayer("ai").strength, playedBattles + 1, playedBattles - wonBattles, getPlayer("player").pass);
+                        GameForm.getGameForm().updateGraphics();
+                        System.Threading.Thread.Sleep(waitBetweenActions);
+                    }
+                    else
+                    {
+                        getPlayer("player").setPass(true);
+                    }
 
                     // Play card
                     if (getPlayer("ai").getHand().numberOFCards() > 0 && !getPlayer("ai").pass)
                     {
                         getPlayer("ai").determineAndPerformAction(getPlayer("player").strength, playedBattles+1, playedBattles - wonBattles, getPlayer("player").pass);
                         GameForm.getGameForm().updateGraphics();
-                        //System.Threading.Thread.Sleep(waitBetweenActions);
+                        System.Threading.Thread.Sleep(waitBetweenActions);
                     } else
                     {
                         getPlayer("ai").setPass(true);
@@ -169,10 +183,8 @@ namespace Logic
             return res;
         }
         
-        public static void getDrawResources(out Player playerOUT, out Player aiOUT, out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT)
+        public static void getDrawResources(out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT)
         {
-            playerOUT = table.getPlayer("player");
-            aiOUT = table.getPlayer("ai");
             playedBattlesOUT = table.playedBattles;
             wonBattlesOUT = table.wonBattles;
             winOUT = table.win;

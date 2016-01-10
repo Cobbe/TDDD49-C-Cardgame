@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GwentStandAlone;
+using Logic;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -22,8 +24,6 @@ namespace GUI
         BufferedGraphics myBuffer;
 
         // Stuff to draw
-        Logic.Player player;
-        Logic.Player ai;
         private int numberOfCards, playedBattles, wonBattles, lastClickedBox;
         private bool win, activeClick;
 
@@ -106,7 +106,7 @@ namespace GUI
 
         private void DrawIt()
         {
-            Logic.Table.getDrawResources(out player, out ai, out playedBattles, out wonBattles, out win);
+            Logic.Table.getDrawResources(out playedBattles, out wonBattles, out win);
             int scale = 2;
 
             if (playedBattles > 3)
@@ -125,31 +125,31 @@ namespace GUI
                 clickBoxes.Clear();
                 myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
 
-                myBuffer.Graphics.DrawString("Player(" +wonBattles +") - Strength: " + player.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
-                myBuffer.Graphics.DrawString("AI(" +(playedBattles-wonBattles) +") - Strength: " + ai.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
+                myBuffer.Graphics.DrawString("Player(" + wonBattles + ") - Strength: " + Table.getTableInstance().getPlayer("player").strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
+                myBuffer.Graphics.DrawString("AI(" + (playedBattles - wonBattles) + ") - Strength: " + Table.getTableInstance().getPlayer("ai").strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
 
                 // Draw the player's hand
-                numberOfCards = player.getHand().numberOFCards();
+                numberOfCards = Table.getTableInstance().getPlayer("player").getHand().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    clickBoxes.Add(DrawCard(player.getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
+                    clickBoxes.Add(DrawCard(Table.getTableInstance().getPlayer("player").getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
                 }
 
                 // Draw the battlefield
-                numberOfCards = player.getPlayedCards().numberOFCards();
+                numberOfCards = Table.getTableInstance().getPlayer("player").getPlayedCards().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(player.getPlayedCards().viewCard(i), 20 + (90 * i), 300, 0.4f);
+                    DrawCard(Table.getTableInstance().getPlayer("player").getPlayedCards().viewCard(i), 20 + (90 * i), 300, 0.4f);
                 }
 
-                numberOfCards = ai.getPlayedCards().numberOFCards();
+                numberOfCards = Table.getTableInstance().getPlayer("ai").getPlayedCards().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(ai.getPlayedCards().viewCard(i), 20 + (90 * i), 100, 0.4f);
+                    DrawCard(Table.getTableInstance().getPlayer("ai").getPlayedCards().viewCard(i), 20 + (90 * i), 100, 0.4f);
                 }
 
                 // Draw the AI's hand (just the cardback)
-                numberOfCards = ai.getHand().numberOFCards();
+                numberOfCards = Table.getTableInstance().getPlayer("ai").getHand().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
                     DrawCard(20 + (45 * i), 20, 0.2f);
@@ -221,7 +221,9 @@ namespace GUI
             }
             else if(e.Button == MouseButtons.Right)
             {
+                Program.db.Connection.Close();
                 Logic.Table.getTableInstance().getPlayer("player").setPass(true);
+                Program.db.Connection.Close();
             }
         }
 

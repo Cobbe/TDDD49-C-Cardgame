@@ -155,6 +155,7 @@ namespace Logic
         public void setStrength(int strength)
         {
             Program.db.ExecuteCommand("UPDATE Player SET strength ={0} WHERE id = {1}", strength, this.id);
+            //Program.db.ExecuteCommand("UPDATE Player SET strength = 10 WHERE id = 77");
         }
     }
 }
