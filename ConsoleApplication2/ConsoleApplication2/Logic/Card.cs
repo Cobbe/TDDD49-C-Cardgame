@@ -16,7 +16,7 @@ namespace Logic
         [Column]
         private int strength;
         [Column]
-        private int cardHandlerId;
+        public int cardHandlerId;
 
         public Card() : base()
         {
@@ -30,6 +30,19 @@ namespace Logic
             this.Image = image;
         }
 
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+
+            private set
+            {
+                id = value;
+            }
+        }
+        
         public string Name
         {
             get
