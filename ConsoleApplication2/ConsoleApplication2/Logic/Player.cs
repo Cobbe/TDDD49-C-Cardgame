@@ -95,7 +95,7 @@ namespace Logic
                     } else
                     {
                         // AI should play a weak card
-                        playCard(getWeakestCard(), db);
+                        playCard(getWeakestCard(db), db);
                     }
                     
                 } else
@@ -105,7 +105,7 @@ namespace Logic
                         if(strength+10 > opponentStrength)
                         {
                             // AI should play a card and try to go for the win
-                            playCard(hand.getCard(getStrongestCard()));
+                            playCard(getStrongestCard(db), db);
                         } else
                         {
                             pass = true;
@@ -115,13 +115,13 @@ namespace Logic
                         if(wins == 0)
                         {
                             // AI should play a card and try to go for the win
-                            playCard(hand.getCard(getStrongestCard()));
+                            playCard(getStrongestCard(db));
                         } else
                         {
                             if(strength+10 > opponentStrength)
                             {
                                 // AI should play a card and try to go for the win
-                                playCard(hand.getCard(getStrongestCard()));
+                                playCard(getStrongestCard(db));
                             } else
                             {
                                 // AI should pass and take the loss
@@ -131,7 +131,7 @@ namespace Logic
                     } else
                     {
                         // AI should play a card and try to go for the win
-                        playCard(hand.getCard(getStrongestCard()));
+                        playCard(getStrongestCard(db));
                     }
                 }
         }
