@@ -127,7 +127,7 @@ namespace GUI
 
                 myBuffer.Graphics.DrawString("Player(" +wonBattles +") - Strength: " + player.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
                 myBuffer.Graphics.DrawString("AI(" +(playedBattles-wonBattles) +") - Strength: " + ai.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
-
+                
                 // Draw the player's hand
                 numberOfCards = player.getHand().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
