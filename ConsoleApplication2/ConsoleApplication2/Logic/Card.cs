@@ -20,6 +20,8 @@ namespace Logic
         private string image;
         [Column]
         private string name;
+        [Column]
+        private int cardHandlerId;
 
         protected Card(string name, string description, string image)
         {

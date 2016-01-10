@@ -35,8 +35,11 @@ namespace GwentStandAlone
 
             /* Creates the game instance and the game timer*/
             Table table = Table.getTableInstance();
-
+            Console.WriteLine("TESTING!");
+            
             table.cleanDatabase(db);
+            table.generateDatabase(db);
+            Console.WriteLine("TEST DONE!");
 
             MenuForm menuForm = MenuForm.getMenuForm();
             menuForm.Location = new System.Drawing.Point(50, 50);
@@ -47,14 +50,6 @@ namespace GwentStandAlone
             Application.Run(menuForm);
 
         }
-
-        [Table(Name = "Customer")]
-        public class Customer
-        {
-            [Column(IsPrimaryKey = true)]
-            public int CustomerID;
-            [Column]
-            public String City;
-        }
+        
     }
 }

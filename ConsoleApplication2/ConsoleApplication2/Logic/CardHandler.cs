@@ -7,9 +7,18 @@ using System.Threading.Tasks;
 
 namespace Logic
 {
-    abstract class CardHandler
+    [Table(Name = "CardHandler")]
+    class CardHandler
     {
         private List<Card> list;
+
+        [Column(IsPrimaryKey = true)]
+        public int id;
+        [Column]
+        public string type;
+        [Column]
+        public int playerId;
+        
 
         public List<Card> List
         {
@@ -24,7 +33,7 @@ namespace Logic
             }
         }
 
-        protected CardHandler()
+        public CardHandler()
         {
             List = new List<Card>();
         }

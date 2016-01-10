@@ -1,17 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Logic
 {
+    [Table(Name = "Player")]
     class Player
     {
         private Hand hand;
         private Deck deck;
         private PlayedCards playedCards;
         private UsedCards usedCards;
+
+        [Column(IsPrimaryKey = true)]
+        public int id;
+        [Column]
+        public string name;
+        [Column]
+        private bool ai;
+
         private int strength;
         private bool pass = false;
 
