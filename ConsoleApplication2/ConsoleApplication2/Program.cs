@@ -46,7 +46,7 @@ namespace GwentStandAlone
                 Console.WriteLine("  Deck");
                 foreach (Card card in player.getDeck(db).getCards(db))
                 {
-                    Console.WriteLine("    "+card.Name +": " +card.Description +" ("+card.Strength +")");
+                    Console.WriteLine("    "+card.name +": " +card.description +" ("+card.strength +")");
                     //player.getHand(db).moveCardHere(card, db);
                 }
             }

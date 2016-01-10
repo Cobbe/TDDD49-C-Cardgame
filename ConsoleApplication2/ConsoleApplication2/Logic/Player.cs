@@ -23,7 +23,7 @@ namespace Logic
             for (int i = 0; i < number; i++)
             {
                 //FIX THIS (randomness)
-                getHand(db).moveCardHere(getDeck(db).getCards(db)[0], db);
+                getHand(db).moveCardHere(getDeck(db).getCards(db).First(), db);
             }
         }
 

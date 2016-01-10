@@ -196,32 +196,15 @@ namespace Logic
         {
             db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1})", "player", 0);
             
-            Table<Player> players = db.GetTable<Player>();
-            var query = from player in players
-                        where player.name == "player"
-                        select player;
-            int playerId = -1;
-            foreach (var player in query)
-                playerId = player.id;
+            int playerId = getPlayer("player", db).id;
 
             db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "deck", playerId);
             db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "hand", playerId);
             db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "playedCards", playerId);
             db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "usedCards", playerId);
-
-            Table<CardHandler> cardHandlers = db.GetTable<CardHandler>();
-
-            var query2 = from cardHandler in cardHandlers
-                    where cardHandler.type == "deck" && 
-                    cardHandler.playerId == playerId
-                    select cardHandler;
-
-            int playerDeckId = 0;
-            foreach (var cardHandler in query2)
-            {
-                playerDeckId = cardHandler.id;
-            }
-
+            
+            int playerDeckId = getPlayer("player", db).getDeck(db).id;
+            
             db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, playerDeckId);
             db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, playerDeckId);
             db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, playerDeckId);
@@ -239,32 +222,15 @@ namespace Logic
 
             //AI stuff.....
             db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1})", "ai", 1);
-
-            Table<Player> ais = db.GetTable<Player>();
-            var aiquery = from player in players
-                        where player.name == "ai"
-                        select player;
-            int aiId = -1;
-            foreach (var ai in aiquery)
-                aiId = ai.id;
+            
+            int aiId = getPlayer("ai", db).id;
 
             db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "deck", aiId);
             db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "hand", aiId);
             db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "playedCards", aiId);
             db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "usedCards", aiId);
-
-            cardHandlers = db.GetTable<CardHandler>();
-
-            var aiquery2 = from cardHandler in cardHandlers
-                         where cardHandler.type == "deck" &&
-                         cardHandler.playerId == aiId
-                           select cardHandler;
-
-            int aiDeckId = 0;
-            foreach (var cardHandler in aiquery2)
-            {
-                aiDeckId = cardHandler.id;
-            }
+            
+            int aiDeckId = getPlayer("ai", db).getDeck(db).id; ;
 
             db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, aiDeckId);
             db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Commander", "Waaagh!!!", "warrior_orc.png", 5, aiDeckId);
