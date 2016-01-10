@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Logic
 {
@@ -95,7 +92,7 @@ namespace Logic
                     } else
                     {
                         // AI should play a weak card
-                        playCard(getWeakestCard(), db);
+                        playCard(getWeakestCard(db), db);
                     }
                     
                 } else
@@ -105,7 +102,7 @@ namespace Logic
                         if(strength+10 > opponentStrength)
                         {
                             // AI should play a card and try to go for the win
-                            playCard(hand.getCard(getStrongestCard()));
+                            playCard(getStrongestCard(db), db);
                         } else
                         {
                             pass = true;
@@ -114,15 +111,15 @@ namespace Logic
                     {
                         if(wins == 0)
                         {
-                            // AI should play a card and try to go for the win
-                            playCard(hand.getCard(getStrongestCard()));
-                        } else
+                        // AI should play a card and try to go for the win
+                        playCard(getStrongestCard(db), db);
+                    } else
                         {
                             if(strength+10 > opponentStrength)
                             {
-                                // AI should play a card and try to go for the win
-                                playCard(hand.getCard(getStrongestCard()));
-                            } else
+                            // AI should play a card and try to go for the win
+                            playCard(getStrongestCard(db), db);
+                        } else
                             {
                                 // AI should pass and take the loss
                                 pass = true;
@@ -130,44 +127,22 @@ namespace Logic
                         }
                     } else
                     {
-                        // AI should play a card and try to go for the win
-                        playCard(hand.getCard(getStrongestCard()));
-                    }
+                    // AI should play a card and try to go for the win
+                    playCard(getStrongestCard(db), db);
+                }
                 }
         }
 
-        /* Retrieves the index of the monster card with the highest strength, if there are no monster cards in the deck it sends back -1 */
-        public int getStrongestCard()
+        /* Retrieves the card with the highest strength from the hand */
+        public Card getStrongestCard(DataContext db)
         {
-            int indexOfHigh = -1;
-            int strongest = -1;
-            for (int i = 0; i < hand.numberOFCards(); i++)
-            {
-                    int testCardStrength = hand.viewCard(i).strength;
-                    if (testCardStrength > strongest)
-                    {
-                        strongest = testCardStrength;
-                        indexOfHigh = i;
-                    }
-            }
-            return indexOfHigh;
+            return getHand(db).getCards(db).OrderByDescending(card => card.strength).First();
         }
 
-        /* Retrieves the index of the monster card with the lowest strength, if there are no monster cards in the deck it sends back -1 */
-        public int getWeakestCard()
+        /* Retrieves the card with the lowest strength from the hand */
+        public Card getWeakestCard(DataContext db)
         {
-            int indexOfHigh = -1;
-            int weakest = 1000;
-            for (int i = 0; i < hand.numberOFCards(); i++)
-            {
-                    int testCardStrength = hand.viewCard(i).strength;
-                    if (testCardStrength < weakest)
-                    {
-                        weakest = testCardStrength;
-                        indexOfHigh = i;
-                    }
-            }
-            return indexOfHigh;
+            return getHand(db).getCards(db).OrderBy(card => card.strength).First();
         }
     }
 }
