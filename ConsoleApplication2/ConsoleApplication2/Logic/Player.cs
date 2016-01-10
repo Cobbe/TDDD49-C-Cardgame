@@ -11,42 +11,34 @@ namespace Logic
     [Table(Name = "Player")]
     class Player
     {
-        public Hand hand;
-        public Deck deck;
-        public PlayedCards playedCards;
-        private UsedCards usedCards;
-
         [Column(IsPrimaryKey = true)]
         public int id;
         [Column]
         public string name;
         [Column]
         private bool ai;
-
+        
         public int strength;
         public bool pass = false;
 
-        public void drawCards(int number)
+        public void drawCards(int number, DataContext db)
         {
             for (int i = 0; i < number; i++)
             {
-                hand.addCard(deck.drawCard());
+                //FIX THIS (randomness)
+                getHand(db).moveCardHere(getDeck(db).getCards(db)[0], db);
             }
         }
 
-        public void playCard(Card card)
+        public void playCard(Card card, DataContext db)
         {
-                strength += card.strength;
-                playedCards.addCard(card);
-
+            strength += card.strength;
+            getPlayedCards(db).moveCardHere(card, db);
         }
 
-        public Player()
+        public Player() : base()
         {
-            deck = new Deck();
-            hand = new Hand();
-            playedCards = new PlayedCards();
-            usedCards = new UsedCards();
+
         }
 
         private CardHandler getCardHandler(DataContext db, String type)
@@ -92,7 +84,7 @@ namespace Logic
         }
 
         /* Method which controls the AI's actions */
-        public void determineAndPerformAction(int opponentStrength, int round, int wins, bool playerPass)
+        public void determineAndPerformAction(int opponentStrength, int round, int wins, bool playerPass, DataContext db)
         {
                 if(strength > opponentStrength)
                 {
@@ -103,7 +95,7 @@ namespace Logic
                     } else
                     {
                         // AI should play a weak card
-                        playCard(hand.getCard(getWeakestCard()));
+                        playCard(getWeakestCard(), db);
                     }
                     
                 } else

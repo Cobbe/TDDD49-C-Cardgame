@@ -62,6 +62,7 @@ namespace Logic
 
             return filteredCards;
         }
+
         public void moveCardHere(Card card, DataContext db)
         {
             db.ExecuteCommand("UPDATE Card SET cardHandlerId ={0} WHERE id = {1}", this.id, card.id);
