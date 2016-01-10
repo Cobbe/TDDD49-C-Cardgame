@@ -221,7 +221,7 @@ namespace GUI
             }
             else if(e.Button == MouseButtons.Right)
             {
-                Logic.Table.getTableInstance().getPlayer("player").pass = true;
+                Logic.Table.getTableInstance().getPlayer("player").setPass(true);
             }
         }
 

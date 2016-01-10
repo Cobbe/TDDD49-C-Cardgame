@@ -62,41 +62,38 @@ namespace Logic
 
         public void runGame(object Object, DoWorkEventArgs e)
         {
-            Player player = getPlayer("player");
-            Player ai = getPlayer("ai");
-
             if (playedBattles < 3)
             {
-                if ((!player.pass || !ai.pass) && ((player.getHand().numberOFCards() > 0 || ai.getHand().numberOFCards() > 0) || firstTurn))
+                if ((!getPlayer("player").pass || !getPlayer("ai").pass) && ((getPlayer("player").getHand().numberOFCards() > 0 || getPlayer("ai").getHand().numberOFCards() > 0) || firstTurn))
                 {
                     // Turn-based
 
                     // Start by drawing cards
                     if (firstTurn)
                     {
-                        player.drawCards(2);
+                        getPlayer("player").drawCards(10);
                         GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
 
-                        ai.drawCards(2);
+                        getPlayer("ai").drawCards(10);
                         GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
                         firstTurn = false;
 
                     }
                     // Play card
-                    if(player.getHand().numberOFCards() > 0 && !player.pass)
+                    if(getPlayer("player").getHand().numberOFCards() > 0 && !getPlayer("player").pass)
                     {
                         while (!GameForm.getGameForm().ActiveClick)
                         {
-                            if (player.pass)
+                            if (getPlayer("player").pass)
                             {
                                 break;
                             }
                         }
-                        if (!player.pass)
+                        if (!getPlayer("player").pass)
                         {
-                            player.playCard(player.getHand().getCard(GameForm.getGameForm().LastClickedBox));
+                            getPlayer("player").playCard(getPlayer("player").getHand().viewCard(GameForm.getGameForm().LastClickedBox));
                             GameForm.getGameForm().ActiveClick = false;
                             GameForm.getGameForm().updateGraphics();
                             //System.Threading.Thread.Sleep(waitBetweenActions);
@@ -105,27 +102,27 @@ namespace Logic
                     }
 
                     // Play card
-                    if (ai.getHand().numberOFCards() > 0 && !ai.pass)
+                    if (getPlayer("ai").getHand().numberOFCards() > 0 && !getPlayer("ai").pass)
                     {
-                        ai.determineAndPerformAction(player.strength, playedBattles+1, playedBattles - wonBattles, player.pass);
+                        getPlayer("ai").determineAndPerformAction(getPlayer("player").strength, playedBattles+1, playedBattles - wonBattles, getPlayer("player").pass);
                         GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
                     } else
                     {
-                        ai.pass = true;
+                        getPlayer("ai").setPass(true);
                     }
                 }
                 else
                 {
-                    if (player.strength > ai.strength)
+                    if (getPlayer("player").strength > getPlayer("ai").strength)
                     {
                         wonBattles++;
                     }
                     playedBattles++;
-                    ai.pass = false;
-                    player.pass = false;
-                    player.strength = 0;
-                    ai.strength = 0;
+                    getPlayer("ai").setPass(false);
+                    getPlayer("player").setPass(false);
+                    getPlayer("player").setStrength(0);
+                    getPlayer("ai").setStrength(0);
                     //CLEAR CARDS
                 }
             } else

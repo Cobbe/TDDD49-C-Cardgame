@@ -31,7 +31,8 @@ namespace Logic
 
         public void playCard(Card card)
         {
-            strength += card.strength;
+            setStrength(this.strength + card.strength);
+            //strength += card.strength;
             getPlayedCards().moveCardHere(card);
         }
 
@@ -82,7 +83,7 @@ namespace Logic
                 if (playerPass)
                 {
                     // AI will pass and win
-                    pass = true;
+                    setPass(true);
                 }
                 else
                 {
@@ -102,7 +103,7 @@ namespace Logic
                     }
                     else
                     {
-                        pass = true;
+                        setPass(true);
                     }
                 }
                 else if (round == 2)
@@ -122,7 +123,7 @@ namespace Logic
                         else
                         {
                             // AI should pass and take the loss
-                            pass = true;
+                            setPass(true);
                         }
                     }
                 }
@@ -144,6 +145,16 @@ namespace Logic
         public Card getWeakestCard()
         {
             return getHand().getCards().OrderBy(card => card.strength).First();
+        }
+
+        public void setPass(bool pass)
+        {
+            Program.db.ExecuteCommand("UPDATE Player SET pass ={0} WHERE id = {1}", pass, this.id);
+        }
+
+        public void setStrength(int strength)
+        {
+            Program.db.ExecuteCommand("UPDATE Player SET strength ={0} WHERE id = {1}", strength, this.id);
         }
     }
 }

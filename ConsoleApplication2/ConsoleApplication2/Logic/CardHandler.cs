@@ -12,8 +12,6 @@ namespace Logic
     [Table(Name = "CardHandler")]
     class CardHandler
     {
-        public List<Card> list;
-
         [Column(IsPrimaryKey = true)]
         public int id;
         [Column]
@@ -23,34 +21,17 @@ namespace Logic
 
         public CardHandler()
         {
-            list = new List<Card>();
         }
 
-        public void addCard(Card c)
-        {
-            list.Add(c);
-        }
-
-        public Card getCard(int i)
-        {
-            Card c = list[i];
-            list.RemoveAt(i);
-            return c;
-        }
-
+        
         public Card viewCard(int i)
         {
-            return list[i];
+            return getCards()[i];
         }
 
         public int numberOFCards()
         {
-            return list.Count;
-        }
-
-        public void clear()
-        {
-            list.RemoveRange(0, numberOFCards());
+            return getCards().Count;
         }
 
         public List<Card> getCards()
