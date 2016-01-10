@@ -129,7 +129,7 @@ namespace Logic
                     {
                     // AI should play a card and try to go for the win
                     playCard(getStrongestCard(db), db);
-                }
+                    }
                 }
         }
 

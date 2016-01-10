@@ -10,8 +10,6 @@ namespace Logic
     class Table
     {
         private static Table table;
-        private Player player;
-        private AI ai;
         
         private int cardToPlay;
         private bool win = false;
@@ -23,20 +21,20 @@ namespace Logic
 
         private static Random tableRng = new Random();
 
-        public static Table getTableInstance()
+        public static Table getTableInstance(DataContext db)
         {
             if(table != null)
             {
                 return table;
             } else
             {
-                return table = new Table();
+                return table = new Table(db);
             }
         }
 
-        private Table()
+        private Table(DataContext db)
         {
-            initializeGame();
+            initializeGame(db);
 
             gameWorker = new BackgroundWorker();
             gameWorker.DoWork += runGame;
@@ -61,29 +59,32 @@ namespace Logic
             }
         }
 
-        public void runGame(object Object, DoWorkEventArgs e)
+        public void runGame(object Object, DoWorkEventArgs e, DataContext db)
         {
+            Player player = getPlayer("player", db);
+            Player ai = getPlayer("player", db);
+
             if (playedBattles < 3)
             {
-                if ((!player.pass || !ai.pass) && ((player.hand.numberOFCards() > 0 || ai.hand.numberOFCards() > 0) || firstTurn))
+                if ((!player.pass || !ai.pass) && ((player.getHand(db).numberOFCards() > 0 || ai.getHand(db).numberOFCards() > 0) || firstTurn))
                 {
                     // Turn-based
 
                     // Start by drawing cards
                     if (firstTurn)
                     {
-                        player.drawCards(10);
+                        player.drawCards(10, db);
                         //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
 
-                        ai.drawCards(10);
+                        ai.drawCards(10, db);
                         //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
                         firstTurn = false;
 
                     }
                     // Play card
-                    if(player.hand.numberOFCards() > 0 && !player.pass)
+                    if(player.getHand(db).numberOFCards() > 0 && !player.pass)
                     {
                         while (!GameForm.getGameForm().ActiveClick)
                         {
@@ -94,7 +95,7 @@ namespace Logic
                         }
                         if (!player.pass)
                         {
-                            player.playCard(player.hand.getCard(GameForm.getGameForm().LastClickedBox));
+                            player.playCard(player.getHand(db).getCard(GameForm.getGameForm().LastClickedBox));
                             GameForm.getGameForm().ActiveClick = false;
                             //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                             //System.Threading.Thread.Sleep(waitBetweenActions);
@@ -103,9 +104,9 @@ namespace Logic
                     }
 
                     // Play card
-                    if (ai.hand.numberOFCards() > 0 && !ai.pass)
+                    if (ai.getHand(db).numberOFCards() > 0 && !ai.pass)
                     {
-                        ai.determineAndPerformAction(player.strength, playedBattles+1, playedBattles - wonBattles, player.pass);
+                        ai.determineAndPerformAction(player.strength, playedBattles+1, playedBattles - wonBattles, player.pass, db);
                         //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
                         //System.Threading.Thread.Sleep(waitBetweenActions);
                     } else
@@ -122,11 +123,9 @@ namespace Logic
                     playedBattles++;
                     ai.pass = false;
                     player.pass = false;
-                    player.playedCards.clear();
-                    ai.playedCards.clear();
                     player.strength = 0;
                     ai.strength = 0;
-                    //ConsoleApplication2.GameForm.getGameForm().updateGraphics();
+                    //CLEAR CARDS
                 }
             } else
             {
@@ -143,15 +142,12 @@ namespace Logic
             }
         }
 
-        protected void initializeGame()
+        protected void initializeGame(DataContext db)
         {
-            player = new Player();
-            ai = new AI();
-            initialDecks();
             playedBattles = 0;
             wonBattles = 0;
-            player.pass = false;
-            ai.pass = false;
+            getPlayer("player", db).pass = false;
+            getPlayer("ai", db).pass = false;
             firstTurn = true;
         }
 
@@ -162,49 +158,23 @@ namespace Logic
             return players;
         }
         
-        protected void initialDecks()
+        public Player getPlayer(string name, DataContext db)
         {
-            // For player
-            player.deck.clear();
-            player.deck.addCard(new Card("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            player.deck.addCard(new Card("Witch", "Dark Sorcery", "witch.png", 3));
-            player.deck.addCard(new Card("Wind Drake", "Has sharp claws", "dragon.png", 8));
-            player.deck.addCard(new Card("Witch", "Dark Sorcery", "witch.png", 3));
-            player.deck.addCard(new Card("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            player.deck.addCard(new Card("Witch", "Dark Sorcery", "witch.png", 3));
-            player.deck.addCard(new Card("Wind Drake", "Has sharp claws", "dragon.png", 8));
-            player.deck.addCard(new Card("Witch", "Dark Sorcery", "witch.png", 3));
-            player.deck.addCard(new Card("Wind Drake", "Has sharp claws", "dragon.png", 8));
-            player.deck.addCard(new Card("Witch", "Dark Sorcery", "witch.png", 3));
-            player.deck.addCard(new Card("Wind Drake", "Has sharp claws", "dragon.png", 8));
-            player.deck.addCard(new Card("Orc", "Waaagh!!", "warrior_orc.png", 2));
-            player.deck.addCard(new Card("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            player.deck.addCard(new Card("Orc Champion", "Waaaaagh!!!", "warrior_orc.png", 12));
-            player.deck.shuffle();
+            var query = from player in getPlayers(db)
+                        where player.name == name
+                        select player;
+            Player res = null;
 
-            // For AI
-            ai.deck.clear();
-            ai.deck.addCard(new Card("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            ai.deck.addCard(new Card("Orc Commander", "Waaagh!!!", "warrior_orc.png", 5));
-            ai.deck.addCard(new Card("Wind Dragon", "Summons tornados", "dragon.png", 12));
-            ai.deck.addCard(new Card("Orc Champion", "Waaaaagh!!", "warrior_orc.png", 9));
-            ai.deck.addCard(new Card("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            ai.deck.addCard(new Card("Orc", "Waaagh!!", "warrior_orc.png", 2));
-            ai.deck.addCard(new Card("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            ai.deck.addCard(new Card("Orc", "Waaagh!!", "warrior_orc.png", 6));
-            ai.deck.addCard(new Card("Fire Dragon", "Breathes fire", "dragon.png", 10));
-            ai.deck.addCard(new Card("Orc", "Waaagh!!", "warrior_orc.png", 2));
-            ai.deck.addCard(new Card("Orc Commander", "Waaagh!!!", "warrior_orc.png", 5));
-            ai.deck.addCard(new Card("Witch", "Dark Sorcery", "witch.png", 3));
-            ai.deck.addCard(new Card("Orc Commander", "Waaagh!!!", "warrior_orc.png", 12));
-            ai.deck.addCard(new Card("Witch", "Dark Sorcery", "witch.png", 5));
-            ai.deck.shuffle();
+            foreach (var player in query)
+                res = player;
+
+            return res;
         }
-
-        public static void getDrawResources(out Player playerOUT, out AI aiOUT, out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT)
+        
+        public static void getDrawResources(out Player playerOUT, out Player aiOUT, out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT, DataContext db)
         {
-            playerOUT = table.player;
-            aiOUT = table.ai;
+            playerOUT = table.getPlayer("player", db);
+            aiOUT = table.getPlayer("ai", db);
             playedBattlesOUT = table.playedBattles;
             wonBattlesOUT = table.wonBattles;
             winOUT = table.win;
