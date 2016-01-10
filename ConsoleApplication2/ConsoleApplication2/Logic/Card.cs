@@ -14,7 +14,7 @@ namespace Logic
         [Column]
         private string name;
         [Column]
-        private int strength;
+        public int strength;
         [Column]
         public int cardHandlerId;
 

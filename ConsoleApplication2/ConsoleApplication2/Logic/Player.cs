@@ -11,10 +11,6 @@ namespace Logic
     [Table(Name = "Player")]
     class Player
     {
-        private Hand hand;
-        private Deck deck;
-        private PlayedCards playedCards;
-        private UsedCards usedCards;
 
         [Column(IsPrimaryKey = true)]
         public int id;
@@ -25,59 +21,7 @@ namespace Logic
 
         private int strength;
         private bool pass = false;
-
-        public Deck Deck
-        {
-            get
-            {
-                return deck;
-            }
-
-            private set
-            {
-                deck = value;
-            }
-        }
-
-        public Hand Hand
-        {
-            get
-            {
-                return hand;
-            }
-
-            private set
-            {
-                hand = value;
-            }
-        }
-
-        public PlayedCards PlayedCards
-        {
-            get
-            {
-                return playedCards;
-            }
-
-            private set
-            {
-                playedCards = value;
-            }
-        }
-
-        public UsedCards UsedCards
-        {
-            get
-            {
-                return usedCards;
-            }
-
-            private set
-            {
-                usedCards = value;
-            }
-        }
-
+        
         public int Strength
         {
             get
@@ -104,37 +48,24 @@ namespace Logic
             }
         }
 
-        public void drawCards(int number)
+        public void drawCards(int number, DataContext db)
         {
             for (int i = 0; i < number; i++)
             {
-                Hand.addCard(Deck.drawCard());
+                //FIX THIS (randomness)
+                getHand(db).moveCardHere(getDeck(db).getCards(db)[0], db);
             }
         }
 
-        public void playCard(Card card)
+        public void playCard(Card card, DataContext db)
         {
-            if (card is MonsterCard)
-            {
-                MonsterCard monsterCard = (MonsterCard)card;
-                Strength += monsterCard.Strength;
-                PlayedCards.addCard(card);
-
-            }
-            else
-            {
-                SpecialCard specialCard = (SpecialCard)card;
-                PlayedCards.addCard(card);
-            }
-
+            strength += card.strength;
+            getPlayedCards(db).moveCardHere(card, db);
         }
 
         public Player()
         {
-            Deck = new Deck();
-            Hand = new Hand();
-            PlayedCards = new PlayedCards();
-            UsedCards = new UsedCards();
+
         }
 
         private CardHandler getCardHandler(DataContext db, String type)
@@ -180,7 +111,7 @@ namespace Logic
         }
 
         /* Method which controls the AI's actions */
-        public void determineAndPerformAction(int opponentStrength, int round, int wins, bool playerPass)
+        public void determineAndPerformAction(int opponentStrength, int round, int wins, bool playerPass, DataContext db)
         {
                 if(Strength > opponentStrength)
                 {
@@ -191,7 +122,7 @@ namespace Logic
                     } else
                     {
                         // AI should play a weak card
-                        playCard(Hand.getCard(getWeakestCard()));
+                        playCard(getWeakestCard(), db);
                     }
                     
                 } else
