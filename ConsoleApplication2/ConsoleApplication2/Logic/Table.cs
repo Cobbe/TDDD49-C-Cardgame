@@ -106,7 +106,7 @@ namespace Logic
                     // Play card
                     if (getPlayer("player").getHand().numberOFCards() > 0 && !getPlayer("player").pass)
                     {
-                        getPlayer("player").determineAndPerformAction(getPlayer("ai").strength, playedBattles + 1, playedBattles - wonBattles, getPlayer("player").pass);
+                        getPlayer("player").determineAndPerformAction(getPlayer("ai").strength, playedBattles + 1, wonBattles, getPlayer("ai").pass);
                         GameForm.getGameForm().updateGraphics();
                         System.Threading.Thread.Sleep(waitBetweenActions);
                     }
@@ -178,12 +178,7 @@ namespace Logic
             var query = from player in getPlayers()
                         where player.name == name
                         select player;
-            Player res = null;
-
-            foreach (var player in query)
-                res = player;
-
-            return res;
+            return query.First();
         }
         
         public static void getDrawResources(out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT)

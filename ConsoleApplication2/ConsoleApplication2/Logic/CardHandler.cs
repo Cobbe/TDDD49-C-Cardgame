@@ -48,6 +48,7 @@ namespace Logic
         public void moveCardHere(Card card)
         {
             Program.db.ExecuteCommand("UPDATE Card SET cardHandlerId ={0} WHERE id = {1}", this.id, card.id);
+            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<Card>());
         }
 
     }
