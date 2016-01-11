@@ -175,7 +175,9 @@ namespace Logic
         
         public Player getPlayer(string name)
         {
-            var query = from player in getPlayers()
+            Table<Player> players = Program.db.GetTable<Player>();
+
+            var query = from player in players
                         where player.name == name
                         select player;
             return query.First();
