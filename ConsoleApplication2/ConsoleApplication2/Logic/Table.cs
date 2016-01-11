@@ -141,6 +141,7 @@ namespace Logic
                         getPlayer("player").getUsedCards().moveCardHere(card);
                     foreach (Card card in getPlayer("ai").getPlayedCards().getCards())
                         getPlayer("ai").getUsedCards().moveCardHere(card);
+                    GameForm.getGameForm().updateGraphics();
                 }
             } else
             {
