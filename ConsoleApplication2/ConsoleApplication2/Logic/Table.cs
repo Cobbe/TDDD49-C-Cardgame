@@ -175,14 +175,14 @@ namespace Logic
         
         public Player getPlayer(string name)
         {
-            var query = from player in getPlayers()
+            Table<Player> players = Program.db.GetTable<Player>();
+
+            var query = from player in players
                         where player.name == name
                         select player;
-            Player res = null;
 
-            foreach (var player in query)
-                res = player;
-
+            Player res = query.First();
+            
             return res;
         }
         

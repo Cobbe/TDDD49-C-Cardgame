@@ -43,7 +43,7 @@ namespace GwentStandAlone
             Table <Player> players = table.getPlayers();
             foreach (Player player in players)
             {
-                Console.WriteLine("player: " + player.name);
+                Console.WriteLine("player: " + player.name +" str: " +player.strength);
                 Console.WriteLine("  Deck");
                 foreach (Card card in player.getDeck().getCards())
                 {
