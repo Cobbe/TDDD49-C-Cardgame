@@ -13,6 +13,7 @@ namespace GUI
     {
         private static GameForm gameForm;
         private Object gameFormLock = new Object();
+        private Object ClickboxLock = new Object();
         private ImageHandler imageHandler;
 
         public static int numberOfCards;
@@ -74,7 +75,6 @@ namespace GUI
             }
             else
             {
-                clickBoxes.Clear();
                 myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
 
                 //Draws all cards and some text
@@ -148,12 +148,15 @@ namespace GUI
                 myBuffer.Graphics.DrawString("Player2(" + wonBattlesPlayer2 + ") - Strength: " + LogicEngine.getPlayer2().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
 
             }
-
-            // Draw the player's hand
-            numberOfCards = currentPlayer.getHand().numberOFCards();
-            for (int i = 0; i < numberOfCards; i++)
+            lock (ClickboxLock)
             {
-                clickBoxes.Add(DrawCard(currentPlayer.getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
+                clickBoxes.Clear();
+                // Draw the player's hand
+                numberOfCards = currentPlayer.getHand().numberOFCards();
+                for (int i = 0; i < numberOfCards; i++)
+                {
+                    clickBoxes.Add(DrawCard(currentPlayer.getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
+                }
             }
 
             // Draw the battlefield
@@ -228,15 +231,19 @@ namespace GUI
             {
                 lastClickX = e.X;
                 lastClickY = e.Y;
-                Console.WriteLine("Clicked!");
-                // Insert code which identifies which clickBox has been clicked on.
-                for (int i = 0; i<clickBoxes.Count; i++)
+                Console.WriteLine("Clicked! x:" +lastClickX +" y:"+lastClickY);
+
+                lock (ClickboxLock)
                 {
-                    if(clickBoxes[i].inBox(lastClickX, lastClickY))
+                    Console.WriteLine(clickBoxes.Count + "Clickboxes");
+                    for (int i = 0; i < clickBoxes.Count; i++)
                     {
-                        lastClickedCard = clickBoxes[i].card;
-                        
-                        activeClick = true;
+                        if (clickBoxes[i].inBox(lastClickX, lastClickY))
+                        {
+                            lastClickedCard = clickBoxes[i].card;
+
+                            activeClick = true;
+                        }
                     }
                 }
             }
