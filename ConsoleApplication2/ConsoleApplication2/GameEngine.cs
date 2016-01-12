@@ -83,6 +83,13 @@ namespace GwentStandalone
             }
         }
 
+        public void closeGame()
+        {
+            timer.Stop();
+            gameWorker.CancelAsync();
+            //gameWorker.Dispose();
+        }
+
         private void reset_database()
         {
             LogicEngine.cleanDatabase();

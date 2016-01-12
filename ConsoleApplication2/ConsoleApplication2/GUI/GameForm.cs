@@ -66,10 +66,10 @@ namespace GUI
                 if (wonBattlesPlayer1 > wonBattlesPlayer2)
                 {
                     scale = 3;
-                    myBuffer.Graphics.DrawString("Victory!", new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
+                    myBuffer.Graphics.DrawString("Victory!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
                 } else
                 {
-                    myBuffer.Graphics.DrawString("Defeat!", new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
+                    myBuffer.Graphics.DrawString("Defeat!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
                 }
             }
             else
@@ -104,8 +104,23 @@ namespace GUI
                 numberOfCards = LogicEngine.getPlayer2().getHand().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(20 + (45 * i), 20, 0.2f);
+                    DrawCardBackside(20 + (45 * i), 20, 0.2f);
                 }
+
+                //Draw turn info
+                String drawstring = "";
+                if (LogicEngine.getInstance().state == GameState.P1Turn)
+                {
+                    if (LogicEngine.getPlayer2().pass)
+                        drawstring = "Opnent folded, your turn!";
+                    else
+                        drawstring = "Your turn!";
+                } else if (LogicEngine.getInstance().state == GameState.P2Turn)
+                {
+                    drawstring = "Oponents turn!";
+                }
+                myBuffer.Graphics.DrawString(drawstring, new Font("Arial", 13 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
+
             }
         }
 
@@ -136,7 +151,7 @@ namespace GUI
             //LogicEngine.getState
         }
 
-        private void DrawCard(float x, float y, float scale)
+        private void DrawCardBackside(float x, float y, float scale)
         {
             myBuffer.Graphics.DrawImage(imageHandler.getImage(ImageHandler.CARDBACK), x, y, 200 * scale, 320 * scale);
            
@@ -147,6 +162,28 @@ namespace GUI
             
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (string.Equals((sender as Button).Name, @"CloseButton"))
+            {
+                // Do something proper to CloseButton.
+            }
+            else
+            {
+                // Then assume that X has been clicked and act accordingly.
+            }
+            lock (gameFormLock)
+            {
+                GwentStandalone.GameEngine.getInstance().closeGame();
+                this.Close();
+                MenuForm.getMenuForm().Close();
+                Environment.Exit(1);
+                //Application.Exit();
+            }
+            //Environment.Exit(1);
+            //Application.Exit();
+        }
+
         //public void updateGraphics(object Object, DoWorkEventArgs e)
         public void updateGraphics()
         {
@@ -155,6 +192,7 @@ namespace GUI
                 DrawIt();
                 myBuffer.Render();
                 myBuffer.Render(CreateGraphics());
+                
             }
         }
 

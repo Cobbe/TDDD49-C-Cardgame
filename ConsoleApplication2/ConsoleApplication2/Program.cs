@@ -29,9 +29,13 @@ namespace GwentStandAlone
 
             MenuForm menuForm = MenuForm.getMenuForm();
             menuForm.Location = new System.Drawing.Point(50, 50);
+            menuForm.FormBorderStyle = FormBorderStyle.FixedSingle;
+            menuForm.MaximizeBox = false;
 
             GameForm gameForm = GameForm.getInstance();
             gameForm.Location = new System.Drawing.Point(50, 50);
+            gameForm.FormBorderStyle = FormBorderStyle.FixedSingle;
+            gameForm.MaximizeBox = false;
 
             GameEngine gameEngine = GameEngine.getInstance();
 
