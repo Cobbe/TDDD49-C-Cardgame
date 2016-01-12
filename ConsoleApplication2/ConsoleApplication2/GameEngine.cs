@@ -85,6 +85,8 @@ namespace GwentStandalone
         public static void resumeGame()
         {
             //get state from database
+            gameEngine.timer.Start();
+            Console.WriteLine("Resumed Game");
         }
 
         public static void startNewGame(int gameMode)
