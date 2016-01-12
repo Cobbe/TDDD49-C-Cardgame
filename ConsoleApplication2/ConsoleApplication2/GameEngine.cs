@@ -42,7 +42,7 @@ namespace GwentStandalone
             //Update GUI
             Console.WriteLine("Updating Graphics");
             GameForm.getInstance().updateGraphics();
-
+            
             // Alpha-version is currently using two AIs (this is not indicated in the DB)
             switch (LogicEngine.getInstance().state)
             {
@@ -74,6 +74,13 @@ namespace GwentStandalone
                     Console.WriteLine("Game is not running!");
                     break;
             }
+        }
+
+        public void closeGame()
+        {
+            timer.Stop();
+            gameWorker.CancelAsync();
+            //gameWorker.Dispose();
         }
 
         private void reset_database()

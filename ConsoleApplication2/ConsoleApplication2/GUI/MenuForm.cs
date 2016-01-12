@@ -45,6 +45,12 @@ namespace GUI
             GameEngine.startNewGame(2);
             menuForm.Hide();
             GameForm.getInstance().Show();
+            
+        }
+
+        private void MenuForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
