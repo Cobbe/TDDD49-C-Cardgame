@@ -220,8 +220,6 @@ namespace Logic
                 Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "AI", gameMode, 0, 0);
             }
             
-            
-            
             int player2Id = getPlayer2().id;
 
             Program.db.ExecuteCommand("INSERT INTO CardHandler VALUES ({0},{1})", "deck", player2Id);

@@ -61,42 +61,40 @@ namespace GUI
             int round = LogicEngine.getRound();
             int wonBattlesPlayer1 = LogicEngine.getWonBattlesPlayer1();
             int wonBattlesPlayer2 = LogicEngine.getWonBattlesPlayer2();
+            
+            myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
+
+            //Draws all cards and some text
+            drawCards();
+
+            //Draw turn info
+            String drawstring = "";
+            if (LogicEngine.getInstance().state == GameState.P1Turn)
+            {
+                if (LogicEngine.getPlayer2().pass)
+                    drawstring = LogicEngine.getPlayer2().name +" passed, " +LogicEngine.getPlayer1().name + "´s turn";
+                else
+                    drawstring = LogicEngine.getPlayer1().name+ "'s turn!";
+            } else if (LogicEngine.getInstance().state == GameState.P2Turn)
+            {
+                if (LogicEngine.getPlayer1().pass)
+                    drawstring = LogicEngine.getPlayer1().name +" passed, "+ LogicEngine.getPlayer2().name+"´s turn";
+                else
+                    drawstring = LogicEngine.getPlayer2().name+"'s turn!";
+            }
+            myBuffer.Graphics.DrawString(drawstring, new Font("Arial", 11 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 30, 250);
 
             if (round > 3)
             {
                 if (wonBattlesPlayer1 > wonBattlesPlayer2)
                 {
                     scale = 3;
-                    myBuffer.Graphics.DrawString(LogicEngine.getPlayer1().name +" won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
-                } else
-                {
-                    myBuffer.Graphics.DrawString(LogicEngine.getPlayer2().name +" won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
+                    myBuffer.Graphics.DrawString(LogicEngine.getPlayer1().name + " won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
                 }
-            }
-            else
-            {
-                myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
-
-                //Draws all cards and some text
-                drawCards();
-
-                //Draw turn info
-                String drawstring = "";
-                if (LogicEngine.getInstance().state == GameState.P1Turn)
+                else
                 {
-                    if (LogicEngine.getPlayer2().pass)
-                        drawstring = LogicEngine.getPlayer2().name +" passed, " +LogicEngine.getPlayer1().name + "´s turn";
-                    else
-                        drawstring = LogicEngine.getPlayer1().name+ "'s turn!";
-                } else if (LogicEngine.getInstance().state == GameState.P2Turn)
-                {
-                    if (LogicEngine.getPlayer1().pass)
-                        drawstring = LogicEngine.getPlayer1().name +" passed, "+ LogicEngine.getPlayer2().name+"´s turn";
-                    else
-                        drawstring = LogicEngine.getPlayer2().name+"'s turn!";
+                    myBuffer.Graphics.DrawString(LogicEngine.getPlayer2().name + " won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
                 }
-                myBuffer.Graphics.DrawString(drawstring, new Font("Arial", 11 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 30, 250);
-
             }
         }
 
