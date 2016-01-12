@@ -109,20 +109,20 @@ namespace GUI
                 numberOfCards = LogicEngine.getPlayer1().getHand().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    clickBoxes.Add(DrawCard(LogicEngine.getPlayer1().getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
+                    clickBoxes.Add(DrawCard2(LogicEngine.getPlayer1().getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
                 }
 
                 // Draw the battlefield
                 numberOfCards = LogicEngine.getPlayer1().getPlayedCards().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(LogicEngine.getPlayer1().getPlayedCards().viewCard(i), 20 + (90 * i), 300, 0.4f);
+                    DrawCard2(LogicEngine.getPlayer1().getPlayedCards().viewCard(i), 20 + (90 * i), 300, 0.4f);
                 }
 
                 numberOfCards = LogicEngine.getPlayer2().getPlayedCards().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(LogicEngine.getPlayer2().getPlayedCards().viewCard(i), 20 + (90 * i), 100, 0.4f);
+                    DrawCard2(LogicEngine.getPlayer2().getPlayedCards().viewCard(i), 20 + (90 * i), 100, 0.4f);
                 }
 
                 // Draw the AI's hand (just the cardback)
@@ -146,6 +146,29 @@ namespace GUI
             myBuffer.Graphics.DrawString("Description: " + card.description, new Font(FontFamily.GenericMonospace, 7*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25*scale, y + 235*scale);
             myBuffer.Graphics.DrawString("Strength: " + card.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25 * scale, y + 250 * scale);
 
+            return clickBox;
+        }
+
+        private GUI.CardClickbox DrawCard2(Logic.Card card, float x, float y, float scale)
+        {
+            Image cardImage = imageHandler.getImage(card.image);
+            myBuffer.Graphics.DrawImage(imageHandler.getImage(ImageHandler.CARD_BORDER), x, y, 200 * scale, 320 * scale);
+            myBuffer.Graphics.DrawImage(cardImage, x + 25 * scale, y + 25 * scale, 150 * scale, 170 * scale);
+
+            GUI.CardClickbox clickBox = new GUI.CardClickbox(x, y, 200 * scale, 320 * scale, card);
+
+            myBuffer.Graphics.FillEllipse(new SolidBrush(Color.BurlyWood), x, y, 55 * scale, 55 * scale);
+            myBuffer.Graphics.DrawEllipse(new Pen(Color.Black), x, y, 55 * scale, 55 * scale);
+
+            float fontSize = (card.strength < 10) ? 37 : 30;
+            float xDiff = (card.strength < 10) ? 6 : -1;
+            float yDiff = (card.strength < 10) ? 2 : 9;
+            myBuffer.Graphics.DrawString(card.strength.ToString(), new Font(FontFamily.GenericMonospace, fontSize * scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + xDiff * scale, y + yDiff * scale);
+
+            myBuffer.Graphics.DrawString(card.name, new Font("Arial", 17*scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25 * scale, y + 220 * scale);
+            myBuffer.Graphics.DrawString(card.description, new Font("Arial", 15 * scale, FontStyle.Regular), new SolidBrush(Color.Red), x + 25 * scale, y + 250 * scale);
+            //myBuffer.Graphics.DrawString("Strength: " + card.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), x + 25 * scale, y + 270 * scale);
+            
             return clickBox;
         }
 

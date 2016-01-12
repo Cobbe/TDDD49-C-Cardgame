@@ -22,10 +22,12 @@ namespace Logic
 
         public void drawCards(int number)
         {
+            Random rnd = new Random();
             for (int i = 0; i < number; i++)
             {
                 //FIX THIS (randomness)
-                getHand().moveCardHere(getDeck().getCards().First());
+                int cardNumber = rnd.Next(0, getDeck().numberOFCards());
+                getHand().moveCardHere(getDeck().getCards()[cardNumber]);
             }
         }
 
