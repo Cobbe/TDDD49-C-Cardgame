@@ -137,14 +137,17 @@ namespace GUI
                 if (LogicEngine.getInstance().state == GameState.P1Turn)
                 {
                     if (LogicEngine.getPlayer2().pass)
-                        drawstring = "Opnent folded, your turn!";
+                        drawstring = "Player 2 passed, player 1´s turn";
                     else
-                        drawstring = "Your turn!";
+                        drawstring = "Player1's turn!";
                 } else if (LogicEngine.getInstance().state == GameState.P2Turn)
                 {
-                    drawstring = "Oponents turn!";
+                    if (LogicEngine.getPlayer1().pass)
+                        drawstring = "Player 1 passed, player 2´s turn";
+                    else
+                        drawstring = "Player2's turn!";
                 }
-                myBuffer.Graphics.DrawString(drawstring, new Font("Arial", 13 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
+                myBuffer.Graphics.DrawString(drawstring, new Font("Arial", 11 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 30, 250);
 
             }
         }
