@@ -1,8 +1,10 @@
 ﻿using GUI;
+using GwentStandAlone;
 using Logic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Linq;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +41,8 @@ namespace GwentStandalone
 
         private void gameLoop(object Object, DoWorkEventArgs e)
         {
+            updateDB();
+
             //Update GUI
             //Console.WriteLine("Updating Graphics");
             GameForm.getInstance().updateGraphics();
@@ -117,6 +121,14 @@ namespace GwentStandalone
             {
                 gameWorker.RunWorkerAsync();
             }
+        }
+
+        private void updateDB()
+        {
+            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<Player>());
+            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<Card>());
+            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<CardHandler>());
+            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<LogicEngine>());
         }
 
     }
