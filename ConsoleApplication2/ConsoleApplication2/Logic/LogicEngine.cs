@@ -178,7 +178,7 @@ namespace Logic
             LogicEngine temp = getDBInstance();
             if (temp == null)
             {
-                return -1;
+                return GameState.Problem;
             }
             return getDBInstance().state;
         }
