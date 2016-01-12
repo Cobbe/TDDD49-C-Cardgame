@@ -141,8 +141,12 @@ namespace Logic
             
 
             // Sets the threshold for when it could be wise to pass
-            int passThreshold = 5;
+            int passThreshold = 10;
             Console.WriteLine("opponentPass: " + opponentPass);
+            if(getDBInstance().pass == true)
+            {
+                return false;
+            }
             if(getHand().numberOFCards() == 0)
             {
                 // No cards left, AI must pass
