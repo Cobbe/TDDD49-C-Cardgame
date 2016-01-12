@@ -77,10 +77,7 @@ namespace GUI
                 clickBoxes.Clear();
                 myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
 
-                myBuffer.Graphics.DrawString("Player(" + wonBattlesPlayer1 + ") - Strength: " + LogicEngine.getPlayer1().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
-                myBuffer.Graphics.DrawString("AI(" + wonBattlesPlayer2 + ") - Strength: " + LogicEngine.getPlayer2().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
-
-                //Draws all cards
+                //Draws all cards and some text
                 drawCards();
 
                 //Draw turn info
@@ -133,6 +130,23 @@ namespace GUI
             {
                 currentPlayer = LogicEngine.getPlayer2();
                 notCurrentPlayer = LogicEngine.getPlayer1();
+            }
+
+            int wonBattlesPlayer1 = LogicEngine.getWonBattlesPlayer1();
+            int wonBattlesPlayer2 = LogicEngine.getWonBattlesPlayer2();
+
+            int scale = 2;
+
+            if(currentPlayer.id == LogicEngine.getPlayer2().id)
+            {
+                myBuffer.Graphics.DrawString("Player2(" + wonBattlesPlayer2 + ") - Strength: " + LogicEngine.getPlayer2().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
+                myBuffer.Graphics.DrawString("Player1(" + wonBattlesPlayer1 + ") - Strength: " + LogicEngine.getPlayer1().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
+               
+            } else
+            {
+                myBuffer.Graphics.DrawString("Player1(" + wonBattlesPlayer1 + ") - Strength: " + LogicEngine.getPlayer1().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
+                myBuffer.Graphics.DrawString("Player2(" + wonBattlesPlayer2 + ") - Strength: " + LogicEngine.getPlayer2().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
+
             }
 
             // Draw the player's hand
