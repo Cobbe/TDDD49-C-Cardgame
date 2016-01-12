@@ -79,6 +79,16 @@ namespace Logic
             return getCardHandler("usedCards");
         }
 
+        public bool getAI()
+        {
+            Player temp = getDBInstance();
+            if (temp == null)
+            {
+                return false;
+            }
+            return getDBInstance().ai;
+        }
+
         public bool determineAndPerformAction()
         {
             if (ai)

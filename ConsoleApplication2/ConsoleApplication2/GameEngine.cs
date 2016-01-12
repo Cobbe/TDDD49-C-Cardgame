@@ -90,10 +90,10 @@ namespace GwentStandalone
             //gameWorker.Dispose();
         }
 
-        private void reset_database()
+        private void reset_database(int gameMode)
         {
             LogicEngine.cleanDatabase();
-            LogicEngine.generateDatabase();
+            LogicEngine.generateDatabase(gameMode);
         }
 
         public static void resumeGame()
@@ -105,21 +105,10 @@ namespace GwentStandalone
 
         public static void startNewGame(int gameMode)
         {
-            if (gameMode == 1)
-            {
-                gameEngine.reset_database();
+                gameEngine.reset_database(gameMode);
                 LogicEngine.getInstance().updateGamestate(GameState.Start);
                 gameEngine.timer.Start();
                 Console.WriteLine("Started Game");
-            }
-            else if (gameMode == 2)
-            {
-                gameEngine.reset_database();
-                LogicEngine.getInstance().updateGamestate(GameState.Start);
-                gameEngine.timer.Start();
-                Console.WriteLine("Started Game");
-            }
-
         }
 
         private void timer_Elapsed(object sender, ElapsedEventArgs e)

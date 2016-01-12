@@ -80,32 +80,8 @@ namespace GUI
                 myBuffer.Graphics.DrawString("Player(" + wonBattlesPlayer1 + ") - Strength: " + LogicEngine.getPlayer1().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
                 myBuffer.Graphics.DrawString("AI(" + wonBattlesPlayer2 + ") - Strength: " + LogicEngine.getPlayer2().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
 
-                // Draw the player's hand
-                numberOfCards = LogicEngine.getPlayer1().getHand().numberOFCards();
-                for (int i = 0; i < numberOfCards; i++)
-                {
-                    clickBoxes.Add(DrawCard(LogicEngine.getPlayer1().getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
-                }
-
-                // Draw the battlefield
-                numberOfCards = LogicEngine.getPlayer1().getPlayedCards().numberOFCards();
-                for (int i = 0; i < numberOfCards; i++)
-                {
-                    DrawCard(LogicEngine.getPlayer1().getPlayedCards().viewCard(i), 20 + (90 * i), 300, 0.4f);
-                }
-
-                numberOfCards = LogicEngine.getPlayer2().getPlayedCards().numberOFCards();
-                for (int i = 0; i < numberOfCards; i++)
-                {
-                    DrawCard(LogicEngine.getPlayer2().getPlayedCards().viewCard(i), 20 + (90 * i), 100, 0.4f);
-                }
-
-                // Draw the AI's hand (just the cardback)
-                numberOfCards = LogicEngine.getPlayer2().getHand().numberOFCards();
-                for (int i = 0; i < numberOfCards; i++)
-                {
-                    DrawCardBackside(20 + (45 * i), 20, 0.2f);
-                }
+                //Draws all cards
+                drawCards();
 
                 //Draw turn info
                 String drawstring = "";
@@ -146,9 +122,42 @@ namespace GUI
             return clickBox;
         }
 
-        private void drawHand()
+        private void drawCards()
         {
-            //LogicEngine.getState
+            Player currentPlayer = LogicEngine.getPlayer1();
+            Player notCurrentPlayer = LogicEngine.getPlayer2();
+            if(LogicEngine.getState() == GameState.P2Turn && LogicEngine.getPlayer2().getAI() == false)
+            {
+                currentPlayer = LogicEngine.getPlayer2();
+                notCurrentPlayer = LogicEngine.getPlayer1();
+            }
+
+            // Draw the player's hand
+            numberOfCards = currentPlayer.getHand().numberOFCards();
+            for (int i = 0; i < numberOfCards; i++)
+            {
+                clickBoxes.Add(DrawCard(currentPlayer.getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
+            }
+
+            // Draw the battlefield
+            numberOfCards = currentPlayer.getPlayedCards().numberOFCards();
+            for (int i = 0; i < numberOfCards; i++)
+            {
+                DrawCard(currentPlayer.getPlayedCards().viewCard(i), 20 + (90 * i), 300, 0.4f);
+            }
+
+            numberOfCards = notCurrentPlayer.getPlayedCards().numberOFCards();
+            for (int i = 0; i < numberOfCards; i++)
+            {
+                DrawCard(notCurrentPlayer.getPlayedCards().viewCard(i), 20 + (90 * i), 100, 0.4f);
+            }
+
+            // Draw the AI's hand (just the cardback)
+            numberOfCards = notCurrentPlayer.getHand().numberOFCards();
+            for (int i = 0; i < numberOfCards; i++)
+            {
+                DrawCardBackside(20 + (45 * i), 20, 0.2f);
+            }
         }
 
         private void DrawCardBackside(float x, float y, float scale)

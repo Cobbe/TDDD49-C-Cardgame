@@ -278,7 +278,7 @@ namespace Logic
             Program.db.ExecuteCommand("DELETE FROM LogicEngine");
         }
         
-        public static void generateDatabase()
+        public static void generateDatabase(int gameMode)
         {
             Program.db.ExecuteCommand("INSERT INTO LogicEngine VALUES(DEFAULT, DEFAULT, DEFAULT, DEFAULT)");
 
@@ -308,7 +308,8 @@ namespace Logic
             Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Champion", "Waaaaagh!!!", "warrior_orc.png", 12, player1DeckId);
 
             // AI/Player2 stuff.....
-            Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "player2", 1, 0, 0);
+            Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "player2", gameMode, 0, 0);
+            
             
             int player2Id = getPlayer2().id;
 

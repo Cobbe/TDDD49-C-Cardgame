@@ -42,7 +42,7 @@ namespace GUI
         private void button3_Click(object sender, EventArgs e)
         {
             // 2 is to specify a multiplayer game
-            GameEngine.startNewGame(2);
+            GameEngine.startNewGame(0);
             menuForm.Hide();
             GameForm.getInstance().Show();
             
