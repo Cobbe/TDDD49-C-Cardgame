@@ -33,7 +33,7 @@ namespace Logic
         {
             //Program.db.ExecuteCommand("UPDATE Player SET strength =2 WHERE id = 119");
             //Console.WriteLine("Old Strength: " + Table.getTableInstance().getPlayer(this.name).strength + " Card strength: " + card.strength);
-            setStrength(Table.getTableInstance().getPlayer(this.name).strength + card.strength);
+            setStrength(getDBInstance().strength + card.strength);
             //strength += card.strength;
             getPlayedCards().moveCardHere(card);
         }
@@ -78,19 +78,30 @@ namespace Logic
         }
 
         /* Method which controls the AI's actions */
-        public void determineAndPerformAction(int opponentStrength, int round, int wins, bool playerPass)
+        public void determineAndPerformAction(int opponentStrength, int round, int wins, bool opponentPass)
         {
+            // Sets the threshold for when it could be wise to pass
+            int passThreshold = 5;
+            Console.WriteLine("opponentPass: " + opponentPass);
+            if(getHand().numberOFCards() == 0)
+            {
+                // No cards left, AI must pass
+                setPass(true);
+                return;
+            }
             if (strength > opponentStrength)
             {
-                if (playerPass)
+                if (opponentPass)
                 {
                     // AI will pass and win
                     setPass(true);
+                    return;
                 }
                 else
                 {
                     // AI should play a weak card
                     playCard(getWeakestCard());
+                    return;
                 }
 
             }
@@ -98,14 +109,16 @@ namespace Logic
             {
                 if (round == 1)
                 {
-                    if (strength + 10 > opponentStrength)
+                    if (strength + passThreshold > opponentStrength)
                     {
                         // AI should play a card and try to go for the win
                         playCard(getStrongestCard());
+                        return;
                     }
                     else
                     {
                         setPass(true);
+                        return;
                     }
                 }
                 else if (round == 2)
@@ -114,18 +127,21 @@ namespace Logic
                     {
                         // AI should play a card and try to go for the win
                         playCard(getStrongestCard());
+                        return;
                     }
                     else
                     {
-                        if (strength + 10 > opponentStrength)
+                        if (strength + passThreshold > opponentStrength)
                         {
                             // AI should play a card and try to go for the win
                             playCard(getStrongestCard());
+                            return;
                         }
                         else
                         {
                             // AI should pass and take the loss
                             setPass(true);
+                            return;
                         }
                     }
                 }
@@ -133,6 +149,7 @@ namespace Logic
                 {
                     // AI should play a card and try to go for the win
                     playCard(getStrongestCard());
+                    return;
                 }
             }
         }
@@ -157,11 +174,17 @@ namespace Logic
 
         public void setStrength(int strength)
         {
-            //Console.WriteLine("Strength: " + strength);
             Program.db.ExecuteCommand("UPDATE Player SET strength ={0} WHERE id = {1}", strength, this.id);
             Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<Player>());
-            //Program.db.SubmitChanges();
-            //Program.db.ExecuteCommand("UPDATE Player SET strength = 10 WHERE id = 77");
+        }
+
+        // Retrieves the DB instance of this object
+        private Player getDBInstance()
+        {
+            Table<Player> players = Program.db.GetTable<Player>();
+            var query = from player in players where player.id == this.id select player;
+
+            return query.First();
         }
     }
 }

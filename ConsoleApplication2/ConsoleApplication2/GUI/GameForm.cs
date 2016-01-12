@@ -13,8 +13,6 @@ namespace GUI
     {
         private static GameForm gameForm;
         private Object gameFormLock = new Object();
-        //private System.Timers.Timer timer;
-        //Bitmap bm = new Bitmap(1000, 1000);
         private ImageHandler imageHandler;
 
         List<CardClickbox> clickBoxes = new List<CardClickbox>();
@@ -24,8 +22,8 @@ namespace GUI
         BufferedGraphics myBuffer;
 
         // Stuff to draw
-        private int numberOfCards, playedBattles, wonBattles, lastClickedBox;
-        private bool win, activeClick;
+        private int numberOfCards, lastClickedBox;
+        private bool activeClick;
 
         private int lastClickX = 0, lastClickY = 0;
 
@@ -55,22 +53,7 @@ namespace GUI
             }
         }
 
-        /*
-        public System.Timers.Timer Timer
-        {
-            get
-            {
-                return timer;
-            }
-
-            set
-            {
-                timer = value;
-            }
-        }
-        */
-
-        public static GameForm getGameForm()
+        public static GameForm getInstance()
         {
             if(gameForm == null)
             {
@@ -89,14 +72,6 @@ namespace GUI
             //Mouse
             this.MouseClick += mouseClick;
 
-            //Timer
-            /*
-            Timer = new System.Timers.Timer(1000);
-            Timer.Elapsed += tick;
-            Timer.AutoReset = true;
-            Timer.Enabled = false;
-            */
-
             imageHandler = new ImageHandler();
 
             // Double Buffering
@@ -106,12 +81,14 @@ namespace GUI
 
         private void DrawIt()
         {
-            Logic.Table.getDrawResources(out playedBattles, out wonBattles, out win);
             int scale = 2;
+            int round = LogicEngine.getRound();
+            int wonBattlesPlayer1 = LogicEngine.getWonBattlesPlayer1();
+            int wonBattlesPlayer2 = LogicEngine.getWonBattlesPlayer2();
 
-            if (playedBattles > 3)
+            if (round > 3)
             {
-                if (win)
+                if (wonBattlesPlayer1 > wonBattlesPlayer2)
                 {
                     scale = 3;
                     myBuffer.Graphics.DrawString("Victory!", new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
@@ -125,31 +102,31 @@ namespace GUI
                 clickBoxes.Clear();
                 myBuffer.Graphics.DrawImage(imageHandler.getImage("table.png"), 0, 0, Width, Height);
 
-                myBuffer.Graphics.DrawString("Player(" + wonBattles + ") - Strength: " + Table.getTableInstance().getPlayer("player").strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
-                myBuffer.Graphics.DrawString("AI(" + (playedBattles - wonBattles) + ") - Strength: " + Table.getTableInstance().getPlayer("ai").strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
+                myBuffer.Graphics.DrawString("Player(" + wonBattlesPlayer1 + ") - Strength: " + LogicEngine.getPlayer1().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
+                myBuffer.Graphics.DrawString("AI(" + wonBattlesPlayer2 + ") - Strength: " + LogicEngine.getPlayer2().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
 
                 // Draw the player's hand
-                numberOfCards = Table.getTableInstance().getPlayer("player").getHand().numberOFCards();
+                numberOfCards = LogicEngine.getPlayer1().getHand().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    clickBoxes.Add(DrawCard(Table.getTableInstance().getPlayer("player").getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
+                    clickBoxes.Add(DrawCard(LogicEngine.getPlayer1().getHand().viewCard(i), 20 + (115 * i), 450, 0.5f));
                 }
 
                 // Draw the battlefield
-                numberOfCards = Table.getTableInstance().getPlayer("player").getPlayedCards().numberOFCards();
+                numberOfCards = LogicEngine.getPlayer1().getPlayedCards().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(Table.getTableInstance().getPlayer("player").getPlayedCards().viewCard(i), 20 + (90 * i), 300, 0.4f);
+                    DrawCard(LogicEngine.getPlayer1().getPlayedCards().viewCard(i), 20 + (90 * i), 300, 0.4f);
                 }
 
-                numberOfCards = Table.getTableInstance().getPlayer("ai").getPlayedCards().numberOFCards();
+                numberOfCards = LogicEngine.getPlayer2().getPlayedCards().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
-                    DrawCard(Table.getTableInstance().getPlayer("ai").getPlayedCards().viewCard(i), 20 + (90 * i), 100, 0.4f);
+                    DrawCard(LogicEngine.getPlayer2().getPlayedCards().viewCard(i), 20 + (90 * i), 100, 0.4f);
                 }
 
                 // Draw the AI's hand (just the cardback)
-                numberOfCards = Table.getTableInstance().getPlayer("ai").getHand().numberOFCards();
+                numberOfCards = LogicEngine.getPlayer2().getHand().numberOFCards();
                 for (int i = 0; i < numberOfCards; i++)
                 {
                     DrawCard(20 + (45 * i), 20, 0.2f);
@@ -194,14 +171,6 @@ namespace GUI
             }
         }
 
-        /*
-        private void tick(object Object, ElapsedEventArgs e)
-        {
-            Logic.Table.tick();
-            updateGraphics();
-        }
-        */
-
         private void mouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -221,9 +190,8 @@ namespace GUI
             }
             else if(e.Button == MouseButtons.Right)
             {
-                Program.db.Connection.Close();
-                Logic.Table.getTableInstance().getPlayer("player").setPass(true);
-                Program.db.Connection.Close();
+                // Make a buffer variable instead of going straight for the DB
+                //Logic.LogicEngine.getInstance().getPlayer1().setPass(true);
             }
         }
 
