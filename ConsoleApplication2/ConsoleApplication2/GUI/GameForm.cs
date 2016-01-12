@@ -167,6 +167,18 @@ namespace GUI
             
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (string.Equals((sender as Button).Name, @"CloseButton"))
+            {
+                // Do something proper to CloseButton.
+            }
+            else
+            {
+                // Then assume that X has been clicked and act accordingly.
+            }
+        }
+
         //public void updateGraphics(object Object, DoWorkEventArgs e)
         public void updateGraphics()
         {
