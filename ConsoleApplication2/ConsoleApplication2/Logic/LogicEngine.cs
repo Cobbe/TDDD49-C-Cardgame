@@ -21,6 +21,8 @@ namespace Logic
         private int wonBattlesPlayer1;
         [Column]
         private int wonBattlesPlayer2;
+        [Column]
+        public GameState state;
 
         public LogicEngine() : base()
         {
@@ -268,7 +270,7 @@ namespace Logic
         
         public static void generateDatabase()
         {
-            Program.db.ExecuteCommand("INSERT INTO LogicEngine VALUES(DEFAULT, DEFAULT, DEFAULT)");
+            Program.db.ExecuteCommand("INSERT INTO LogicEngine VALUES(DEFAULT, DEFAULT, DEFAULT, DEFAULT)");
 
             Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "player1", 0, 0, 0);
             
@@ -323,5 +325,20 @@ namespace Logic
             Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 5, player2DeckId);
             
         }
+
+        public void updateGamestate(GameState state)
+        {
+            Program.db.ExecuteCommand("UPDATE LogicEngine SET state ={0} WHERE id = {1}", (int)state, this.id);
+            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<LogicEngine>());
+        }
+    }
+
+    enum GameState
+    {
+        Start = 1,
+        P1Turn = 2,
+        P2Turn = 3,
+        EndTurn = 4,
+        EndGame = 5
     }
 }

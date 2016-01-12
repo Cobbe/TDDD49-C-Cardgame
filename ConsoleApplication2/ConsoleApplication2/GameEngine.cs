@@ -13,7 +13,6 @@ namespace GwentStandalone
     class GameEngine
     {
         private static GameEngine gameEngine;
-        public GameState state;
         public Timer timer;
         private BackgroundWorker gameWorker, graphicsWorker;
 
@@ -45,28 +44,28 @@ namespace GwentStandalone
             GameForm.getInstance().updateGraphics();
 
             // Alpha-version is currently using two AIs (this is not indicated in the DB)
-            switch (state)
+            switch (LogicEngine.getInstance().state)
             {
                 case GameState.Start:
                     Console.WriteLine("start");
                     LogicEngine.nextRound();
                     LogicEngine.getPlayer1().drawCards(10);
                     LogicEngine.getPlayer2().drawCards(10);
-                    state = GameState.P1Turn;
+                    LogicEngine.getInstance().updateGamestate(GameState.P1Turn);
                     break;
                 case GameState.P1Turn:
                     Console.WriteLine("p1turn");
                     LogicEngine.getPlayer1().determineAndPerformAction(LogicEngine.getPlayer2().strength, LogicEngine.getRound(), LogicEngine.getWonBattlesPlayer1(), LogicEngine.getPlayer2().pass);
-                    state = GameState.P2Turn;
+                    LogicEngine.getInstance().updateGamestate(GameState.P2Turn);
                     break;
                 case GameState.P2Turn:
                     Console.WriteLine("p2Turn");
                     LogicEngine.getPlayer2().determineAndPerformAction(LogicEngine.getPlayer1().strength, LogicEngine.getRound(), LogicEngine.getWonBattlesPlayer2(), LogicEngine.getPlayer1().pass);
-                    state = GameState.EndTurn;
+                    LogicEngine.getInstance().updateGamestate(GameState.EndTurn);
                     break;
                 case GameState.EndTurn:
                     Console.WriteLine("End Round");
-                    state = LogicEngine.determineRound();
+                    LogicEngine.getInstance().updateGamestate(LogicEngine.determineRound());
                     break;
                 case GameState.EndGame:
                     Console.WriteLine("End game");
@@ -93,14 +92,14 @@ namespace GwentStandalone
             if (gameMode == 1)
             {
                 gameEngine.reset_database();
-                gameEngine.state = GameState.Start;
+                LogicEngine.getInstance().updateGamestate(GameState.Start);
                 gameEngine.timer.Start();
                 Console.WriteLine("Started Game");
             }
             else if (gameMode == 2)
             {
                 gameEngine.reset_database();
-                gameEngine.state = GameState.Start;
+                LogicEngine.getInstance().updateGamestate(GameState.Start);
                 gameEngine.timer.Start();
                 Console.WriteLine("Started Game");
             }
@@ -116,14 +115,6 @@ namespace GwentStandalone
         }
 
     }
-
-    enum GameState
-    {
-        Start = 1,
-        P1Turn = 2,
-        P2Turn = 3,
-        EndTurn = 4,
-        EndGame = 5
-    }
+    
 }
 
