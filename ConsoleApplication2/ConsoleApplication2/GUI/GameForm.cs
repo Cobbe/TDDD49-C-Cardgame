@@ -126,19 +126,20 @@ namespace GUI
         {
             Player currentPlayer = LogicEngine.getPlayer1();
             Player notCurrentPlayer = LogicEngine.getPlayer2();
-            if(LogicEngine.getState() == GameState.P2Turn && LogicEngine.getPlayer2().getAI() == false)
+            int wonBattlesCurrentPlayer = LogicEngine.getWonBattlesPlayer1();
+            int wonBattlesNotCurrentPlayer = LogicEngine.getWonBattlesPlayer2();
+            if (LogicEngine.getState() == GameState.P2Turn && LogicEngine.getPlayer2().getAI() == false)
             {
                 currentPlayer = LogicEngine.getPlayer2();
+                wonBattlesCurrentPlayer = LogicEngine.getWonBattlesPlayer2();
                 notCurrentPlayer = LogicEngine.getPlayer1();
+                wonBattlesNotCurrentPlayer = LogicEngine.getWonBattlesPlayer1();
             }
-
-            int wonBattlesPlayer1 = LogicEngine.getWonBattlesPlayer1();
-            int wonBattlesPlayer2 = LogicEngine.getWonBattlesPlayer2();
 
             int scale = 2;
 
-            myBuffer.Graphics.DrawString(currentPlayer.name +"(" + wonBattlesPlayer2 + ") - Strength: " + LogicEngine.getPlayer2().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
-            myBuffer.Graphics.DrawString(notCurrentPlayer.name+"(" + wonBattlesPlayer1 + ") - Strength: " + LogicEngine.getPlayer1().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
+            myBuffer.Graphics.DrawString(currentPlayer.name +"(" + wonBattlesCurrentPlayer + ") - Strength: " + currentPlayer.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
+            myBuffer.Graphics.DrawString(notCurrentPlayer.name+"(" + wonBattlesNotCurrentPlayer + ") - Strength: " + notCurrentPlayer.strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
             
             lock (ClickboxLock)
             {
