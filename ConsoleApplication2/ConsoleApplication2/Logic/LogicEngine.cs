@@ -125,12 +125,7 @@ namespace Logic
 
         public static GameState determineRound()
         {
-            if(getRound() > 3)
-            {
-                Console.WriteLine("It is over");
-                nextRound();
-                return GameState.EndGame;
-            }
+            
             //Console.WriteLine("P1Pass: " + getPlayer1().pass + " P2Pass: " + getPlayer2().pass);
             if (getPlayer1().pass == true && getPlayer2().pass == true)
             {
@@ -141,12 +136,20 @@ namespace Logic
                 {
                     player2Won();
                 }
-                if(getWonBattlesPlayer1() == 2 || getWonBattlesPlayer2() == 2)
+                if((getWonBattlesPlayer1() == 2 && getWonBattlesPlayer2() == 0) || (getWonBattlesPlayer1() == 0 && getWonBattlesPlayer2() == 2))
                 {
+                    // Add an extra round
                     nextRound();
                 }
-                nextRound();
+            nextRound();
             }
+            if (getRound() > 3)
+            {
+                Console.WriteLine("It is over");
+                nextRound();
+                return GameState.EndGame;
+            }
+            
             return GameState.P1Turn;
         }
 
