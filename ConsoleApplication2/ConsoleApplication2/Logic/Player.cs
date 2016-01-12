@@ -180,6 +180,14 @@ namespace Logic
             Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<Player>());
         }
 
+        public void movePlayedCardsToUsed()
+        {
+            foreach(Card card in getPlayedCards().getCards())
+            {
+                getUsedCards().moveCardHere(card);
+            }
+        }
+
         // Retrieves the DB instance of this object
         private Player getDBInstance()
         {

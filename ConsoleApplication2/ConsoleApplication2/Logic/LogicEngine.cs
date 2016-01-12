@@ -197,6 +197,8 @@ namespace Logic
             getPlayer2().setPass(false);
             getPlayer1().setStrength(0);
             getPlayer2().setStrength(0);
+            getPlayer1().movePlayedCardsToUsed();
+            getPlayer2().movePlayedCardsToUsed();
             Program.db.ExecuteCommand("UPDATE LogicEngine SET round ={0} WHERE id = {1}", getRound() + 1, getInstance().id);
             Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<LogicEngine>());
         }
