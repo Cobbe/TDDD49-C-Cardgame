@@ -308,7 +308,14 @@ namespace Logic
             Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc Champion", "Waaaaagh!!!", "warrior_orc.png", 12, player1DeckId);
 
             // AI/Player2 stuff.....
-            Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "player2", gameMode, 0, 0);
+            if(gameMode == 0)
+            {
+              Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "player2", gameMode, 0, 0);
+            } else
+            {
+                Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "AI", gameMode, 0, 0);
+            }
+            
             
             
             int player2Id = getPlayer2().id;
