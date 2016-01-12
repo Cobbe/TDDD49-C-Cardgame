@@ -3,7 +3,7 @@
 namespace Logic
 {
     [Table(Name = "Card")]
-    class Card
+    public class Card
     {
         [Column(IsPrimaryKey = true)]
         public int id;

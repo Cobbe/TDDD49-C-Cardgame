@@ -15,6 +15,10 @@ namespace GUI
         private Object gameFormLock = new Object();
         private ImageHandler imageHandler;
 
+        public static int numberOfCards;
+        public static Card lastClickedCard;
+        public static bool activeClick, activePass;
+
         List<CardClickbox> clickBoxes = new List<CardClickbox>();
 
         // Double Buffering
@@ -22,36 +26,7 @@ namespace GUI
         BufferedGraphics myBuffer;
 
         // Stuff to draw
-        private int numberOfCards, lastClickedBox;
-        private bool activeClick;
-
         private int lastClickX = 0, lastClickY = 0;
-
-        public bool ActiveClick
-        {
-            get
-            {
-                return activeClick;
-            }
-
-            set
-            {
-                activeClick = value;
-            }
-        }
-
-        public int LastClickedBox
-        {
-            get
-            {
-                return lastClickedBox;
-            }
-
-            set
-            {
-                lastClickedBox = value;
-            }
-        }
 
         public static GameForm getInstance()
         {
@@ -156,6 +131,11 @@ namespace GUI
             return clickBox;
         }
 
+        private void drawHand()
+        {
+            //LogicEngine.getState
+        }
+
         private void DrawCard(float x, float y, float scale)
         {
             myBuffer.Graphics.DrawImage(imageHandler.getImage(ImageHandler.CARDBACK), x, y, 200 * scale, 320 * scale);
@@ -184,21 +164,21 @@ namespace GUI
             {
                 lastClickX = e.X;
                 lastClickY = e.Y;
+                Console.WriteLine("Clicked!");
                 // Insert code which identifies which clickBox has been clicked on.
-                for(int i = 0; i<clickBoxes.Count; i++)
+                for (int i = 0; i<clickBoxes.Count; i++)
                 {
                     if(clickBoxes[i].inBox(lastClickX, lastClickY))
                     {
-                        LastClickedBox = i;
-                        ActiveClick = true;
-                        Console.WriteLine("Clicked box #"+i);
+                        lastClickedCard = clickBoxes[i].card;
+                        
+                        activeClick = true;
                     }
                 }
             }
             else if(e.Button == MouseButtons.Right)
             {
-                // Make a buffer variable instead of going straight for the DB
-                //Logic.LogicEngine.getInstance().getPlayer1().setPass(true);
+                activePass = true;
             }
         }
 

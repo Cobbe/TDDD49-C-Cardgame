@@ -173,6 +173,16 @@ namespace Logic
             return getDBInstance().round;
         }
 
+        public static GameState getState()
+        {
+            LogicEngine temp = getDBInstance();
+            if (temp == null)
+            {
+                return -1;
+            }
+            return getDBInstance().state;
+        }
+
         public static int getWonBattlesPlayer1()
         {
             LogicEngine temp = getDBInstance();
@@ -339,6 +349,7 @@ namespace Logic
         P1Turn = 2,
         P2Turn = 3,
         EndTurn = 4,
-        EndGame = 5
+        EndGame = 5,
+        Problem = -1
     }
 }

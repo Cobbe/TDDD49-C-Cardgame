@@ -8,29 +8,16 @@ namespace GUI
 {
     class CardClickbox
     {
-        private Logic.Card card;
+        public Logic.Card card;
         private float x, y, width, height;
 
-        public CardClickbox(float x, float y, float width, float height, Logic.Card cardNumber)
+        public CardClickbox(float x, float y, float width, float height, Logic.Card card)
         {
             this.x = x;
             this.y = y;
             this.width = width;
             this.height = height;
-            this.CardNumber = cardNumber;
-        }
-
-        public Logic.Card CardNumber
-        {
-            get
-            {
-                return card;
-            }
-
-            private set
-            {
-                card = value;
-            }
+            this.card = card;
         }
 
         public bool inBox(int xIn, int yIn)

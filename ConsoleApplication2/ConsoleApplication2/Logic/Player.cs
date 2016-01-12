@@ -1,4 +1,5 @@
-﻿using GwentStandAlone;
+﻿using GUI;
+using GwentStandAlone;
 using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
@@ -78,9 +79,53 @@ namespace Logic
             return getCardHandler("usedCards");
         }
 
-        /* Method which controls the AI's actions */
-        public void determineAndPerformAction(int opponentStrength, int round, int wins, bool opponentPass)
+        public bool determineAndPerformAction()
         {
+            if (ai)
+            {
+               return aiControls();
+            } else
+            {
+                return playerControls();
+            }
+        }
+
+        public bool playerControls()
+        {
+            if (GameForm.activePass)
+            {
+                setPass(true);
+                GameForm.activePass = false;
+                return false;
+            } else if(GameForm.activeClick)
+            {
+                playCard(GameForm.lastClickedCard);
+                GameForm.activeClick = false;
+                return false;
+            }
+            return true;
+        }
+
+        /* Method which controls the AI's actions */
+        public bool aiControls()
+        {
+            bool opponentPass;
+            int opponentStrength;
+            int round = LogicEngine.getRound();
+            int wins;
+            if (LogicEngine.getPlayer1().id == id)
+            {
+                opponentStrength = LogicEngine.getPlayer2().strength;
+                wins = LogicEngine.getWonBattlesPlayer1();
+                opponentPass = LogicEngine.getPlayer2().pass;
+            } else
+            {
+                opponentStrength = LogicEngine.getPlayer1().strength;
+                wins = LogicEngine.getWonBattlesPlayer2();
+                opponentPass = LogicEngine.getPlayer1().pass;
+            }
+            
+
             // Sets the threshold for when it could be wise to pass
             int passThreshold = 5;
             Console.WriteLine("opponentPass: " + opponentPass);
@@ -88,7 +133,7 @@ namespace Logic
             {
                 // No cards left, AI must pass
                 setPass(true);
-                return;
+                return false;
             }
             if (strength > opponentStrength)
             {
@@ -96,13 +141,13 @@ namespace Logic
                 {
                     // AI will pass and win
                     setPass(true);
-                    return;
+                    return false;
                 }
                 else
                 {
                     // AI should play a weak card
                     playCard(getWeakestCard());
-                    return;
+                    return false;
                 }
 
             }
@@ -114,12 +159,12 @@ namespace Logic
                     {
                         // AI should play a card and try to go for the win
                         playCard(getStrongestCard());
-                        return;
+                        return false;
                     }
                     else
                     {
                         setPass(true);
-                        return;
+                        return false;
                     }
                 }
                 else if (round == 2)
@@ -128,7 +173,7 @@ namespace Logic
                     {
                         // AI should play a card and try to go for the win
                         playCard(getStrongestCard());
-                        return;
+                        return false;
                     }
                     else
                     {
@@ -136,13 +181,13 @@ namespace Logic
                         {
                             // AI should play a card and try to go for the win
                             playCard(getStrongestCard());
-                            return;
+                            return false;
                         }
                         else
                         {
                             // AI should pass and take the loss
                             setPass(true);
-                            return;
+                            return false;
                         }
                     }
                 }
@@ -150,7 +195,7 @@ namespace Logic
                 {
                     // AI should play a card and try to go for the win
                     playCard(getStrongestCard());
-                    return;
+                    return false;
                 }
             }
         }
