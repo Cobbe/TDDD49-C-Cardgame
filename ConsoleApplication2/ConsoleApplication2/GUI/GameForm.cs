@@ -67,10 +67,10 @@ namespace GUI
                 if (wonBattlesPlayer1 > wonBattlesPlayer2)
                 {
                     scale = 3;
-                    myBuffer.Graphics.DrawString("Victory!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
+                    myBuffer.Graphics.DrawString(LogicEngine.getPlayer1().name +" won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
                 } else
                 {
-                    myBuffer.Graphics.DrawString("Defeat!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
+                    myBuffer.Graphics.DrawString(LogicEngine.getPlayer2().name +" won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
                 }
             }
             else
