@@ -38,110 +38,6 @@ namespace Logic
             return logicEngine;
         }
 
-        /*
-        public void runGame(object Object, DoWorkEventArgs e)
-        {
-            if (playedBattles < 3)
-            {
-                if ((!getPlayer("player").pass || !getPlayer("ai").pass) && ((getPlayer("player").getHand().numberOFCards() > 0 || getPlayer("ai").getHand().numberOFCards() > 0) || firstTurn))
-                {
-                    // Turn-based
-
-                    // Start by drawing cards
-                    if (firstTurn)
-                    {
-                        getPlayer("player").drawCards(10);
-                        GameForm.getGameForm().updateGraphics();
-                        //System.Threading.Thread.Sleep(waitBetweenActions);
-
-                        getPlayer("ai").drawCards(10);
-                        GameForm.getGameForm().updateGraphics();
-                        //System.Threading.Thread.Sleep(waitBetweenActions);
-                        firstTurn = false;
-
-                    }
-                    // Play card for human player
-                    
-                    if(getPlayer("player").getHand().numberOFCards() > 0 && !getPlayer("player").pass)
-                    {
-                        while (!GameForm.getGameForm().ActiveClick)
-                        {
-                            if (getPlayer("player").pass)
-                            {
-                                break;
-                            }
-                        }
-                        if (!getPlayer("player").pass)
-                        {
-                            getPlayer("player").playCard(getPlayer("player").getHand().viewCard(GameForm.getGameForm().LastClickedBox));
-                            GameForm.getGameForm().ActiveClick = false;
-                            GameForm.getGameForm().updateGraphics();
-                            //System.Threading.Thread.Sleep(waitBetweenActions);
-                        }
-                        
-                    }
-                    
-
-                    // Play card
-                    if (getPlayer("player").getHand().numberOFCards() > 0 && !getPlayer("player").pass)
-                    {
-                        getPlayer("player").determineAndPerformAction(getPlayer("ai").strength, playedBattles + 1, wonBattles, getPlayer("ai").pass);
-                        GameForm.getGameForm().updateGraphics();
-                        System.Threading.Thread.Sleep(waitBetweenActions);
-                    }
-                    else
-                    {
-                        getPlayer("player").setPass(true);
-                    }
-
-                    // Play card
-                    if (getPlayer("ai").getHand().numberOFCards() > 0 && !getPlayer("ai").pass)
-                    {
-                        getPlayer("ai").determineAndPerformAction(getPlayer("player").strength, playedBattles+1, playedBattles - wonBattles, getPlayer("player").pass);
-                        GameForm.getGameForm().updateGraphics();
-                        System.Threading.Thread.Sleep(waitBetweenActions);
-                    } else
-                    {
-                        getPlayer("ai").setPass(true);
-                    }
-                }
-                else
-                {
-                    if (getPlayer("player").strength > getPlayer("ai").strength)
-                    {
-                        wonBattles++;
-                    }
-                    playedBattles++;
-                    getPlayer("ai").setPass(false);
-                    getPlayer("player").setPass(false);
-                    getPlayer("player").setStrength(0);
-                    getPlayer("ai").setStrength(0);
-                    foreach (Card card in getPlayer("player").getPlayedCards().getCards())
-                        getPlayer("player").getUsedCards().moveCardHere(card);
-                    foreach (Card card in getPlayer("ai").getPlayedCards().getCards())
-                        getPlayer("ai").getUsedCards().moveCardHere(card);
-                    GameForm.getGameForm().updateGraphics();
-                }
-            } else
-            {
-                if (wonBattles >=2 )
-                {
-                    win = true;
-                }
-                else
-                {
-                    win = false;
-                }
-                playedBattles++;
-                GameForm.getGameForm().updateGraphics();
-            }
-        }
-        */
-        protected void initializeGame()
-        {
-            
-        }
-
         public Table<Player> getPlayers()
         {
             Table<Player> players = Program.db.GetTable<Player>();
@@ -235,6 +131,7 @@ namespace Logic
                 nextRound();
                 return GameState.EndGame;
             }
+            //Console.WriteLine("P1Pass: " + getPlayer1().pass + " P2Pass: " + getPlayer2().pass);
             if (getPlayer1().pass == true && getPlayer2().pass == true)
             {
                 if(getPlayer1().strength > getPlayer2().strength)
@@ -243,6 +140,10 @@ namespace Logic
                 } else
                 {
                     player2Won();
+                }
+                if(getWonBattlesPlayer1() == 2 || getWonBattlesPlayer2() == 2)
+                {
+                    nextRound();
                 }
                 nextRound();
             }

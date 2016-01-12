@@ -102,6 +102,10 @@ namespace Logic
 
         public bool playerControls()
         {
+            if(getDBInstance().pass == true)
+            {
+                return false;
+            }
             if (GameForm.activePass)
             {
                 setPass(true);
