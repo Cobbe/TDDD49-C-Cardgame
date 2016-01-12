@@ -85,15 +85,15 @@ namespace GUI
                 if (LogicEngine.getInstance().state == GameState.P1Turn)
                 {
                     if (LogicEngine.getPlayer2().pass)
-                        drawstring = "Player 2 passed, player 1´s turn";
+                        drawstring = LogicEngine.getPlayer2().name +" passed, " +LogicEngine.getPlayer1().name + "´s turn";
                     else
-                        drawstring = "Player1's turn!";
+                        drawstring = LogicEngine.getPlayer1().name+ "'s turn!";
                 } else if (LogicEngine.getInstance().state == GameState.P2Turn)
                 {
                     if (LogicEngine.getPlayer1().pass)
-                        drawstring = "Player 1 passed, player 2´s turn";
+                        drawstring = LogicEngine.getPlayer1().name +" passed, "+ LogicEngine.getPlayer2().name+"´s turn";
                     else
-                        drawstring = "Player2's turn!";
+                        drawstring = LogicEngine.getPlayer2().name+"'s turn!";
                 }
                 myBuffer.Graphics.DrawString(drawstring, new Font("Arial", 11 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 30, 250);
 
@@ -137,17 +137,9 @@ namespace GUI
 
             int scale = 2;
 
-            if(currentPlayer.id == LogicEngine.getPlayer2().id)
-            {
-                myBuffer.Graphics.DrawString("Player2(" + wonBattlesPlayer2 + ") - Strength: " + LogicEngine.getPlayer2().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
-                myBuffer.Graphics.DrawString("Player1(" + wonBattlesPlayer1 + ") - Strength: " + LogicEngine.getPlayer1().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
-               
-            } else
-            {
-                myBuffer.Graphics.DrawString("Player1(" + wonBattlesPlayer1 + ") - Strength: " + LogicEngine.getPlayer1().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
-                myBuffer.Graphics.DrawString("Player2(" + wonBattlesPlayer2 + ") - Strength: " + LogicEngine.getPlayer2().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
-
-            }
+            myBuffer.Graphics.DrawString(currentPlayer.name +"(" + wonBattlesPlayer2 + ") - Strength: " + LogicEngine.getPlayer2().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 500, 250);
+            myBuffer.Graphics.DrawString(notCurrentPlayer.name+"(" + wonBattlesPlayer1 + ") - Strength: " + LogicEngine.getPlayer1().strength, new Font(FontFamily.GenericMonospace, 12 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 600, 50);
+            
             lock (ClickboxLock)
             {
                 clickBoxes.Clear();
