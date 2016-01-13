@@ -5,7 +5,7 @@ namespace Logic
     [Table(Name = "Card")]
     public class Card
     {
-        [Column(IsPrimaryKey = true)]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int id;
         [Column]
         public string description;
@@ -31,5 +31,9 @@ namespace Logic
             this.strength = strength;
         }
 
+        public Card(string name, string description, string image, int strength, int cardHandlerId) : this(name, description, image, strength)
+        {
+            this.cardHandlerId = cardHandlerId;
+        }
     }
 }

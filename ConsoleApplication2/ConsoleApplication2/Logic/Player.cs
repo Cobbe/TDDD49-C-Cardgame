@@ -42,8 +42,10 @@ namespace Logic
 
         public Player() : base()
         {
-
+            
         }
+
+        
 
         private CardHandler getCardHandler(String type)
         {

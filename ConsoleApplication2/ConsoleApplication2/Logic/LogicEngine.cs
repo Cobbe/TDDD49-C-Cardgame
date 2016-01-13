@@ -184,6 +184,9 @@ namespace Logic
         
         public static void generateDatabase(int gameMode)
         {
+
+            
+
             Program.db.ExecuteCommand("INSERT INTO LogicEngine VALUES(DEFAULT, DEFAULT, DEFAULT, DEFAULT)");
 
             Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "player1", 0, 0, 0);
@@ -211,8 +214,13 @@ namespace Logic
             Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Dragon", "Summons tornados", "dragon.png", 12, player1DeckId);
             Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Strong Orc", "Waaaaagh!!!", "warrior_orc.png", 12, player1DeckId);
 
+            Console.WriteLine("Deck: " + player1DeckId);
+
+            Program.db.GetTable<Card>().InsertOnSubmit(new Card("Cobbe", "Fixes Problems", "dragon.png", 99, player1DeckId));
+            Program.db.SubmitChanges();
+
             // AI/Player2 stuff.....
-            if(gameMode == 0)
+            if (gameMode == 0)
             {
               Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "player2", gameMode, 0, 0);
             } else
