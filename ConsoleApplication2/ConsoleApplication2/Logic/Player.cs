@@ -23,6 +23,19 @@ namespace Logic
         [Column]
         public bool pass;
 
+        public Player() : base()
+        {
+
+        }
+
+        public Player(String name, bool ai) : base()
+        {
+            this.name = name;
+            this.ai = ai;
+            this.strength = 0;
+            this.pass = false;
+        }
+
         public void drawCards(int number)
         {
             Random rnd = new Random();
@@ -41,12 +54,7 @@ namespace Logic
             //strength += card.strength;
             getPlayedCards().moveCardHere(card);
         }
-
-        public Player() : base()
-        {
-            
-        }
-
+        
         public CardHandler getDeck()
         {
             return Storage.getCardHandler(this.id, "deck");
