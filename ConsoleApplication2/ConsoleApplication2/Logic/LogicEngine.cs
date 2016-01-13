@@ -2,6 +2,7 @@
 using GwentStandalone.LINQ;
 using GwentStandAlone;
 using System;
+using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace Logic
 
         public static LogicEngine getInstance()
         {
-            if(logicEngine == null)
+            if (logicEngine == null)
             {
                 return logicEngine = Storage.getLogicEngine();
             }
@@ -126,7 +127,6 @@ namespace Logic
         {
             Storage.updateGamestate(this.id, state);
         }
-
     }
 
     public enum GameState
