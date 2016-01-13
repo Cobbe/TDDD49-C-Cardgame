@@ -78,6 +78,7 @@
     <Compile Include="GUI\MenuForm.Designer.cs">
       <DependentUpon>MenuForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="LINQ\Storage.cs" />
     <Compile Include="Logic\Card.cs" />
     <Compile Include="Logic\CardGenerator.cs" />
     <Compile Include="Logic\CardHandler.cs" />

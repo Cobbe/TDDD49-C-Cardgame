@@ -1,4 +1,5 @@
 ﻿using GUI;
+using GwentStandalone.LINQ;
 using GwentStandAlone;
 using Logic;
 using System;
@@ -41,7 +42,7 @@ namespace GwentStandalone
 
         private void gameLoop(object Object, DoWorkEventArgs e)
         {
-            updateDB();
+            Storage.updateDB();
 
             //Update GUI
             //Console.WriteLine("Updating Graphics");
@@ -54,13 +55,13 @@ namespace GwentStandalone
                 case GameState.Start:
                     //Console.WriteLine("start");
                     LogicEngine.nextRound();
-                    LogicEngine.getPlayer1().drawCards(10);
-                    LogicEngine.getPlayer2().drawCards(10);
+                    Storage.getPlayer1().drawCards(10);
+                    Storage.getPlayer2().drawCards(10);
                     LogicEngine.getInstance().updateGamestate(GameState.P1Turn);
                     break;
                 case GameState.P1Turn:
                     //Console.WriteLine("p1turn");
-                    waitingForInput = LogicEngine.getPlayer1().determineAndPerformAction();
+                    waitingForInput = Storage.getPlayer1().determineAndPerformAction();
                     if (!waitingForInput)
                     {
                         LogicEngine.getInstance().updateGamestate(GameState.P2Turn);
@@ -68,7 +69,7 @@ namespace GwentStandalone
                     break;
                 case GameState.P2Turn:
                     //Console.WriteLine("p2Turn");
-                    waitingForInput = LogicEngine.getPlayer2().determineAndPerformAction();
+                    waitingForInput = Storage.getPlayer2().determineAndPerformAction();
                     if (!waitingForInput)
                     {
                         LogicEngine.getInstance().updateGamestate(GameState.EndTurn);
@@ -96,8 +97,8 @@ namespace GwentStandalone
 
         private void reset_database(int gameMode)
         {
-            LogicEngine.cleanDatabase();
-            LogicEngine.generateDatabase(gameMode);
+            Storage.cleanDatabase();
+            Storage.generateDatabase(gameMode);
         }
 
         public static void resumeGame()
@@ -123,14 +124,7 @@ namespace GwentStandalone
             }
         }
 
-        private void updateDB()
-        {
-            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<Player>());
-            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<Card>());
-            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<CardHandler>());
-            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<LogicEngine>());
-        }
-
+        
     }
     
 }

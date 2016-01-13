@@ -1,4 +1,5 @@
-﻿using GwentStandAlone;
+﻿using GwentStandalone.LINQ;
+using GwentStandAlone;
 using Logic;
 using System;
 using System.Collections.Generic;
@@ -71,16 +72,16 @@ namespace GUI
             String drawstring = "";
             if (LogicEngine.getInstance().state == GameState.P1Turn)
             {
-                if (LogicEngine.getPlayer2().pass)
-                    drawstring = LogicEngine.getPlayer2().name +" passed, " +LogicEngine.getPlayer1().name + "´s turn";
+                if (Storage.getPlayer2().pass)
+                    drawstring = Storage.getPlayer2().name +" passed, " + Storage.getPlayer1().name + "´s turn";
                 else
-                    drawstring = LogicEngine.getPlayer1().name+ "'s turn!";
+                    drawstring = Storage.getPlayer1().name+ "'s turn!";
             } else if (LogicEngine.getInstance().state == GameState.P2Turn)
             {
-                if (LogicEngine.getPlayer1().pass)
-                    drawstring = LogicEngine.getPlayer1().name +" passed, "+ LogicEngine.getPlayer2().name+"´s turn";
+                if (Storage.getPlayer1().pass)
+                    drawstring = Storage.getPlayer1().name +" passed, "+ Storage.getPlayer2().name+"´s turn";
                 else
-                    drawstring = LogicEngine.getPlayer2().name+"'s turn!";
+                    drawstring = Storage.getPlayer2().name+"'s turn!";
             }
             myBuffer.Graphics.DrawString(drawstring, new Font("Arial", 11 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 30, 250);
 
@@ -89,11 +90,11 @@ namespace GUI
                 if (wonBattlesPlayer1 > wonBattlesPlayer2)
                 {
                     scale = 3;
-                    myBuffer.Graphics.DrawString(LogicEngine.getPlayer1().name + " won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
+                    myBuffer.Graphics.DrawString(Storage.getPlayer1().name + " won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
                 }
                 else
                 {
-                    myBuffer.Graphics.DrawString(LogicEngine.getPlayer2().name + " won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
+                    myBuffer.Graphics.DrawString(Storage.getPlayer2().name + " won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 250);
                 }
             }
         }
@@ -122,15 +123,15 @@ namespace GUI
 
         private void drawCards()
         {
-            Player currentPlayer = LogicEngine.getPlayer1();
-            Player notCurrentPlayer = LogicEngine.getPlayer2();
+            Player currentPlayer = Storage.getPlayer1();
+            Player notCurrentPlayer = Storage.getPlayer2();
             int wonBattlesCurrentPlayer = LogicEngine.getWonBattlesPlayer1();
             int wonBattlesNotCurrentPlayer = LogicEngine.getWonBattlesPlayer2();
-            if (LogicEngine.getState() == GameState.P2Turn && LogicEngine.getPlayer2().getAI() == false)
+            if (LogicEngine.getState() == GameState.P2Turn && Storage.getPlayer2().ai == false)
             {
-                currentPlayer = LogicEngine.getPlayer2();
+                currentPlayer = Storage.getPlayer2();
                 wonBattlesCurrentPlayer = LogicEngine.getWonBattlesPlayer2();
-                notCurrentPlayer = LogicEngine.getPlayer1();
+                notCurrentPlayer = Storage.getPlayer1();
                 wonBattlesNotCurrentPlayer = LogicEngine.getWonBattlesPlayer1();
             }
 

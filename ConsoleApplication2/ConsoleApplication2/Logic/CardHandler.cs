@@ -1,4 +1,5 @@
-﻿using GwentStandAlone;
+﻿using GwentStandalone.LINQ;
+using GwentStandAlone;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace Logic
 {
     [Table(Name = "CardHandler")]
-    class CardHandler
+    public class CardHandler
     {
         [Column(IsPrimaryKey = true)]
         public int id;
@@ -36,19 +37,12 @@ namespace Logic
 
         public List<Card> getCards()
         {
-            Table<Card> cards = Program.db.GetTable<Card>();
-
-            List<Card> filteredCards = (from card in cards
-                                        where card.cardHandlerId == this.id
-                                        select card).ToList();
-
-            return filteredCards;
+            return Storage.getCards(this.id);
         }
 
         public void moveCardHere(Card card)
         {
-            Program.db.ExecuteCommand("UPDATE Card SET cardHandlerId ={0} WHERE id = {1}", this.id, card.id);
-            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<Card>());
+            Storage.moveCardToCardHandler(this.id, card);
         }
 
     }

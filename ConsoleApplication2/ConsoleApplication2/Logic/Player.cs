@@ -1,4 +1,5 @@
 ﻿using GUI;
+using GwentStandalone.LINQ;
 using GwentStandAlone;
 using System;
 using System.Data.Linq;
@@ -8,14 +9,14 @@ using System.Linq;
 namespace Logic
 {
     [Table(Name = "Player")]
-    class Player
+    public class Player
     {
         [Column(IsPrimaryKey = true)]
         public int id;
         [Column]
         public string name;
         [Column]
-        private bool ai;
+        public bool ai;
         [Column]
         public int strength;
         [Column]
@@ -35,7 +36,7 @@ namespace Logic
         {
             //Program.db.ExecuteCommand("UPDATE Player SET strength =2 WHERE id = 119");
             //Console.WriteLine("Old Strength: " + Table.getTableInstance().getPlayer(this.name).strength + " Card strength: " + card.strength);
-            setStrength(getDBInstance().strength + card.strength);
+            setStrength(strength + card.strength);
             //strength += card.strength;
             getPlayedCards().moveCardHere(card);
         }
@@ -45,51 +46,26 @@ namespace Logic
             
         }
 
-        
-
-        private CardHandler getCardHandler(String type)
-        {
-            Table<CardHandler> cardHandlers = Program.db.GetTable<CardHandler>();
-            var query = from cardHandler in cardHandlers
-                        where cardHandler.type == type &&
-                        cardHandler.playerId == this.id
-                        select cardHandler;
-            CardHandler res = null;
-            foreach (var cardHandler in query)
-                res = cardHandler;
-
-            return res;
-        }
-
         public CardHandler getDeck()
         {
-            return getCardHandler("deck");
+            return Storage.getCardHandler(this.id, "deck");
         }
 
         public CardHandler getHand()
         {
-            return getCardHandler("hand");
+            return Storage.getCardHandler(this.id, "hand");
         }
 
         public CardHandler getPlayedCards()
         {
-            return getCardHandler("playedCards");
+            return Storage.getCardHandler(this.id, "playedCards");
         }
 
         public CardHandler getUsedCards()
         {
-            return getCardHandler("usedCards");
+            return Storage.getCardHandler(this.id, "usedCards");
         }
-
-        public bool getAI()
-        {
-            Player temp = getDBInstance();
-            if (temp == null)
-            {
-                return false;
-            }
-            return getDBInstance().ai;
-        }
+        
 
         public bool determineAndPerformAction()
         {
@@ -104,7 +80,7 @@ namespace Logic
 
         public bool playerControls()
         {
-            if(getDBInstance().pass == true)
+            if(pass == true)
             {
                 return false;
             }
@@ -129,23 +105,23 @@ namespace Logic
             int opponentStrength;
             int round = LogicEngine.getRound();
             int wins;
-            if (LogicEngine.getPlayer1().id == id)
+            if (Storage.getPlayer1().id == id)
             {
-                opponentStrength = LogicEngine.getPlayer2().strength;
+                opponentStrength = Storage.getPlayer2().strength;
                 wins = LogicEngine.getWonBattlesPlayer1();
-                opponentPass = LogicEngine.getPlayer2().pass;
+                opponentPass = Storage.getPlayer2().pass;
             } else
             {
-                opponentStrength = LogicEngine.getPlayer1().strength;
+                opponentStrength = Storage.getPlayer1().strength;
                 wins = LogicEngine.getWonBattlesPlayer2();
-                opponentPass = LogicEngine.getPlayer1().pass;
+                opponentPass = Storage.getPlayer1().pass;
             }
             
 
             // Sets the threshold for when it could be wise to pass
             int passThreshold = 10;
             Console.WriteLine("opponentPass: " + opponentPass);
-            if(getDBInstance().pass == true)
+            if(pass == true)
             {
                 return false;
             }
@@ -234,14 +210,12 @@ namespace Logic
 
         public void setPass(bool pass)
         {
-            Program.db.ExecuteCommand("UPDATE Player SET pass ={0} WHERE id = {1}", pass, this.id);
-            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<Player>());
+            Storage.setPass(this.id, pass);
         }
 
         public void setStrength(int strength)
         {
-            Program.db.ExecuteCommand("UPDATE Player SET strength ={0} WHERE id = {1}", strength, this.id);
-            Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<Player>());
+            Storage.setStrength(this.id, strength);
         }
 
         public void movePlayedCardsToUsed()
@@ -251,14 +225,6 @@ namespace Logic
                 getUsedCards().moveCardHere(card);
             }
         }
-
-        // Retrieves the DB instance of this object
-        private Player getDBInstance()
-        {
-            Table<Player> players = Program.db.GetTable<Player>();
-            var query = from player in players where player.id == this.id select player;
-
-            return query.First();
-        }
+        
     }
 }
