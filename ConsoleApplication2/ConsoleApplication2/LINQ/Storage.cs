@@ -173,7 +173,7 @@ namespace GwentStandalone.LINQ
         {
             if (playerId == getPlayer1().id)
             {
-                getLogicEngine().wonBattlesPlayer2 += 1;
+                getLogicEngine().wonBattlesPlayer1 += 1;
             }else if (playerId == getPlayer2().id)
             {
                 getLogicEngine().wonBattlesPlayer2 += 1;
