@@ -13,7 +13,7 @@ namespace Logic
     {
         private static LogicEngine logicEngine;
 
-        [Column(IsPrimaryKey = true)]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         private int id;
         [Column]
         private int round;
@@ -123,36 +123,6 @@ namespace Logic
             Program.db.Refresh(RefreshMode.OverwriteCurrentValues, Program.db.GetTable<LogicEngine>());
         }
 
-        public static GameState determineRound()
-        {
-            
-            //Console.WriteLine("P1Pass: " + getPlayer1().pass + " P2Pass: " + getPlayer2().pass);
-            if (getPlayer1().pass == true && getPlayer2().pass == true)
-            {
-                if(getPlayer1().strength > getPlayer2().strength)
-                {
-                    player1Won();
-                } else
-                {
-                    player2Won();
-                }
-                if((getWonBattlesPlayer1() == 2 && getWonBattlesPlayer2() == 0) || (getWonBattlesPlayer1() == 0 && getWonBattlesPlayer2() == 2))
-                {
-                    // Add an extra round
-                    nextRound();
-                }
-            nextRound();
-            }
-            if (getRound() > 3)
-            {
-                Console.WriteLine("It is over");
-                nextRound();
-                return GameState.EndGame;
-            }
-            
-            return GameState.P1Turn;
-        }
-
         private static LogicEngine getDBInstance()
         {
             Table<LogicEngine> LogicEngineTable = Program.db.GetTable<LogicEngine>();
@@ -167,13 +137,6 @@ namespace Logic
             
         }
 
-        /* Implement this method?
-        public static void getDrawResources(out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT)
-        {
-            
-        }
-        */
-
         public static void cleanDatabase()
         {
             Program.db.ExecuteCommand("DELETE FROM Card");
@@ -184,9 +147,6 @@ namespace Logic
         
         public static void generateDatabase(int gameMode)
         {
-
-            
-
             Program.db.ExecuteCommand("INSERT INTO LogicEngine VALUES(DEFAULT, DEFAULT, DEFAULT, DEFAULT)");
 
             Program.db.ExecuteCommand("INSERT INTO Player VALUES ({0},{1},{2},{3})", "player1", 0, 0, 0);
@@ -200,24 +160,12 @@ namespace Logic
             
             int player1DeckId = getPlayer1().getDeck().id;
 
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Drake", "Has sharp claws", "dragon.png", 8, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 2, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Dragon", "Summons tornados", "dragon.png", 12, player1DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Strong Orc", "Waaaaagh!!!", "warrior_orc.png", 12, player1DeckId);
-
-            Console.WriteLine("Deck: " + player1DeckId);
-
-            Program.db.GetTable<Card>().InsertOnSubmit(new Card("Cobbe", "Fixes Problems", "dragon.png", 99, player1DeckId));
-            Program.db.SubmitChanges();
+            CardGenerator cardGenerator = new CardGenerator();
+            for(int i = 0; i<=20; i++)
+            {
+                Program.db.GetTable<Card>().InsertOnSubmit(cardGenerator.generateRandomCard(player1DeckId));
+                Console.WriteLine("Test: "+i);
+            }
 
             // AI/Player2 stuff.....
             if (gameMode == 0)
@@ -237,21 +185,11 @@ namespace Logic
             
             int player2DeckId = getPlayer2().getDeck().id;
 
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Strong Orc", "Waaagh!!!", "warrior_orc.png", 5, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Wind Dragon", "Summons tornados", "dragon.png", 12, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Strong Orc", "Waaaaagh!!", "warrior_orc.png", 9, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 2, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 6, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Fire Dragon", "Breathes fire", "dragon.png", 10, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Orc", "Waaagh!!", "warrior_orc.png", 2, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Strong Orc", "Waaagh!!!", "warrior_orc.png", 5, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 3, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Strong Orc", "Waaagh!!!", "warrior_orc.png", 12, player2DeckId);
-            Program.db.ExecuteCommand("INSERT INTO Card (name, description, image, strength, cardHandlerId)VALUES ({0},{1},{2},{3},{4})", "Witch", "Dark Sorcery", "witch.png", 5, player2DeckId);
-            
+            for (int i = 0; i <= 20; i++)
+            {
+                Program.db.GetTable<Card>().InsertOnSubmit(cardGenerator.generateRandomCard(player2DeckId));
+            }
+            Program.db.SubmitChanges();
         }
 
         public void updateGamestate(GameState state)

@@ -83,6 +83,7 @@
     <Compile Include="Logic\CardHandler.cs" />
     <Compile Include="GameEngine.cs" />
     <Compile Include="Logic\Player.cs" />
+    <Compile Include="Logic\RuleEngine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logic\LogicEngine.cs" />
