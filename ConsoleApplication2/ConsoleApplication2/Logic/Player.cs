@@ -48,10 +48,7 @@ namespace Logic
 
         public void playCard(Card card)
         {
-            //Program.db.ExecuteCommand("UPDATE Player SET strength =2 WHERE id = 119");
-            //Console.WriteLine("Old Strength: " + Table.getTableInstance().getPlayer(this.name).strength + " Card strength: " + card.strength);
             setStrength(strength + card.strength);
-            //strength += card.strength;
             getPlayedCards().moveCardHere(card);
         }
         
@@ -216,12 +213,12 @@ namespace Logic
 
         public void setPass(bool pass)
         {
-            Storage.setPass(this.id, pass);
+            Storage.setPass(this, pass);
         }
 
         public void setStrength(int strength)
         {
-            Storage.setStrength(this.id, strength);
+            Storage.setStrength(this, strength);
         }
 
         public void movePlayedCardsToUsed()

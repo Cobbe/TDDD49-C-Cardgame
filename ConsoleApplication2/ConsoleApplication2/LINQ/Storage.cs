@@ -12,17 +12,14 @@ namespace GwentStandalone.LINQ
     public class Storage
     {
         private static Storage storage;
+        // Setup LINQ
         private static DataContext db = new DataContext(@"Data Source=(localdb)\mssqllocaldb;
                                    Integrated Security=true;
                                    AttachDbFileName=" + Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\LINQ\\northwind.mdf");
 
         private Storage()
         {
-            // Setup LINQ
-            // DataContext takes a connection string 
-            //db = new DataContext(@"Data Source=(localdb)\mssqllocaldb;
-             //                      Integrated Security=true;
-              //                     AttachDbFileName=" + Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\LINQ\\northwind.mdf");
+            
         }
 
         public static Storage getInstance()
@@ -69,15 +66,17 @@ namespace GwentStandalone.LINQ
             return res;
         }
 
-        public static void setPass(int playerID, bool pass)
+        public static void setPass(Player player, bool pass)
         {
-            db.ExecuteCommand("UPDATE Player SET pass ={0} WHERE id = {1}", pass, playerID);
+            player.pass = pass;
+            db.SubmitChanges();
             db.Refresh(RefreshMode.OverwriteCurrentValues, db.GetTable<Player>());
         }
 
-        public static void setStrength(int playerID, int strength)
+        public static void setStrength(Player player, int strength)
         {
-            db.ExecuteCommand("UPDATE Player SET strength ={0} WHERE id = {1}", strength, playerID);
+            player.strength = strength;
+            db.SubmitChanges();
             db.Refresh(RefreshMode.OverwriteCurrentValues, db.GetTable<Player>());
         }
 
@@ -94,7 +93,8 @@ namespace GwentStandalone.LINQ
 
         public static void moveCardToCardHandler(int cardHandlerId, Card card)
         {
-            db.ExecuteCommand("UPDATE Card SET cardHandlerId ={0} WHERE id = {1}", cardHandlerId, card.id);
+            card.cardHandlerId = cardHandlerId;
+            db.SubmitChanges();
             db.Refresh(RefreshMode.OverwriteCurrentValues, db.GetTable<Card>());
         }
 
@@ -147,9 +147,10 @@ namespace GwentStandalone.LINQ
             db.SubmitChanges();
         }
 
-        public static void updateGamestate(int logicEngineId, GameState state)
+        public static void updateGamestate(GameState state)
         {
-            db.ExecuteCommand("UPDATE LogicEngine SET state ={0} WHERE id = {1}", (int)state, logicEngineId);
+            getLogicEngine().state = state;
+            db.SubmitChanges();
             db.Refresh(RefreshMode.OverwriteCurrentValues, db.GetTable<LogicEngine>());
         }
 
@@ -172,19 +173,19 @@ namespace GwentStandalone.LINQ
         {
             if (playerId == getPlayer1().id)
             {
-                db.ExecuteCommand("UPDATE LogicEngine SET wonBattlesPlayer1 ={0} WHERE id = {1}", getLogicEngine().wonBattlesPlayer1 + 1, getLogicEngine().id);
-                db.Refresh(RefreshMode.OverwriteCurrentValues, db.GetTable<LogicEngine>());
+                getLogicEngine().wonBattlesPlayer2 += 1;
             }else if (playerId == getPlayer2().id)
             {
-                db.ExecuteCommand("UPDATE LogicEngine SET wonBattlesPlayer2 ={0} WHERE id = {1}", getLogicEngine().wonBattlesPlayer2 + 1, getLogicEngine().id);
-                db.Refresh(RefreshMode.OverwriteCurrentValues, db.GetTable<LogicEngine>());
+                getLogicEngine().wonBattlesPlayer2 += 1;
             }
-
+            db.SubmitChanges();
+            db.Refresh(RefreshMode.OverwriteCurrentValues, db.GetTable<LogicEngine>());
         }
         
         public static void newRound()
         {
-            db.ExecuteCommand("UPDATE LogicEngine SET round ={0} WHERE id = {1}", getLogicEngine().round + 1, getLogicEngine().id);
+            getLogicEngine().round += 1;
+            db.SubmitChanges();
             db.Refresh(RefreshMode.OverwriteCurrentValues, db.GetTable<LogicEngine>());
         }
     }

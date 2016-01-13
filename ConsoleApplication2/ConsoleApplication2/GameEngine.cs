@@ -53,14 +53,12 @@ namespace GwentStandalone
             switch (LogicEngine.getInstance().state)
             {
                 case GameState.Start:
-                    //Console.WriteLine("start");
                     LogicEngine.nextRound();
                     Storage.getPlayer1().drawCards(10);
                     Storage.getPlayer2().drawCards(10);
                     LogicEngine.getInstance().updateGamestate(GameState.P1Turn);
                     break;
                 case GameState.P1Turn:
-                    //Console.WriteLine("p1turn");
                     waitingForInput = Storage.getPlayer1().determineAndPerformAction();
                     if (!waitingForInput)
                     {
@@ -68,7 +66,6 @@ namespace GwentStandalone
                     }  
                     break;
                 case GameState.P2Turn:
-                    //Console.WriteLine("p2Turn");
                     waitingForInput = Storage.getPlayer2().determineAndPerformAction();
                     if (!waitingForInput)
                     {
@@ -76,14 +73,12 @@ namespace GwentStandalone
                     }
                     break;
                 case GameState.EndTurn:
-                    //Console.WriteLine("End Round");
                     LogicEngine.getInstance().updateGamestate(RuleEngine.determineRound());
                     break;
                 case GameState.EndGame:
-                    //Console.WriteLine("End game");
                     break;
                 default:
-                    //Console.WriteLine("Game is not running!");
+                    Console.WriteLine("Game is not running!");
                     break;
             }
         }
@@ -92,7 +87,6 @@ namespace GwentStandalone
         {
             timer.Stop();
             gameWorker.CancelAsync();
-            //gameWorker.Dispose();
         }
 
         private void reset_database(int gameMode)
@@ -103,7 +97,6 @@ namespace GwentStandalone
 
         public static void resumeGame()
         {
-            //get state from database
             gameEngine.timer.Start();
             Console.WriteLine("Resumed Game");
         }

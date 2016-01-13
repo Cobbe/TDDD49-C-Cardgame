@@ -61,49 +61,7 @@ namespace Logic
         {
             return logicEngine.wonBattlesPlayer2;
         }
-
-        /*
-        public static int getRound()
-        {
-            LogicEngine temp = getDBInstance();
-            if(temp == null)
-            {
-                return -1;
-            }
-            return getDBInstance().round;
-        }
-
-        public static GameState getState()
-        {
-            LogicEngine temp = getDBInstance();
-            if (temp == null)
-            {
-                return GameState.Problem;
-            }
-            return getDBInstance().state;
-        }
-
-        public static int getWonBattlesPlayer1()
-        {
-            LogicEngine temp = getDBInstance();
-            if (temp == null)
-            {
-                return -1;
-            }
-            return getDBInstance().wonBattlesPlayer1;
-        }
-
-        public static int getWonBattlesPlayer2()
-        {
-            LogicEngine temp = getDBInstance();
-            if (temp == null)
-            {
-                return -1;
-            }
-            return getDBInstance().wonBattlesPlayer2;
-        }
-        */
-
+        
         public static void nextRound()
         {
             Storage.getPlayer1().setPass(false);
@@ -127,7 +85,8 @@ namespace Logic
 
         public void updateGamestate(GameState state)
         {
-            Storage.updateGamestate(this.id, state);
+            Console.WriteLine("LogicEngineID: " + this.id);
+            Storage.updateGamestate(state);
         }
 
     }
