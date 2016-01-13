@@ -4,6 +4,7 @@ using System.Data.Linq;
 using System.IO;
 using GwentStandalone;
 using GwentStandalone.LINQ;
+using Logic;
 
 namespace GwentStandAlone
 {

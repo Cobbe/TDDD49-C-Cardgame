@@ -199,13 +199,10 @@ namespace GUI
                 this.Close();
                 MenuForm.getMenuForm().Close();
                 Environment.Exit(1);
-                //Application.Exit();
+                Application.Exit();
             }
-            //Environment.Exit(1);
-            //Application.Exit();
         }
-
-        //public void updateGraphics(object Object, DoWorkEventArgs e)
+        
         public void updateGraphics()
         {
             lock (gameFormLock)

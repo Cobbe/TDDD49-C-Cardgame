@@ -1,4 +1,5 @@
 ﻿using GwentStandalone;
+using Logic;
 using System;
 using System.Windows.Forms;
 
@@ -23,15 +24,16 @@ namespace GUI
         {
             InitializeComponent();
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        
+        private void resume_button_Click(object sender, EventArgs e)
         {
+            LogicEngine.getInstance();
             GameEngine.resumeGame();
             menuForm.Hide();
             GameForm.getInstance().Show();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void player_vs_ai_button_Click(object sender, EventArgs e)
         {
             // 1 is to specify a game versus AI
             GameEngine.startNewGame(1);
@@ -39,7 +41,7 @@ namespace GUI
             GameForm.getInstance().Show();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void player_vs_player_button_Click(object sender, EventArgs e)
         {
             // 2 is to specify a multiplayer game
             GameEngine.startNewGame(0);

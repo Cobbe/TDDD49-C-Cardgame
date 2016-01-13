@@ -43,7 +43,7 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "Resume Game";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.resume_button_Click);
             // 
             // button2
             // 
@@ -54,7 +54,7 @@
             this.button2.TabIndex = 1;
             this.button2.Text = "Start New Game versus AI";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.player_vs_ai_button_Click);
             // 
             // button3
             // 
@@ -65,7 +65,7 @@
             this.button3.TabIndex = 2;
             this.button3.Text = "Start New Multiplayer Game";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.player_vs_player_button_Click);
             // 
             // label1
             // 

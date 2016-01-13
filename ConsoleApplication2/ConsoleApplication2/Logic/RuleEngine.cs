@@ -12,8 +12,6 @@ namespace GwentStandalone.Logic
     {
         public static GameState determineRound()
         {
-
-            //Console.WriteLine("P1Pass: " + getPlayer1().pass + " P2Pass: " + getPlayer2().pass);
             if (Storage.getPlayer1().pass == true && Storage.getPlayer2().pass == true)
             {
                 if (Storage.getPlayer1().strength > Storage.getPlayer2().strength)
@@ -33,7 +31,6 @@ namespace GwentStandalone.Logic
             }
             if (LogicEngine.getRound() > 3)
             {
-                //Console.WriteLine("It is over");
                 LogicEngine.nextRound();
                 return GameState.EndGame;
             }
