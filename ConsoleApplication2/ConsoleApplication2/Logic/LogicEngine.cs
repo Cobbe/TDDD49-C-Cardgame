@@ -13,8 +13,7 @@ namespace Logic
     public class LogicEngine
     {
         private static LogicEngine logicEngine;
-
-        [Column(IsPrimaryKey = true)]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int id;
         [Column]
         public int round;
@@ -123,43 +122,6 @@ namespace Logic
             Storage.incresePlayerWon(Storage.getPlayer2().id);
         }
 
-        public static GameState determineRound()
-        {
-            
-            //Console.WriteLine("P1Pass: " + getPlayer1().pass + " P2Pass: " + getPlayer2().pass);
-            if (Storage.getPlayer1().pass == true && Storage.getPlayer2().pass == true)
-            {
-                if(Storage.getPlayer1().strength > Storage.getPlayer2().strength)
-                {
-                    player1Won();
-                } else
-                {
-                    player2Won();
-                }
-                if((getWonBattlesPlayer1() == 2 && getWonBattlesPlayer2() == 0) || (getWonBattlesPlayer1() == 0 && getWonBattlesPlayer2() == 2))
-                {
-                    // Add an extra round
-                    nextRound();
-                }
-            nextRound();
-            }
-            if (getRound() > 3)
-            {
-                Console.WriteLine("It is over");
-                nextRound();
-                return GameState.EndGame;
-            }
-            
-            return GameState.P1Turn;
-        }
-        
-
-        /* Implement this method?
-        public static void getDrawResources(out int playedBattlesOUT, out int wonBattlesOUT, out bool winOUT)
-        {
-            
-        }
-        */
         public void updateGamestate(GameState state)
         {
             Storage.updateGamestate(this.id, state);

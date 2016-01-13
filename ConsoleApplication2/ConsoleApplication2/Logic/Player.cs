@@ -1,5 +1,6 @@
 ﻿using GUI;
 using GwentStandalone.LINQ;
+using GwentStandalone.Logic;
 using GwentStandAlone;
 using System;
 using System.Data.Linq;
@@ -11,7 +12,7 @@ namespace Logic
     [Table(Name = "Player")]
     public class Player
     {
-        [Column(IsPrimaryKey = true)]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int id;
         [Column]
         public string name;
@@ -69,6 +70,11 @@ namespace Logic
 
         public bool determineAndPerformAction()
         {
+            if (!RuleEngine.allowedToPlay(this))
+            {
+                return false;
+            }
+
             if (ai)
             {
                return aiControls();
@@ -80,10 +86,6 @@ namespace Logic
 
         public bool playerControls()
         {
-            if(pass == true)
-            {
-                return false;
-            }
             if (GameForm.activePass)
             {
                 setPass(true);
@@ -120,11 +122,7 @@ namespace Logic
 
             // Sets the threshold for when it could be wise to pass
             int passThreshold = 10;
-            Console.WriteLine("opponentPass: " + opponentPass);
-            if(pass == true)
-            {
-                return false;
-            }
+
             if(getHand().numberOFCards() == 0)
             {
                 // No cards left, AI must pass

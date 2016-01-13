@@ -1,5 +1,6 @@
 ﻿using GUI;
 using GwentStandalone.LINQ;
+using GwentStandalone.Logic;
 using GwentStandAlone;
 using Logic;
 using System;
@@ -17,7 +18,7 @@ namespace GwentStandalone
     {
         private static GameEngine gameEngine;
         public Timer timer;
-        private BackgroundWorker gameWorker, graphicsWorker;
+        private BackgroundWorker gameWorker;
 
         private GameEngine()
         {
@@ -49,7 +50,6 @@ namespace GwentStandalone
             GameForm.getInstance().updateGraphics();
             bool waitingForInput;
 
-            // Alpha-version is currently using two AIs (this is not indicated in the DB)
             switch (LogicEngine.getInstance().state)
             {
                 case GameState.Start:
@@ -77,10 +77,10 @@ namespace GwentStandalone
                     break;
                 case GameState.EndTurn:
                     //Console.WriteLine("End Round");
-                    LogicEngine.getInstance().updateGamestate(LogicEngine.determineRound());
+                    LogicEngine.getInstance().updateGamestate(RuleEngine.determineRound());
                     break;
                 case GameState.EndGame:
-                    Console.WriteLine("End game");
+                    //Console.WriteLine("End game");
                     break;
                 default:
                     //Console.WriteLine("Game is not running!");

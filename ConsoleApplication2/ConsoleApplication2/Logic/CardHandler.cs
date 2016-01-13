@@ -13,7 +13,7 @@ namespace Logic
     [Table(Name = "CardHandler")]
     public class CardHandler
     {
-        [Column(IsPrimaryKey = true)]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int id;
         [Column]
         public string type;
