@@ -27,7 +27,10 @@ namespace Logic
 
         public LogicEngine() : base()
         {
-
+            round = 0;
+            wonBattlesPlayer1 = 0;
+            wonBattlesPlayer2 = 0;
+            state = GameState.Start;
         }
 
         public static LogicEngine getInstance()

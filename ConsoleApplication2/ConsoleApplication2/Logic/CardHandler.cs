@@ -22,6 +22,13 @@ namespace Logic
 
         public CardHandler()
         {
+
+        }
+
+        public CardHandler(string type, int playerId)
+        {
+            this.type = type;
+            this.playerId = playerId;
         }
 
         

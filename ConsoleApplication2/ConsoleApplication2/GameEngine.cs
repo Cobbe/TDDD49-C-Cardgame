@@ -98,7 +98,7 @@ namespace GwentStandalone
         private void reset_database(int gameMode)
         {
             Storage.cleanDatabase();
-            Storage.generateDatabase(gameMode);
+            Storage.generateDatabase(gameMode, 20);
         }
 
         public static void resumeGame()
