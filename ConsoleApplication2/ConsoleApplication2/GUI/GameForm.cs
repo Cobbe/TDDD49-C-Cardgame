@@ -1,4 +1,5 @@
 ﻿using GwentStandalone.LINQ;
+using GwentStandalone.Logic;
 using GwentStandAlone;
 using Logic;
 using System;
@@ -85,11 +86,11 @@ namespace GUI
             }
             myBuffer.Graphics.DrawString(drawstring, new Font("Arial", 11 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 30, 250);
 
-            if (round > 3)
+            if (RuleEngine.endGame(LogicEngine.getWonBattlesPlayer1(), LogicEngine.getWonBattlesPlayer2()))
             {
-                if (wonBattlesPlayer1 > wonBattlesPlayer2)
+                bool player1won = RuleEngine.isPlayer1Winner(LogicEngine.getWonBattlesPlayer1(), LogicEngine.getWonBattlesPlayer2());
+                if (player1won)
                 {
-                    scale = 3;
                     myBuffer.Graphics.DrawString(Storage.getPlayer1().name + " won!", new Font("Arial", 15 * scale, FontStyle.Bold), new SolidBrush(Color.Blue), 50, 230);
                 }
                 else

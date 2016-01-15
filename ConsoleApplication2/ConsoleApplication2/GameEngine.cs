@@ -73,7 +73,15 @@ namespace GwentStandalone
                     }
                     break;
                 case GameState.EndTurn:
-                    LogicEngine.getInstance().updateGamestate(RuleEngine.determineRound());
+                    if (RuleEngine.endOfRound(Storage.getPlayer1(), Storage.getPlayer2()))
+                    {
+                        LogicEngine.increaseWinner(RuleEngine.determineRoundWinner(Storage.getPlayer1(), Storage.getPlayer2()));
+                        LogicEngine.nextRound();
+                        LogicEngine.getInstance().updateGamestate((RuleEngine.endGame(LogicEngine.getWonBattlesPlayer1(), LogicEngine.getWonBattlesPlayer2())) ? GameState.EndGame : GameState.P1Turn); 
+                    } else
+                    {
+                        LogicEngine.getInstance().updateGamestate(GameState.P1Turn);
+                    }
                     break;
                 case GameState.EndGame:
                     break;

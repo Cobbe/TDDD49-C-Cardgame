@@ -10,32 +10,28 @@ namespace GwentStandalone.Logic
 {
     class RuleEngine
     {
-        public static GameState determineRound()
+        // End of round?
+        public static bool endOfRound(Player player1, Player player2)
         {
-            if (Storage.getPlayer1().pass == true && Storage.getPlayer2().pass == true)
-            {
-                if (Storage.getPlayer1().strength > Storage.getPlayer2().strength)
-                {
-                    LogicEngine.player1Won();
-                }
-                else
-                {
-                    LogicEngine.player2Won();
-                }
-                if ((LogicEngine.getWonBattlesPlayer1() == 2 && LogicEngine.getWonBattlesPlayer2() == 0) || (LogicEngine.getWonBattlesPlayer1() == 0 && LogicEngine.getWonBattlesPlayer2() == 2))
-                {
-                    // Add an extra round
-                    LogicEngine.nextRound();
-                }
-                LogicEngine.nextRound();
-            }
-            if (LogicEngine.getRound() > 3)
-            {
-                LogicEngine.nextRound();
-                return GameState.EndGame;
-            }
+            return player1.pass == true && player2.pass == true;
+        }
 
-            return GameState.P1Turn;
+        // Who won the round?
+        public static Player determineRoundWinner(Player player1, Player player2)
+        {
+            return (player1.strength > player2.strength) ? player1 : player2;
+        }
+
+        // Who won the game?
+        public static bool isPlayer1Winner(int player1wins, int player2wins)
+        {
+            return (player1wins > player2wins);
+        }
+
+        // End game when someone has 2 wins
+        public static bool endGame(int player1wins, int player2wins)
+        {
+            return player1wins == 2 || player2wins == 2;
         }
 
         // Checks if a player/ai has already passed this round, in that case do not allow it to play this turn.

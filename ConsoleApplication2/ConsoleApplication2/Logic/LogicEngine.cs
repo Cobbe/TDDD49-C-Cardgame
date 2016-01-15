@@ -74,14 +74,9 @@ namespace Logic
             Storage.newRound();
         }
 
-        public static void player1Won()
+        public static void increaseWinner(Player player)
         {
-            Storage.incresePlayerWon(Storage.getPlayer1().id);
-        }
-
-        public static void player2Won()
-        {
-            Storage.incresePlayerWon(Storage.getPlayer2().id);
+            Storage.incresePlayerWon(player.id);
         }
 
         public void updateGamestate(GameState state)
